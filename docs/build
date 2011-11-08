@@ -1,0 +1,13 @@
+
+make html
+
+r=/tmp/appstack
+
+rm -rf $r
+mkdir $r
+
+cp -rf _build/html/* $r
+find $r -type d -name ".svn"|xargs rm -rf
+
+cp -rf $r/* ~/source/app/appstack/1/static/doc/release/testing/
+
