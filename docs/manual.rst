@@ -149,13 +149,31 @@ NOTE: 目前SAE Python使用的是 *Django-1.2.7* 。
 
 .. literalinclude:: ../examples/pythondemo/1/mysite/views.py
 
-修改urls.py，启用admin，并新增一条规则::
+修改urls.py，启用admin，打开import admin的注释，新增一条规则用于解析hello::
 
-        urlpatterns = patterns('',
-            ...
-            (r'^$', 'mysite.views.hello),
-            (r'^admin/', include(admin.site.urls)),   
-        )
+    # Uncomment the next two lines to enable the admin:
+    from django.contrib import admin
+    admin.autodiscover()
+
+    urlpatterns = patterns('',
+        ...
+        (r'^$', 'mysite.views.hello),
+        (r'^admin/', include(admin.site.urls)),
+    )
+
+
+在setttings.py中开启admin组件::
+
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        ...
+        # Uncomment the next line to enable the admin:
+        'django.contrib.admin',
+        # Uncomment the next line to enable admin documentation:
+        # 'django.contrib.admindocs',
+    )
+
 
 提交代码，访问 `http://mysite.sinaapp.com/` 
 
