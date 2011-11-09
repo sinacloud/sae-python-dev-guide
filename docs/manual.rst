@@ -282,15 +282,9 @@ SAE app 代码以数字标识版本，如pythondemo应用有4个版本::
 svn使用参考 http://sae.sina.com.cn/?m=devcenter&content_id=215&catId=212
 
 
-示例代码下载
---------------
+访问互联网
+-------------
+注意： 目前仅支持通过urllib2模块，urllib2.urlopen访问网络资源，其他如httplib,
+urllib没有开放网络权限。
 
-http://appstack.sinaapp.com/static/download/sae-python-examples.tar.bz2
-
-
-意见反馈
-----------------
-
-http://sae.sina.com.cn/?m=feedback
-
-
+故其他网络服务客户端封装，只能使用urllib2模块。
