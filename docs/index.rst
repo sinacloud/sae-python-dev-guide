@@ -11,15 +11,11 @@ SAE Python 开发者手册
 Git: https://github.com/SAEPython/saepythondevguide
 包含文档，示例代码及本地测试server。
 
-如何获取?
-
 ::
 
     git clone http://github.com/SAEPython/saepythondevguide.git
 
 打包下载: https://github.com/SAEPython/saepythondevguide/zipball/master
-
-http://sae.sina.com.cn/
 
 Contents:
 
@@ -29,6 +25,13 @@ Contents:
     manual
     sae
     dev_server
+
+
+意见反馈: 
+
+http://sae.sina.com.cn/?m=feedback
+
+SAE Python 小组 http://www.douban.com/group/373262/ 
 
 Indices and tables
 ==================
