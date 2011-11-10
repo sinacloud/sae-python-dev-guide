@@ -6,8 +6,8 @@ app = Flask(__name__)
 app.debug = True
 app.secret_key = 'test'
 
-consumer_key = '1997648872'
-consumer_secret = 'a1f84a78c18f841cf8489335f3d96e8f'
+consumer_key = '199***'
+consumer_secret = 'a1f8****'
 
 def get_referer():
     return request.headers.get('HTTP_REFERER', '/')
@@ -40,7 +40,7 @@ def login():
     callback = 'http://appstack.sinaapp.com/login_callback'
 
     auth = OAuthHandler(consumer_key, consumer_secret, callback)
-    # Get request token and login url from provider
+    # Get request token and login url from the provider
     url = auth.get_authorization_url()
     session['oauth_request_token'] = auth.request_token
     # Redirect user to login
@@ -54,7 +54,7 @@ def login_callback():
     request_token = session['oauth_request_token']
     del session['oauth_request_token']
     
-    # Show the provider it's really us
+    # Show the provider it's us really
     auth.set_request_token(request_token.key, request_token.secret)
     # Ask for a temporary access token
     session['oauth_access_token'] = auth.get_access_token(verifier)
