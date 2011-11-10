@@ -9,10 +9,11 @@ import sys
 import os
 import imp
 from wsgiref.simple_server import make_server
+from werkzeug.wsgi import SharedDataMiddleware
 
 import sae.core
 
-def main():
+def main(app_root):
 
     try:
         index = imp.load_source('index', 'index.wsgi')
@@ -28,7 +29,12 @@ def main():
         print "application is not a callable"
         sys.exit(-1)
 
-    server = make_server("", 8080, index.application)
+    app = SharedDataMiddleware(index.application,
+            { '/static': os.path.join(app_root,  'static'),
+              '/media': os.path.join(app_root,  'media'),
+             '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
+             })
+    server = make_server("", 8080, app)
     print "Start development server on http://localhost:8080/"
     try:
         server.serve_forever()
@@ -46,4 +52,4 @@ if __name__ == '__main__':
     except:
         print 'MySQL config not found: app.py'
 
-    main()
+    main(cwd)
