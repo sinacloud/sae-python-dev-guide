@@ -18,16 +18,20 @@ Git: https://github.com/SAEPython/saepythondevguide
 打包下载: https://github.com/SAEPython/saepythondevguide/zipball/master
 
 Contents:
-
+    
 .. toctree::
     :maxdepth: 2
+    
+    quickstart
+    runtime
+    framework
+    service
+    auth
+    other
 
-    manual
-    sae
-    dev_server
 
-
-意见反馈: 
+意见反馈
+=============
 
 http://sae.sina.com.cn/?m=feedback
 
