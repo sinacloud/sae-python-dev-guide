@@ -32,7 +32,7 @@ def login_ok(f):
 @login_ok
 def hello():
     user = get_weibo_user()
-    return "Hello, %d <img src=%s>" % (user.screen_name, user.profile_image_url)
+    return "Hello, %s <img src=%s>" % (user.screen_name, user.profile_image_url)
 
 @app.route('/login')
 def login():
