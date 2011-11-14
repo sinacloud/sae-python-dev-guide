@@ -1,6 +1,13 @@
 SAE Python环境
 =======================
 
+环境信息
+----------
+
+当前目录: 不带版本信息的app根目录，如 /data1/www/htdocs/115/longtalk。
+app不同的版本共享同一个进程，故cwd不带版本信息
+
+
 预装模块列表
 ---------------------
 ::
@@ -73,12 +80,23 @@ SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注
 
 501 页面对应的常见处理办法，请检查:
 
+* 使用dev_server查看是否有语法错误
 * 模块是否正确安装
 * 是否遵循WSGI规范，返回iterator
 * 数据库设置是否正确，是否已在SAE管理界面启用MYSQL，是否已创建数据表，初始化
 * 是否已经打开framework的debug功能
 
 如果有404错误，试试访问  http://$appname.sinaapp.com/debug 
+
+建议优先使用框架的debug功能。对于未捕获的WSGI app异常，如果sae.debug = True，
+则sae会对你的app进行封装，捕获所有的异常::
+
+    from werkzeug.debug import DebuggedApplication                                                                                     
+    def create_wsgi_app(app):
+        ...
+        return DebuggedApplication(app)
+
+该debugger会输出你的代码，使用需谨慎，正常情况下应关掉sae.debug。
 
 
 dev_server 本地开发
