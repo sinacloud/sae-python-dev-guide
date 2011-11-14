@@ -6,31 +6,23 @@ Django
 
 NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的是这个版本。
 
-1. 建立一个新的Python应用mysite
+#. 建立一个新的Python应用mysite
    
-2. 检出SVN代码到本地目录
+#. 检出SVN代码到本地目录
 
-3. 新建文件index.wsgi，内容如下
+#. 新建文件index.wsgi，内容如下
     
-.. literalinclude:: ../examples/pythondemo/1/index.wsgi
+   .. literalinclude:: ../examples/pythondemo/1/index.wsgi
 
-4. 初始化django应用
-   
-::
+#. 初始化django应用::
 
    django-admin.py startproject mysite
    
-5. 从django安装目录复制admin 的media目录
+#. 从django安装目录复制admin 的media目录::
    
-::
-   
-   cp -rf django/contrib/admin/media/ .
+    cp -rf django/contrib/admin/media/ .
 
-去除.svn 目录::
-
-   find . -type d -name ".svn"|xargs rm -rf
-
-目录结构如下::
+   目录结构如下::
 
     jaime@westeros:~/source/chenfeng/pythondemo/1$ ls
     index.wsgi  media  mysite  README
@@ -40,45 +32,44 @@ NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的�
     demo  __init__.py  manage.py  settings.py  urls.py  views.py
     jaime@westeros:~/source/chenfeng/pythondemo/1$ 
 
-6. 提交代码
+#. 提交代码
    
-访问 `http://mysite.sinaapp.com` ，就可看到Django的欢迎页面了。
+   访问 `http://mysite.sinaapp.com` ，就可看到Django的欢迎页面了。
 
-7. Hello, Django!
+#. Hello, Django!
 
-在mysite/目录下新建一个views.py，内容如下
+    在mysite/目录下新建一个views.py，内容如下
 
-.. literalinclude:: ../examples/pythondemo/1/mysite/views.py
+    .. literalinclude:: ../examples/pythondemo/1/mysite/views.py
 
-修改urls.py，新增一条规则解析hello，同时打开admin的注释::
+    修改urls.py，新增一条规则解析hello，同时打开admin的注释::
 
-    # Uncomment the next two lines to enable the admin:
-    from django.contrib import admin
-    admin.autodiscover()
+        # Uncomment the next two lines to enable the admin:
+        from django.contrib import admin
+        admin.autodiscover()
 
-    urlpatterns = patterns('',
-        ...
-        (r'^$', 'mysite.views.hello),
-        (r'^admin/', include(admin.site.urls)),
-    )
+        urlpatterns = patterns('',
+            ...
+            (r'^$', 'mysite.views.hello),
+            (r'^admin/', include(admin.site.urls)),
+        )
+
+    在setttings.py中开启admin组件::
+
+        INSTALLED_APPS = (
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
+            ...
+            # Uncomment the next line to enable the admin:
+            'django.contrib.admin',
+            # Uncomment the next line to enable admin documentation:
+            # 'django.contrib.admindocs',
+        )
 
 
-在setttings.py中开启admin组件::
+    提交代码，访问 `http://mysite.sinaapp.com/` 
 
-    INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        ...
-        # Uncomment the next line to enable the admin:
-        'django.contrib.admin',
-        # Uncomment the next line to enable admin documentation:
-        # 'django.contrib.admindocs',
-    )
-
-
-提交代码，访问 `http://mysite.sinaapp.com/` 
-
-Django 数据库配置见 MySQL 节。
+Django 数据库配置见 支持服务列表 MySQL 节。
 
 
 Flask
@@ -199,11 +190,8 @@ Hello, Uliweb
 ~~~~~~~~~~~~~~~~~
 
 Uliweb中内置了一个对sae支持的app，还在不断完善中，目前可以方便使用sae提供的MySql
-数据库。它是需要同时安装sqlalchemy才可以运行的。因此我们第一步先在本地安装好
-sqlalchemy，然后在版本目录中，导出sqlalchemy到lib下::
+数据库。
 
-    uliweb export -d ../lib sqlalchemy
-    
 然后修改 ``project/apps/settings.ini`` 在 ``GLOBAL/INSTALLED_APPS`` 最后添加::
 
     [GLOBAL]
