@@ -21,6 +21,8 @@ app不同的版本共享同一个进程，故cwd不带版本信息
     tornado-2.1.1.tar.gz
     bottle-0.9.6.tar.gz
     sinatpy2.x-(2011-6-8).zip
+    Uliweb-0.0.1a7.zip
+    SQLAlchemy-0.7.3.tar.gz
 
 
 命名规范
@@ -60,7 +62,7 @@ Python限制
 --------------
 可读: 本app根目录，可以读取本app其他版本的目录
 
-可写: /saetmp/$app_hash/$app_name
+可写目录: sae.core.get_tmp_dir()
 
 
 代码加载机制
@@ -88,11 +90,10 @@ SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注
 
 如果有404错误，试试访问  http://$appname.sinaapp.com/debug 
 
-建议优先使用框架的debug功能。
-
-如果sae.debug = True, sae会打印所有未捕获的WSGI app异常。
+建议优先使用框架的debug功能。 未捕获的WSGI异常，将会被打印到浏览器上。
 
 注意：在header已经发出的情况下，异常处理可能不会工作。
+
 
 dev_server 本地开发
 --------------------
