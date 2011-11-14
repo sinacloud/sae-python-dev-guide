@@ -88,16 +88,11 @@ SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注
 
 如果有404错误，试试访问  http://$appname.sinaapp.com/debug 
 
-建议优先使用框架的debug功能。对于未捕获的WSGI app异常，如果sae.debug = True，
-则sae会对你的app进行封装，捕获所有的异常::
+建议优先使用框架的debug功能。
 
-    from werkzeug.debug import DebuggedApplication                                                                                     
-    def create_wsgi_app(app):
-        ...
-        return DebuggedApplication(app)
+如果sae.debug = True, sae会打印所有未捕获的WSGI app异常。
 
-该debugger会输出你的代码，使用需谨慎，正常情况下应关掉sae.debug。
-
+注意：在header已经发出的情况下，异常处理可能不会工作。
 
 dev_server 本地开发
 --------------------
