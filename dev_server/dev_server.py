@@ -8,8 +8,7 @@ Make sure you're use python 2.6 for developing
 import sys
 import os
 import imp
-from wsgiref.simple_server import make_server
-from werkzeug.wsgi import SharedDataMiddleware
+from werkzeug.serving import run_simple
 
 import sae.core
 
@@ -29,15 +28,21 @@ def main(app_root):
         print "application is not a callable"
         sys.exit(-1)
 
-    app = SharedDataMiddleware(index.application,
-            { '/static': os.path.join(app_root,  'static'),
+    statics = { '/static': os.path.join(app_root,  'static'),
               '/media': os.path.join(app_root,  'media'),
              '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
-             })
-    server = make_server("", 8080, app)
-    print "Start development server on http://localhost:8080/"
+             }
+
+    # FIXME: All files under current directory
+    files = []
+
     try:
-        server.serve_forever()
+        run_simple('localhost', 8080, index.application,
+                    use_reloader = True,
+                    use_debugger = True,
+                    extra_files = files,
+                    static_files = statics)
+
     except KeyboardInterrupt:
         print "OK"
 
