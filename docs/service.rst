@@ -129,3 +129,11 @@ Examle:
     m.html = '<b>darling, please, please forgive me...</b>'
     m.smtp = ('smtp.sina.com', 25, 'me@sina.com', 'password', False)
     m.send()
+
+
+使用Gmail SMTP::
+
+    import sae.mail
+
+    sae.mail.send_mail(to, subject, body,
+            ('smtp.gmail.com', 587, from, passwd, True))
