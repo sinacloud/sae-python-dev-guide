@@ -130,8 +130,8 @@ Examle:
     m.smtp = ('smtp.sina.com', 25, 'me@sina.com', 'password', False)
     m.send()
 
-
-使用Gmail SMTP::
+使用Gmail SMTP
+~~~~~~~~~~~~~~~
 
     import sae.mail
 
