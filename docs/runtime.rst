@@ -23,7 +23,7 @@ app不同的版本共享同一个进程，故cwd不带版本信息
     sinatpy2.x-(2011-6-8).zip
     Uliweb-0.0.1a7.zip
     SQLAlchemy-0.7.3.tar.gz
-
+    web.py-0.36.tar.gz
 
 命名规范
 ----------------
