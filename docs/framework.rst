@@ -210,3 +210,11 @@ Uliweb中内置了一个对sae支持的app，还在不断完善中，目前可�
     
 这样就配置好了。而相关的数据库表的创建维护因为sae不能使用命令行，所以要按sae的
 文档说明通过phpMyAdmin来导入。以后Uliweb会増加相应的维护页面来做这事。
+
+
+web.py
+---------
+
+index.wsgi
+
+.. literalinclude:: ../examples/webpy/1/index.wsgi
