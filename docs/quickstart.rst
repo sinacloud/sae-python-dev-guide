@@ -15,7 +15,7 @@ http://sae.sina.com.cn/?m=myapp&a=create
 
 以应用blackfire为例::
 
-    svn co https://svn.sinaapp.com/blackfire
+   jaime@westeros:~/source/apps$ svn co https://svn.sinaapp.com/blackfire
 
 创建index.wsgi
 ~~~~~~~~~~~~~~~~~
@@ -24,10 +24,10 @@ http://sae.sina.com.cn/?m=myapp&a=create
 
 ::
 
+   jaime@westeros:~/source/apps$ cd blackfire
    jaime@westeros:~/source/apps/blackfire$ mkdir 1
    jaime@westeros:~/source/apps/blackfire$ cd 1
    jaime@westeros:~/source/apps/blackfire/1$ touch index.wsgi
-   jaime@westeros:~/source/apps/blackfire/1$ 
 
 index.wsgi
 
@@ -38,17 +38,18 @@ index.wsgi
 
 ::
 
-    svn commit
+   jaime@westeros:~/source/apps/blackfire$ svn add 1/
+   jaime@westeros:~/source/apps/blackfire$ svn ci -m "initialize project"
 
 
 访问应用
 ~~~~~~~~~~~~~~
 
-http://blackfire.sinaapp.com
+在浏览器中输入 `http://blackfire.sinaapp.com` ，就可以访问刚提交的应用了。
 
 
 Notes:
 
 svn用户名为sae安全邮箱
 
-svn使用参考 http://sae.sina.com.cn/?m=devcenter&content_id=215&catId=212
+Windows用户svn使用可以参考 http://sae.sina.com.cn/?m=devcenter&content_id=215&catId=212
