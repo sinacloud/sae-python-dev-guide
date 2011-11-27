@@ -218,3 +218,8 @@ web.py
 index.wsgi
 
 .. literalinclude:: ../examples/webpy/1/index.wsgi
+
+带有模板支持的，完整示例代码
+
+https://github.com/SAEPython/saepythondevguide/tree/master/examples/webpy
+
