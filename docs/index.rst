@@ -6,8 +6,6 @@
 SAE Python 开发者手册
 =================================================
 
-最新版本: http://readthedocs.org/docs/sae-python/en/latest/
-
 Git: https://github.com/SAEPython/saepythondevguide
 包含文档，示例代码及本地测试server。
 
