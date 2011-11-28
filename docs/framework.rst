@@ -72,6 +72,22 @@ NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的�
 Django 数据库配置见 支持服务列表 MySQL 节。
 
 
+Django templates
+~~~~~~~~~~~~~~~~~~~
+
+如果你定义了自己的templates目录，admin应用的模板可能无法使用，需要将admin的系统模块添加到settings.py中::
+
+    TEMPLATE_DIRS = (
+        # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+        # Always use forward slashes, even on Windows.
+        # Don't forget to use absolute paths, not relative paths.
+    +   '/usr/local/sae/python/lib/python2.6/site-packages/django/contrib/admin/templates/admin',
+        os.path.join(PROJ_DIR, 'templates'),
+    )
+
+FIXME: admin模块和自定义模块关系
+
+
 Flask
 -------------
 

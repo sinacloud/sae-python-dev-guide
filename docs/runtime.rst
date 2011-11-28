@@ -4,8 +4,11 @@ SAE Python环境
 环境信息
 ----------
 
-当前目录: 不带版本信息的app根目录，如 /data1/www/htdocs/115/longtalk。
-app不同的版本共享同一个进程，故cwd不带版本信息
+* 当前目录
+  
+  该版本app代码所在目录，即index.wsgi 所在目录， 如 /data1/www/htdocs/115/longtalk/1。
+
+  推荐使用__file__属性，不要依靠当前目录的值
 
 
 预装模块列表

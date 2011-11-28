@@ -1,6 +1,8 @@
 可用服务列表
 =========================
 
+MySQL, TaskQueue, Memcache, KVDB 服务需开启才能使用，请在前端管理界面 `服务管理` 中开启并初始化。
+
 访问互联网
 -------------
 目前仅支持通过urllib2模块，urllib2.urlopen访问网络资源，其他如httplib,
@@ -12,6 +14,8 @@ MySQL
 
 连接信息
 ~~~~~~~~~~
+
+MySQL 连接超时时间为30s 。
 
 有两种方式获取mysql的连接信息，推荐使用sae.const中定义的常量::
 
@@ -53,6 +57,8 @@ MySQL数据库静态信息 ::
 
 应用的access_key, secret_key，可在应用管理界面的汇总信息中看到。
 
+不推荐直接使用这些KEY信息。
+
 http://sae.sina.com.cn/?m=devcenter&catId=192
 
 数据库导入
@@ -71,6 +77,13 @@ http://sae.sina.com.cn/?m=devcenter&catId=192
 http://pythondemo.sinaapp.com/admin/ root:root
 
 http://pythondemo.sinaapp.com/demo/
+
+字符集问题
+~~~~~~~~~~~
+在管理界面创建数据表，默认字符集为utf8，也可以设置为其他的编码。
+
+如果你是在本地开发环境建立的数据表，请确保使用utf8。在管理界面导入本地数据库的时候，
+也可以完成字符集的转换。
 
 
 TaskQueue
@@ -137,3 +150,24 @@ Examle:
 
     sae.mail.send_mail(to, subject, body,
             ('smtp.gmail.com', 587, from, passwd, True))
+
+Memcache(TBD)
+-----------
+
+SAE Python 使用 http://pypi.python.org/pypi/python-memcached/1.47 作为mc客户端。
+唯一不同之处在于，创建Client时不用指定servers。 请参阅 python-memcached 软件包内的
+memcache.html 手册。
+
+示例代码::
+
+    import sae.memcache
+
+    mc = sae.memcache.Client()
+ 
+    mc.set("foo", "bar")
+    value = mc.get("foo")
+ 
+    if not mc.get('key'):
+        mc.set("key", "1")   # note that the key used for incr/decr must be a string.
+    mc.incr("key")
+
