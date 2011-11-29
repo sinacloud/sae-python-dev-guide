@@ -70,9 +70,8 @@ Python限制
 
 代码加载机制
 --------------
-只有 index.wsgi 被修改，才会触发整个应用的source reloading。现在svn的 post commit hook
-并不会自动touch index.wsgi, 临时解决办法是每次提交都手动修改index.wsgi， 比如加减空行。
- 
+svn commit 会自动触发代码重新加载，不需再手动修改index.wsgi。
+
 
 如何调试
 ------------
