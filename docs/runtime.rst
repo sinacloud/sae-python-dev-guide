@@ -65,7 +65,7 @@ Python限制
 --------------
 可读: 本app根目录，可以读取本app其他版本的目录
 
-可写目录: sae.core.get_tmp_dir()
+可写目录: sae.core.get_tmp_dir(), 暂不可用
 
 
 代码加载机制
