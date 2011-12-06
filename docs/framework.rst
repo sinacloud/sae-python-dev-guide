@@ -6,9 +6,21 @@ Django
 
 NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的是这个版本。
 
-#. 建立一个新的Python应用mysite
-   
+#. 建立一个新的Python应用
+
+    假定app名字为pythondemo，在后续步骤中，你需针对你的app名字适当替换pythondemo。
+    
 #. 检出SVN代码到本地目录
+
+#. 建立版本目录
+
+    ::
+
+        jaime@westeros:~/source/chenfeng/pythondemo$ mkdir 1 
+  
+    关于版本信息，请参与 SAE Python环境 环境信息节。
+
+    后续各种框架，都需要建立版本目录，不赘述。
 
 #. 新建文件index.wsgi，内容如下
     
@@ -34,7 +46,7 @@ NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的�
 
 #. 提交代码
    
-   访问 `http://mysite.sinaapp.com` ，就可看到Django的欢迎页面了。
+   访问 `http://$yourappname.sinaapp.com` ，就可看到Django的欢迎页面了。
 
 #. Hello, Django!
 
@@ -67,7 +79,7 @@ NOTE: 目前SAE Python使用的版本是 *Django-1.2.7* , 请确保你安装的�
         )
 
 
-    提交代码，访问 `http://mysite.sinaapp.com/` 
+    提交代码，访问 `http://$yourappname.sinaapp.com/` 
 
 Django 数据库配置见 支持服务列表 MySQL 节。
 

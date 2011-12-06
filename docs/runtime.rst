@@ -6,9 +6,24 @@ SAE Python环境
 
 * 当前目录
   
-  该版本app代码所在目录，即index.wsgi 所在目录， 如 /data1/www/htdocs/115/longtalk/1。
+    该版本app代码所在目录，即index.wsgi 所在目录， 如 /data1/www/htdocs/115/longtalk/1。
 
-  推荐使用__file__属性，不要依靠当前目录的值
+    该目录已经在 sys.path 中。
+
+    推荐使用__file__属性，不要依靠os.getcwd()的值
+
+* 应用版本
+
+    你可同时运行多个版本的app，每个版本以数字为标识，如 `~/source/app/longtalk` 为app longtalk的根目录，下面有6个版本::
+
+        jaime@westeros:~/source/app/longtalk$ ls
+        1  2  3  4  5  6
+
+    应用代码必须放到版本目录里::
+
+        jaime@westeros:~/source/app/longtalk$ cd 1
+        jaime@westeros:~/source/app/longtalk/1$ ls
+        dispatcher.py  index.wsgi  myapp.py
 
 
 预装模块列表
