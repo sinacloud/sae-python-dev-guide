@@ -171,3 +171,7 @@ memcache.html 手册。
         mc.set("key", "1")   # note that the key used for incr/decr must be a string.
     mc.incr("key")
 
+Cron
+-----------
+请参阅标准SAE文档 http://sae.sina.com.cn/?m=devcenter&catId=195
+
