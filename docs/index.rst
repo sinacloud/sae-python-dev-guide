@@ -25,13 +25,11 @@ Contents:
     framework
     service
     auth
-    other
+    faq 
 
 
 意见反馈
 =============
-
-http://sae.sina.com.cn/?m=feedback
 
 SAE Python 小组 http://www.douban.com/group/373262/ 
 
