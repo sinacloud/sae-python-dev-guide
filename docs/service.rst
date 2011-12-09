@@ -1,7 +1,7 @@
 可用服务列表
 =========================
 
-MySQL, TaskQueue, Memcache, KVDB 服务需开启才能使用，请在前端管理界面 `服务管理` 中开启并初始化。
+注意：MySQL, TaskQueue, Memcache, KVDB 服务需开启才能使用，请在前端管理界面 `服务管理` 中开启并初始化。
 
 访问互联网
 -------------
@@ -151,25 +151,34 @@ Examle:
     sae.mail.send_mail(to, subject, body,
             ('smtp.gmail.com', 587, from, passwd, True))
 
-Memcache(TBD)
+Memcache
 -----------
+请在前端管理界面启用Memcache服务。
 
-SAE Python 使用 http://pypi.python.org/pypi/python-memcached/1.47 作为mc客户端。
-唯一不同之处在于，创建Client时不用指定servers。 请参阅 python-memcached 软件包内的
-memcache.html 手册。
+SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
+不同之处在于，创建Client时不用指定servers。 
 
 示例代码::
 
-    import sae.memcache
+    import pylibmc
 
-    mc = sae.memcache.Client()
+    mc = pylibmc.Client()
  
     mc.set("foo", "bar")
     value = mc.get("foo")
  
     if not mc.get('key'):
-        mc.set("key", "1")   # note that the key used for incr/decr must be a string.
+        mc.set("key", "1")
     mc.incr("key")
+
+文档参考:
+
+http://sendapatch.se/projects/pylibmc/
+
+详细用法和 python-memcached 基本一样，可参考下面安装包中的 memcache.html 文件
+
+http://ftp.tummy.com/pub/python-memcached/old-releases/python-memcached-1.48.tar.gz
+
 
 Cron
 -----------
