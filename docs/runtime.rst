@@ -42,6 +42,11 @@ SAE Python环境
     Uliweb-0.0.1a7.zip
     SQLAlchemy-0.7.3.tar.gz
     web.py-0.36.tar.gz
+    setuptools-0.6c11/pkg_resources.py
+    pylibmc-1.2.2.tar.gz
+    Flask-WTF-0.5.2.tar.gz
+    WTForms-0.6.3.zip
+
 
 命名规范
 ----------------
