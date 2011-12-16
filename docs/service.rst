@@ -74,6 +74,25 @@ http://sae.sina.com.cn/?m=devcenter&catId=192
 #. 进入SAE后台应用管理>服务管理>MySQL页面，初始化MySQL。
 #.  进入管理MySQL页面，选择导入，导入刚才导出的sql文件即可。
 
+
+导入时如果出现下面的错误::
+
+    Error 
+    SQL query: 
+
+    -- 
+    -- Dumping data for table `***` 
+    -- 
+    LOCK TABLES `***` WRITE ; 
+
+
+    MySQL said: 
+
+    #1044 - Access denied for user '****'@'10.67.15.%' to database 'app_***'
+
+请把要导入的sql文件中，所有LOCK, UNLOCK语句全部删除并重试。
+
+
 http://pythondemo.sinaapp.com/admin/ root:root
 
 http://pythondemo.sinaapp.com/demo/
