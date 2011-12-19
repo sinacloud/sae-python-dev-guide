@@ -46,6 +46,7 @@ SAE Python环境
     pylibmc-1.2.2.tar.gz
     Flask-WTF-0.5.2.tar.gz
     WTForms-0.6.3.zip
+    Imaging-1.1.7.tar.gz
 
 
 命名规范
