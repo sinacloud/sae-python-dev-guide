@@ -90,3 +90,5 @@ http://www.douban.com/group/topic/23673391/
 mysql中创建表的问题 
 http://www.douban.com/group/topic/23689631/ 
 
+flask-sqlalchemy 如何在每次请求时重新连接数据库
+http://www.douban.com/group/topic/24103570/
