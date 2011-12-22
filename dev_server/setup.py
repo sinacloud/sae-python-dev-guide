@@ -8,7 +8,8 @@ setup(
     author_email = "chenzheng2@staff.sina.com.cn",
     description = ("SAE Python development server"),
     install_requires = [
-        'Werkzeug', 
+        'Werkzeug',
+        'pip',
         #'Django==1.2.7',
         #'bottle==0.9.6',
         #'tornado==2.1.1',
