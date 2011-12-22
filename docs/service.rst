@@ -216,25 +216,25 @@ API操作：   ::
 
     # PUT object至某个domain下面，put操作返回object的public url。
     ob = sae.storage.Object('pieces of data')
-    s.put('domain-name', 'key-name', ob)
+    s.put('domain-name', 'object-name', ob)
 
     # 设置object的属性
     ob = sae.storage.Object('pieces of data',   \
         expires='max-age: 30d', ype='text/html', encoding: 'utf8')
-    s.put('domain-name', 'key-name', ob)
+    s.put('domain-name', 'object-name', ob)
 
     # GET某个domain下的object
-    ob = s.get('domain-name', 'key-name')
+    ob = s.get('domain-name', 'object-name')
     data = ob.data
 
     # 获取object的属性信息
-    ob = s.stat('domain-name', 'key-name')
+    ob = s.stat('domain-name', 'object-name')
 
     # 获取object的public url 
-    url = s.url('domain-name', 'key-name')
+    url = s.url('domain-name', 'object-name')
 
     # DELETE一个object
-    s.delete('domain-name', 'key-name')
+    s.delete('domain-name', 'object-name')
 
     # LIST一个domain下所有的object 
     s.list('domain-name')
