@@ -182,3 +182,231 @@ MySQL
 
 如果你使用的是sae.const常量，则可自行修改。
 
+
+使用virtualenv管理依赖关系(未完成)
+-------------------------------------------
+
+virtualenv 可以有效解决在同一个python版本下面运行多个第三方包版本冲突的问题，
+官方文档:
+
+http://pypi.python.org/pypi/virtualenv
+
+
+下面介绍一个典型的流程，适用于依赖较多第三方包的情况
+
+安装virtualenv
+~~~~~~~~~~~~~~~~~
+
+::
+    
+    pip install virtualenv
+
+
+创建目录
+~~~~~~~~~~~~~~~
+
+创建应用根目录::
+
+    jaime@westeros:~/source/app$ mkdir memorystone
+    jaime@westeros:~/source/app$ cd memorystone/
+    jaime@westeros:~/source/app/memorystone$ ls
+
+创建虚拟环境目录::
+
+    jaime@westeros:~/source/app/memorystone$ virtualenv memorystone
+    New python executable in memorystone/bin/python
+    Installing setuptools............done.
+    Installing pip...............done.
+    jaime@westeros:~/source/app/memorystone$ ls
+    memorystone
+    jaime@westeros:~/source/app/memorystone$ ls memorystone/
+    bin  include  lib  local
+
+启动虚拟环境::
+
+
+    jaime@westeros:~/source/app/memorystone$ source memorystone/bin/activate
+    (memorystone)jaime@westeros:~/source/app/memorystone$ ls
+    memorystone
+
+在提示符里可看到虚拟环境的名字, 是bin/activate的上层目录。
+
+
+建立应用版本目录和index.wsgi::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone$ mkdir 1
+    (memorystone)jaime@westeros:~/source/app/memorystone$ cd 1
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ touch index.wsgi
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls
+    index.wsgi
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ 
+
+OK, 现在你可以开始编码了。
+
+
+安装依赖关系
+~~~~~~~~~~~~~~~~~~~
+
+你已经在虚拟环境中，可以像往常一样使用pip。
+
+安装Flask，SAE环境Flask版本为0.7.2，为保持一致，可使用::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip install flask==0.7.2
+    Downloading/unpacking flask==0.7.2
+      Downloading Flask-0.7.2.tar.gz (469Kb): 469Kb downloaded
+      Running setup.py egg_info for package flask
+    ....
+
+实际安装位置在::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone$ ls memorystone/lib/python2.7/site-packages/
+    easy-install.pth            jinja2                     setuptools-0.6c11-py2.7.egg  Werkzeug-0.8.2-py2.7.egg-info
+    flask                       Jinja2-2.6-py2.7.egg-info  setuptools.pth
+    Flask-0.7.2-py2.7.egg-info  pip-1.0.2-py2.7.egg        werkzeug
+
+    
+以及其他packages::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip install Flask Flask-Cache Flask-SQLAlchemy Flask-Principal Flask-WTF Flask-Mail Flask-Script Flask-Babel Flask-Themes markdown blinker
+    Requirement already satisfied (use --upgrade to upgrade): Flask in /home/chenz/source/app/memorystone/memorystone/lib/python2.7/site-packages
+    Downloading/unpacking Flask-Cache
+   ...
+
+
+看看装了些什么::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip freeze
+    Babel==0.9.6
+    Flask==0.7.2
+    Flask-Babel==0.8
+    Flask-Cache==0.4.0
+    Flask-Mail==0.6.1
+    Flask-Principal==0.2
+    Flask-SQLAlchemy==0.15
+    Flask-Script==0.3.1
+    Flask-Themes==0.1.3
+    Flask-WTF==0.5.2
+    Jinja2==2.6
+    Markdown==2.1.0
+    SQLAlchemy==0.7.4
+    WTForms==0.6.3
+    Werkzeug==0.8.2
+    argparse==1.2.1
+    blinker==1.2
+    chardet==1.0.1
+    lamson==1.1
+    lockfile==0.9.1
+    mock==0.7.2
+    nose==1.1.2
+    python-daemon==1.6
+    pytz==2011n
+    speaklater==1.2
+    wsgiref==0.1.2
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls ../memorystone/lib/python2.7/site-packages/
+    argparse-1.2.1-py2.7.egg-info      Flask_Principal-0.2-py2.7.egg-info     mock.pyc
+    argparse.py                        Flask_Principal-0.2-py2.7-nspkg.pth    nose
+    argparse.pyc                       Flask_Script-0.3.1-py2.7.egg-info      nose-1.1.2-py2.7.egg-info
+    babel                              Flask_Script-0.3.1-py2.7-nspkg.pth     pip-1.0.2-py2.7.egg
+    Babel-0.9.6-py2.7.egg-info         Flask_SQLAlchemy-0.15-py2.7.egg-info   python_daemon-1.6-py2.7.egg-info
+    blinker                            Flask_SQLAlchemy-0.15-py2.7-nspkg.pth  pytz
+    blinker-1.2-py2.7.egg-info         Flask_Themes-0.1.3-py2.7.egg-info      pytz-2011n-py2.7.egg-info
+    ....
+
+导出依赖关系到代码目录
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip freeze > requirements.txt
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip freeze > requirements.sae.txt
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ vi requirements.sae.txt 
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ diff requirements.txt requirements.sae.txt 
+    2d1
+    < Flask==0.7.2
+    11d9
+    < Jinja2==2.6
+    13,15d10
+    < SQLAlchemy==0.7.4
+    < WTForms==0.6.3
+    < Werkzeug==0.8.2
+    26d20
+    < wsgiref==0.1.2
+
+flask, jinja2, wtforms等SAE已内置，所以不需要再上传，故从requirements.sae.txt中去除。
+
+
+使用dev_server/bundle_local.py工具，将所有requirements.sae.txt中列出的包，根据其top_levels.txt信息，导出到本地目录::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls
+    index.wsgi  requirements.local.txt  requirements.sae.txt  requirements.txt
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ~/source/saepythondevguide/dev_server/bundle_local.py -r requirements.sae.txt 
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls 
+    index.wsgi  requirements.local.txt  requirements.sae.txt  requirements.txt  virtualenv.bundle
+
+多出了一个 virtualenv.bundle 目录，所有的包都在这里了::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls virtualenv.bundle/
+    argparse.py  blinker  daemon    lamson    markdown  nose  requirements.txt
+    babel        chardet  flaskext  lockfile  mock.py   pytz  speaklater.py
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ cat requirements.sae.txt 
+    Babel==0.9.6
+    Flask-Babel==0.8
+    Flask-Cache==0.4.0
+    Flask-Mail==0.6.1
+    Flask-Principal==0.2
+    Flask-SQLAlchemy==0.15
+    Flask-Script==0.3.1
+    Flask-Themes==0.1.3
+    Flask-WTF==0.5.2
+    Markdown==2.1.0
+    argparse==1.2.1
+    blinker==1.2
+    chardet==1.0.1
+    lamson==1.1
+    lockfile==0.9.1
+    mock==0.7.2
+    nose==1.1.2
+    python-daemon==1.6
+    pytz==2011n
+    speaklater==1.2
+
+上传到SAE
+~~~~~~~~~~~~~~~
+
+你可以把virtualenv.bundle目录直接添加到svn。
+
+如果文件太多，推荐压缩后再添加上传::
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ cd virtualenv.bundle/
+    (memorystone)jaime@westeros:~/source/app/memorystone/1/virtualenv.bundle$ zip -r ../virtualenv.bundle.zip .
+      adding: lamson/ (stored 0%)
+      adding: lamson/queue.py (deflated 64%)
+      adding: lamson/utils.py (deflated 61%)
+      adding: lamson/server.py (deflated 66%)
+      ....  
+
+    (memorystone)jaime@westeros:~/source/app/memorystone/1/virtualenv.bundle$ cd ../
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$ ls
+    index.wsgi              requirements.sae.txt  virtualenv.bundle
+    requirements.local.txt  requirements.txt      virtualenv.bundle.zip
+    (memorystone)jaime@westeros:~/source/app/memorystone/1$
+
+注意: 
+
+- 有些包可能是not-zip-safe的，可能不工作，有待验证。
+
+- 含有c扩展的package不能工作
+
+
+不管是目录，还是zip，都需要在index.wsgi的最前面，导入任何模块之前，添加到sys.path中才起作用::
+
+    import os
+    import sys
+
+    app_root = os.path.dirname(__file__)
+
+    # 两者取其一
+    sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle'))
+    sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle.zip'))
+
