@@ -198,6 +198,46 @@ http://sendapatch.se/projects/pylibmc/
 
 http://ftp.tummy.com/pub/python-memcached/old-releases/python-memcached-1.48.tar.gz
 
+Storage
+----------
+
+Storage是SAE为开发者提供的分布式文件存储服务，用来存放用户的持久化存储的文件。
+用户需要先在在线管理平台创建Domain，每一个domain下面包含了你上传的数据。 
+
+API操作：   ::
+
+    import sae.storage
+
+    # 初始化一个Storage客户端。
+    s = sae.storage.Client()
+
+    # LIST所有的domain 
+    s.list_domain()
+
+    # PUT object至某个domain下面，put操作返回object的public url。
+    ob = sae.storage.Object('pieces of data')
+    s.put('domain-name', 'key-name', ob)
+
+    # 设置object的属性
+    ob = sae.storage.Object('pieces of data',   \
+        expires='max-age: 30d', ype='text/html', encoding: 'utf8')
+    s.put('domain-name', 'key-name', ob)
+
+    # GET某个domain下的object
+    ob = s.get('domain-name', 'key-name')
+    data = ob.data
+
+    # 获取object的属性信息
+    ob = s.stat('domain-name', 'key-name')
+
+    # 获取object的public url 
+    url = s.url('domain-name', 'key-name')
+
+    # DELETE一个object
+    s.delete('domain-name', 'key-name')
+
+    # LIST一个domain下所有的object 
+    s.list('domain-name')
 
 Cron
 -----------
