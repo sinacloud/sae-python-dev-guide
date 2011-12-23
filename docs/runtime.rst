@@ -123,6 +123,17 @@ dev_server 本地开发
 
 注意：本工具仅为应用开发便利之用，与真实的sae环境相差较大。
 
+dev_server地址  https://github.com/SAEPython/saepythondevguide
+
+下载
+~~~~~~~
+使用git clone ::
+
+    git clone http://github.com/SAEPython/saepythondevguide.git
+
+或打包下载: https://github.com/SAEPython/saepythondevguide/zipball/master
+
+
 Install
 ~~~~~~~~~~~~
 ::
@@ -131,7 +142,7 @@ Install
     sudo python setup.py install
 
 由于预装模块太多，全部安装太过耗时，故所有依赖关系已在 setup.py 中注掉，
-请自行打开你要使用的框架，进行安装。
+请自行使用pip安装你要使用的框架，注意版本号应于SAE内置的相同。
 
 
 运行
@@ -191,8 +202,7 @@ virtualenv 可以有效解决在同一个python版本下面运行多个第三方
 
 http://pypi.python.org/pypi/virtualenv
 
-
-下面介绍一个典型的流程，适用于依赖较多第三方包的情况
+当你的应用依赖多个第三方包时，可参考下面的流程。
 
 安装virtualenv
 ~~~~~~~~~~~~~~~~~
@@ -229,7 +239,7 @@ http://pypi.python.org/pypi/virtualenv
     (memorystone)jaime@westeros:~/source/app/memorystone$ ls
     memorystone
 
-在提示符里可看到虚拟环境的名字, 是bin/activate的上层目录。
+在提示符里可看到虚拟环境的名字, 实际上是bin/activate上层目录的名字。
 
 
 建立应用版本目录和index.wsgi::
@@ -242,13 +252,12 @@ http://pypi.python.org/pypi/virtualenv
     index.wsgi
     (memorystone)jaime@westeros:~/source/app/memorystone/1$ 
 
-OK, 现在你可以开始编码了。
-
+OK, 编码开始。
 
 安装依赖关系
 ~~~~~~~~~~~~~~~~~~~
 
-你已经在虚拟环境中，可以像往常一样使用pip。
+在虚拟环境中，可以像往常一样使用pip。
 
 安装Flask，SAE环境Flask版本为0.7.2，为保持一致，可使用::
 
@@ -266,7 +275,7 @@ OK, 现在你可以开始编码了。
     Flask-0.7.2-py2.7.egg-info  pip-1.0.2-py2.7.egg        werkzeug
 
     
-以及其他packages::
+安装其他packages::
 
     (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip install Flask Flask-Cache Flask-SQLAlchemy Flask-Principal Flask-WTF Flask-Mail Flask-Script Flask-Babel Flask-Themes markdown blinker
     Requirement already satisfied (use --upgrade to upgrade): Flask in /home/chenz/source/app/memorystone/memorystone/lib/python2.7/site-packages
@@ -316,7 +325,10 @@ OK, 现在你可以开始编码了。
 
 导出依赖关系到代码目录
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-::
+
+写完代码后，可使用dev_server进行调试。如何使用dev_server，请参阅上节。
+
+如果没什么问题，可使用pip导出依赖关系::
 
     (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip freeze > requirements.txt
     (memorystone)jaime@westeros:~/source/app/memorystone/1$ pip freeze > requirements.sae.txt
@@ -334,7 +346,6 @@ OK, 现在你可以开始编码了。
     < wsgiref==0.1.2
 
 flask, jinja2, wtforms等SAE已内置，所以不需要再上传，故从requirements.sae.txt中去除。
-
 
 使用dev_server/bundle_local.py工具，将所有requirements.sae.txt中列出的包，根据其top_levels.txt信息，导出到本地目录::
 
@@ -394,7 +405,7 @@ flask, jinja2, wtforms等SAE已内置，所以不需要再上传，故从require
 
 注意: 
 
-- 有些包可能是not-zip-safe的，可能不工作，有待验证。
+- 有些包是not-zip-safe的，可能不工作，有待验证。
 
 - 含有c扩展的package不能工作
 
