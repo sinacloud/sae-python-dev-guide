@@ -219,8 +219,11 @@ API操作：   ::
     s.put('domain-name', 'object-name', ob)
 
     # 设置object的属性
+    # expires: 设置object的header中的Cache-Control字段。
+    # type: 设置object的header中的Content-Type字段。
+    # encoding: 设置object的header中的Content-Encoding字段。
     ob = sae.storage.Object('pieces of data',   \
-        expires='max-age: 30d', ype='text/html', encoding: 'utf8')
+        expires='A3600', type='text/html', encoding: 'gzip')
     s.put('domain-name', 'object-name', ob)
 
     # GET某个domain下的object
