@@ -222,7 +222,7 @@ API操作：   ::
     s.put('domain-name', 'object-name', ob)
 
     # 设置object的属性
-    # cache_control: 设置object header中的Cache-Control字段。
+    # expires: 设置object的浏览器缓存超时，功能格式与Apache的Expires配置相同
     # content_type: 设置object header中的Content-Type字段。（注：此处的type和storage
     #   后台面板类型一栏的值没有任何关系）。
     # content_encoding: 设置object header中的Content-Encoding字段。
