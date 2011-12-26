@@ -227,7 +227,7 @@ API操作：   ::
     #   后台面板类型一栏的值没有任何关系）。
     # content_encoding: 设置object header中的Content-Encoding字段。
     ob = sae.storage.Object('pieces of data',   \
-      cache_control='A3600', content_type='text/html', content_encoding='gzip')
+      expires='A3600', content_type='text/html', content_encoding='gzip')
     s.put('domain-name', 'object-name', ob)
 
     # GET某个domain下的object
