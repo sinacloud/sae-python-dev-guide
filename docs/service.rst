@@ -204,6 +204,9 @@ Storage
 Storage是SAE为开发者提供的分布式文件存储服务，用来存放用户的持久化存储的文件。
 用户需要先在在线管理平台创建Domain，每一个domain下面包含了你上传的数据。 
 
+详细说明
+http://sae.sina.com.cn/?m=devcenter&catId=204
+
 API操作：   ::
 
     import sae.storage
