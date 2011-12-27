@@ -246,6 +246,10 @@ API操作：   ::
     # LIST一个domain下所有的object 
     s.list('domain-name')
 
+Apache的Expires格式可以参见：
+
+http://httpd.apache.org/docs/2.0/mod/mod_expires.html
+
 Cron
 -----------
 请参阅标准SAE文档 http://sae.sina.com.cn/?m=devcenter&catId=195
