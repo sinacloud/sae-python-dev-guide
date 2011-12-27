@@ -9,5 +9,5 @@ mkdir $r
 cp -rf _build/html/* $r
 find $r -type d -name ".svn"|xargs rm -rf
 
-cp -rf $r/* ~/Workspace/appstack/1/static/doc/release/testing/
+cp -rf $r/* $1/
 
