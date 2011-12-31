@@ -254,3 +254,6 @@ Cron
 -----------
 请参阅标准SAE文档 http://sae.sina.com.cn/?m=devcenter&catId=195
 
+目前cron worker默认使用POST方法请求你要定时执行的URL，所以请确保你的handler
+接受POST方法，否则将无法使用。
+
