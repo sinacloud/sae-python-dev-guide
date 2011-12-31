@@ -34,7 +34,7 @@ def main(app_root):
              }
 
     # FIXME: All files under current directory
-    files = []
+    files = ['index.wsgi']
 
     try:
         run_simple('localhost', 8080, index.application,
