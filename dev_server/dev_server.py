@@ -9,10 +9,11 @@ import sys
 import os
 import imp
 from werkzeug.serving import run_simple
+from optparse import OptionParser
 
 import sae.core
 
-def main(app_root):
+def main(app_root, options):
 
     try:
         index = imp.load_source('index', 'index.wsgi')
@@ -37,7 +38,7 @@ def main(app_root):
     files = ['index.wsgi']
 
     try:
-        run_simple('localhost', 8080, index.application,
+        run_simple('localhost', options.port, index.application,
                     use_reloader = True,
                     use_debugger = True,
                     extra_files = files,
@@ -47,6 +48,11 @@ def main(app_root):
         print "OK"
 
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-p", "--port", type="int", dest="port", default="8080",
+                      help="Which port to listen")
+    (options, args) = parser.parse_args()
+
     cwd = os.getcwd()
     if cwd not in sys.path:
         sys.path.insert(0, cwd)
@@ -57,4 +63,4 @@ if __name__ == '__main__':
     except:
         print 'MySQL config not found: app.py'
 
-    main(cwd)
+    main(cwd, options)
