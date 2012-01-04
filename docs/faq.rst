@@ -51,11 +51,17 @@ http://docs.python.org/release/2.6.7/modindex.html
 安全邮箱，邀请码仍是有效的。请注册帐户，修改安全邮箱，等待5分钟左右再试。 
 
 
+没有邀请码？试试等待队列
+------------------------------
+http://appstack.sinaapp.com/queue
+
+
 没有我要使用的包，怎么办？ 
 ------------------------------------------ 
-Don't panic! 
+Don't panic.
 
-http://weizi888.sinaapp.com/2011/11/26/%E7%A7%BB%E6%A4%8Dpypress%E5%88%B0sae%E6%89%8B%E5%86%8C%E4%B9%8B%E4%B8%80/
+使用virtualenv管理依赖关系
+http://appstack.sinaapp.com/static/doc/release/testing/runtime.html#virtualenv
 
 
 关于svn的问题 
@@ -92,3 +98,9 @@ http://www.douban.com/group/topic/23689631/
 
 flask-sqlalchemy 如何在每次请求时重新连接数据库
 http://www.douban.com/group/topic/24103570/
+
+
+怎么寻求帮助
+-------------------------
+
+http://www.douban.com/group/topic/26638508/

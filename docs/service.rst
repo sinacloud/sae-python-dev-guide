@@ -105,12 +105,23 @@ http://pythondemo.sinaapp.com/demo/
 也可完成字符集的转换。
 
 
-TaskQueue
+TaskQueue, Cron
 ---------------
-TaskQueue is a distributed task queue service provided by SAE for developers as
-a simple way to execute asynchronous user tasks.
 
-http://sae.sina.com.cn/?m=devcenter&catId=205
+什么是任务
+~~~~~~~~~~~~~
+出于安全性考虑，SAE不支持执行一段任意的代码程序。SAE的cron，和unix的cron意义不同，没有相关联的程序。
+
+SAE的任务，实际上对应于一个URL地址。SAE worker节点每请求一次该URL，就算执行一次任务。
+真正的任务处理代码，是app中处理该URL的handler。
+
+任务执行有两种方式: Taskqueue 动态执行任务, Cron 定时执行任务
+
+任务成功时返回200 OK，失败时返回相应HTTP错误码。 错误信息是否被保存，有待确认。
+
+Taskqueue
+~~~~~~~~~~~~~~
+参数说明: TODO
 
 Example:
 
@@ -134,6 +145,55 @@ Example:
 
     from sae.taskqueue import add_task
     add_task('queue_name', 'http://blahblah/blah', 'postdata')
+
+Cron
+~~~~~~~~~~~~~~~~
+示例: TODO
+
+认证和CRSF
+~~~~~~~~~~~
+请确保任务URL访问时不需要登录或认证。
+
+开启CRSF在POST时，可能会导致问题。请关闭框架的CRSF功能。涉及框架有Flask, Django等。
+
+POST or GET?
+~~~~~~~~~~~~~~~~~~
+
+Cron URL使用POST方式请求。
+
+TaskQueue URL默认使用GET方式请求，如果带有postdata则使用POST方式请求。
+
+如何保护任务URL
+~~~~~~~~~~~~~~~~~~
+为保护cron，taskqueue对应的url，可在app.yaml配置允许访问的IP地址。
+
+SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
+
+    - hostaccess: if(path ~ "/backends/") allow "10.0.0.0/8"
+    - hostaccess: if(path ~ "/backends/taskqueue") allow "10.0.0.0/8"
+    - hostaccess: if(path ~ "/backends/cron") allow "10.0.0.0/8"
+
+请确保SAE内部节点在白名单内，否则将无法正常执行。
+
+建议将所有taskqueue，cron的url都挂载到/backend/下面::
+
+   /backend/
+   /backend/taskqueue/
+   /backend/cron
+
+这样在app.yaml中只需一行配置::
+
+    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
+
+
+原有的PHP文档，仅供参考:
+
+Taskqueue http://sae.sina.com.cn/?m=devcenter&catId=205
+
+Cron http://sae.sina.com.cn/?m=devcenter&catId=195
+
+AppConfig http://sae.sina.com.cn/?m=devcenter&catId=193 
+
 
 Mail
 -----------
@@ -250,10 +310,4 @@ Apache的Expires格式可以参见：
 
 http://httpd.apache.org/docs/2.0/mod/mod_expires.html
 
-Cron
------------
-请参阅标准SAE文档 http://sae.sina.com.cn/?m=devcenter&catId=195
-
-目前cron worker默认使用POST方法请求你要定时执行的URL，所以请确保你的handler
-接受POST方法，否则将无法使用。
 
