@@ -117,38 +117,146 @@ SAE的任务，实际上对应于一个URL地址。SAE worker节点每请求一�
 
 任务执行有两种方式: Taskqueue 动态执行任务, Cron 定时执行任务
 
-任务成功时返回200 OK，失败时返回相应HTTP错误码。 错误信息是否被保存，有待确认。
+任务的执行情况可以在日志中心>TaskQueue栏中查询。
 
 Taskqueue
 ~~~~~~~~~~~~~~
-参数说明: TODO
+
+.. py:function:: add_task(queue_name, url, payload=None) 
+   :module: sae.taskqueue
+
+   快速添加任务    
+
+   queue_name: 任务队列的名称
+
+   url: 任务的url，如： /tasks/task_name
+
+   payload: 可选，如果payload存在且不为None，则该任务为一POST任务，payload会作为请求
+   的POST的数据。
+
+
+.. py:class:: Task(url, payload=None, **kwargs)
+
+   Task类
+     
+   url: 任务的url，如： /tasks/task_name
+
+   payload: 可选, 如果payload存在且不为None，则该任务为一POST任务，payload会作为请求
+   的POST的数据。
+
+   delay: 可选，设置任务延迟执行的时间，单位为秒，最大可以为600秒。
+
+   prior: 可选，如果设置为True，则任务会被添加到任务队列的头部。
+ 
+.. py:class:: TaskQueue(name, auth_token=None)
+   :module: sae.taskqueue
+
+   TaskQueue类
+
+   name: 任务队列的名称。
+
+   auth_token: 可选, 一个包含两个元素的元组 (access_key, secretkey_key)。
+    
+   .. py:method:: add(task)
+
+      添加一个任务
+          
+      task: 添加的任务，可以为单个Task任务，也可以是一个Task列表。
+
+   .. py:method:: size()
+
+      获取当前队列中还有多少未执行的任务。
+
 
 Example:
 
-1. Add a GET task::
+1. 添加一个任务。   ::
     
     from sae.taskqueue import Task, TaskQueue
 
     queue = TaskQueue('queue_name')
-    queue.add(Task("http://blahblah/blah"))
+    queue.add(Task("/tasks/cd"))
 
-2. Add a POST task::
+2. 添加一个POST任务。   ::
 
-    queue.add(Task("http://blahblah/blah", "postdata"))
+    queue.add(Task("/tasks/strip", "clothes"))
 
-3. Add a bundle of tasks::
+3. 批量添加任务。   ::
 
-    tasks = [Task("http://blahblah/blah", d) for d in datas]
+    tasks = [Task("/tasks/touch", w) for w in body]
     queue.add(tasks)
 
-4. A simple way to add task::
+4. 快速添加任务。   ::
 
     from sae.taskqueue import add_task
-    add_task('queue_name', 'http://blahblah/blah', 'postdata')
+    add_task('queue_name', '/tasks/fsck', 'everywhere')
+
+..  note:: 
+
+    任务的url现在已经改为相对的url，目前兼容绝对url，但是不推荐使用。 
+    任务默认使用GET方式请求，如果Task带有payload参数且不为None则使用POST方式请求。
 
 Cron
 ~~~~~~~~~~~~~~~~
-示例: TODO
+
++   添加Cron:
+
+    编辑config.yaml文件中，增加cron段，例如：   ::
+
+        name: crontest
+        version: 1
+        cron:
+          - description: cron_test
+            url: /cron/make
+            schedule: */5 * * * *
+
+    上面的示例添加了一个cron任务，
+    该任务每5分钟执行`http://crontest.sinaapp.com/cron/make`一次。
+
++   删除cron:
+
+    删除config.yaml中对应的cron描述段即可就行。
+
++   语法字段含义
+
+    ..  attribute:: url
+
+        cron任务的url。例如 `/relative/url/to/cron` 。
+     
+    ..  attribute:: schedule
+
+        任务描述，也就是何时执行这个cron，支持unix crontab语法。例如：  ::
+
+               # 每天00：05分执行
+               5 0 * * *
+               # 每月1号的14：15分执行
+               15 14 1 * *
+               # 每个工作日的晚上10点执行
+               0 22 * * 1-5
+               # 没分钟执行一次
+               \*/1 * * * *
+
+        具体的语法规则可以参考man手册，`man 5 crontab`。
+        
+    ..  attribute:: description
+
+        可选。任务的说明，默认为空。
+     
+    ..  attribute:: timezone
+
+        可选。默认为Beijing，目前支持：Beijing, NewYork, London, Sydney, Moscow, Berlin
+     
+    ..  attribute:: login
+
+        可选。http basic auth设置，格式： `用户名@密码`
+     
+    ..  attribute:: times
+
+        可选。设置cron最大执行的次数，默认没有次数限制。
+
+..  warning::
+
+    Cron使用POST方式请求URL。
 
 认证和CRSF
 ~~~~~~~~~~~
@@ -159,9 +267,7 @@ Cron
 POST or GET?
 ~~~~~~~~~~~~~~~~~~
 
-Cron URL使用POST方式请求。
 
-TaskQueue URL默认使用GET方式请求，如果带有postdata则使用POST方式请求。
 
 如何保护任务URL
 ~~~~~~~~~~~~~~~~~~
@@ -198,37 +304,71 @@ AppConfig http://sae.sina.com.cn/?m=devcenter&catId=193
 Mail
 -----------
 
-Provides functions for application developers to deliver mail messages 
-for their applications. Currently we only support send mail through SMTP 
-asynchronously.
+..  py:class:: EmailMessage(**kwargs)
+    :module: sae.mail
+
+    EmailMessage类
+
+    参数同下面的initialize
+
+    ..  py:method:: initialize(\**kwargs)
+
+        初始化邮件的内容。
+
+        to: 收件人列表，多个收件人之间用逗号隔开。
+
+        subject: 邮件的标题。
+
+        body/html: 邮件正文。如果内容为纯文本，使用body，如果是html则使用html。
+
+        smtp: smtp服务器的信息。是一个包含5个元素的tuple。
+        (smtp主机，smtp端口， 用户名，密码，是否启用TLS）。
+
+        attachments: 可选。邮件的附件，必须为一个list，list里每个元素为一个
+        tuple，tuple的第一个元素为文件名，第二个元素为文件的内容。
+
+    ..  py:method:: send
+
+        提交邮件发送请求至后端服务器。
+
+    ..  py:method:: __setattr__(attr, value)
+
+        attr: 属性名。 value: 属性的值。
+
+..  py:function:: send_mail(to, subject, body, smtp, **kwargs)
+    :module: sae.mail
+
+    快速发送邮件。
+
+    字段的意义同EmailMessage.initialize()。
+    
 
 Examle:
 
-1. Send a simple plain-text message::
+1.  快速发送一份邮件 ::
 
-    from sae.mail import send_mail
+        from sae.mail import send_mail
 
-    send_mail('recipient@sina.com', 'subject', 'plain text',
-              ('smtp.sina.com', 25, 'me@sina.com', 'password', False))
+        send_mail("katherine@vampire.com", "invite", "to tonight's party"
+                  ("smtp.vampire.com", 25, "damon@vampire.com", "password", False))
 
-2. Send a HTML-format message::
+2.  发送一封html格式的邮件 ::
 
-    from sae.mail import EmailMessage
+        from sae.mail import EmailMessage
 
-    m = EmailMessage()
-    m.to = 'recipient@sina.com'
-    m.subject = 'unforgivable sinner'
-    m.html = '<b>darling, please, please forgive me...</b>'
-    m.smtp = ('smtp.sina.com', 25, 'me@sina.com', 'password', False)
-    m.send()
+        m = EmailMessage()
+        m.to = 'damon@vampire.com'
+        m.subject = 'Re: inivte'
+        m.html = '<b>my pleause!</b>'
+        m.smtp = ('smtp.vampire.com', 25, 'katherine@vampire.com', 'password', False)
+        m.send()
 
-使用Gmail SMTP
-~~~~~~~~~~~~~~~
+3.  使用Gmail SMTP  ::
 
-    import sae.mail
+        import sae.mail
 
-    sae.mail.send_mail(to, subject, body,
-            ('smtp.gmail.com', 587, from, passwd, True))
+        sae.mail.send_mail(to, subject, body,
+                ('smtp.gmail.com', 587, from, passwd, True))
 
 Memcache
 -----------
@@ -262,12 +402,57 @@ Storage
 ----------
 
 Storage是SAE为开发者提供的分布式文件存储服务，用来存放用户的持久化存储的文件。
+
 用户需要先在在线管理平台创建Domain，每一个domain下面包含了你上传的数据。 
 
-详细说明
-http://sae.sina.com.cn/?m=devcenter&catId=204
+..  py:class:: Object(data, **kwargs)
+    :module: sae.storage
 
-API操作：   ::
+    Object类
+
+    data: Object的内容。
+
+    expires: 设置Object在浏览器客户端的过期时间，格式同Apache的Expires格式：
+    http://httpd.apache.org/docs/2.0/mod/mod_expires.html
+
+    content_type: 设置Object的Conent-Type Header。
+
+    content_encoding: 设置Object的Cotent-Encoding Header。
+
+..  py:class:: Client(accesskey=ACCESS_KEY, secretkey=SECRET_KEY, prefix=APP_NAME)
+    :module: sae.storage
+
+    Client类
+
+    .. py:method:: put(domain, key_name, object)
+
+       将object存到某个domain中。返回object的public url。
+
+    .. py:method:: get(domain, key_name)
+
+       返回domain中名为key_name的对象。
+
+    .. py:method:: stat(domain, key_name)
+
+       返回domain中名为key_name的对象属性，返回值为一个dict。
+
+    .. py:method:: delete(domain, key_name)
+
+       删除domain中名为key_name的对象。
+
+    .. py:method:: list(domain)
+
+       返回domain中所有对象的列表。
+
+    .. py:method:: list_domain():
+
+       返回所有domain的列表。
+
+    .. py:method::  url(domain, key_name)
+
+       返回domain中key_name的对象的public url。
+
+Example ::
 
     import sae.storage
 
@@ -282,10 +467,6 @@ API操作：   ::
     s.put('domain-name', 'object-name', ob)
 
     # 设置object的属性
-    # expires: 设置object的浏览器缓存超时，功能格式与Apache的Expires配置相同
-    # content_type: 设置object header中的Content-Type字段。（注：此处的type和storage
-    #   后台面板类型一栏的值没有任何关系）。
-    # content_encoding: 设置object header中的Content-Encoding字段。
     ob = sae.storage.Object('pieces of data',   \
       expires='A3600', content_type='text/html', content_encoding='gzip')
     s.put('domain-name', 'object-name', ob)
@@ -305,9 +486,4 @@ API操作：   ::
 
     # LIST一个domain下所有的object 
     s.list('domain-name')
-
-Apache的Expires格式可以参见：
-
-http://httpd.apache.org/docs/2.0/mod/mod_expires.html
-
 
