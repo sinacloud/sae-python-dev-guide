@@ -233,8 +233,8 @@ Cron
                15 14 1 * *
                # 每个工作日的晚上10点执行
                0 22 * * 1-5
-               # 没分钟执行一次
-               \*/1 * * * *
+               # 每分钟执行一次
+               */1 * * * *
 
         具体的语法规则可以参考man手册，`man 5 crontab`。
         
@@ -258,15 +258,16 @@ Cron
 
     Cron使用POST方式请求URL。
 
-认证和CRSF
-~~~~~~~~~~~
-请确保任务URL访问时不需要登录或认证。
 
-开启CRSF在POST时，可能会导致问题。请关闭框架的CRSF功能。涉及框架有Flask, Django等。
+登录和CRSF
+~~~~~~~~~~~~~~~~~~~~
 
-POST or GET?
-~~~~~~~~~~~~~~~~~~
+SAE任务处理节点只是简单的请求任务URL，对于除http basic auth之外的登录信息，一无所知，故务必确认你的URL
+可以不用登录直接访问。
 
+http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被外界访问，请使用IP白名单。
+
+如果你在任务URL的POST处理程序中开启了CRSF，则会导致认证失败。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
 
 
 如何保护任务URL
@@ -275,9 +276,9 @@ POST or GET?
 
 SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
 
-    - hostaccess: if(path ~ "/backends/") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backends/taskqueue") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backends/cron") allow "10.0.0.0/8"
+    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
+    - hostaccess: if(path ~ "/backend/taskqueue") allow "10.0.0.0/8"
+    - hostaccess: if(path ~ "/backend/cron") allow "10.0.0.0/8"
 
 请确保SAE内部节点在白名单内，否则将无法正常执行。
 
