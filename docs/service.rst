@@ -199,6 +199,9 @@ Example:
 Cron
 ~~~~~~~~~~~~~~~~
 
+App的配置文件为 config.yaml. Cron的执行状态可在应用的管理界面 服务管理->
+Cron中查看。
+
 +   添加Cron:
 
     编辑config.yaml文件中，增加cron段，例如：   ::
@@ -272,15 +275,7 @@ http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被�
 
 如何保护任务URL
 ~~~~~~~~~~~~~~~~~~
-为保护cron，taskqueue对应的url，可在app.yaml配置允许访问的IP地址。
-
-SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
-
-    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backend/taskqueue") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backend/cron") allow "10.0.0.0/8"
-
-请确保SAE内部节点在白名单内，否则将无法正常执行。
+为保护cron，taskqueue对应的url，可在config.yaml配置允许访问的IP地址。
 
 建议将所有taskqueue，cron的url都挂载到/backend/下面::
 
@@ -288,12 +283,49 @@ SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问
    /backend/taskqueue/
    /backend/cron
 
-这样在app.yaml中只需一行配置::
+SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
 
     - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
 
+请确保SAE内部节点在白名单内，否则将无法正常执行。
 
-原有的PHP文档，仅供参考:
+
+Cron 完整示例
+~~~~~~~~~~~~~~~~~~~
+每五分钟请求一次 /backend/cron/update URL
+
+Flask URL 处理程序::
+
+    import pylibmc
+    import datetime
+
+    from appstack import app
+
+    mc = pylibmc.Client(['localhost'])
+
+    @app.route('/backend/cron/update', methods=['GET', 'POST'])
+    def update():
+        update_time = mc.get('update_time')
+        mc.set("update_time", str(datetime.datetime.now()))
+
+        return update_time
+
+config.yaml::
+
+    name: appstack
+    version: 4
+
+    cron:
+    - url: /backend/cron/update
+      schedule: */5 * * * *
+
+    handle:
+    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
+
+
+原有的PHP文档
+~~~~~~~~~~~~~~~~~
+仅供参考
 
 Taskqueue http://sae.sina.com.cn/?m=devcenter&catId=205
 
