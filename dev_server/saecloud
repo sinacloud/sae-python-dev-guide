@@ -113,6 +113,8 @@ options:
             dc = filecmp.dircmp(s, t, ['.svn'])
 
             for f in dc.left_only:
+                if f.startswith('.'): 
+                    continue
                 d1 = os.path.join(s, f)
                 d2 = os.path.join(t, f)
                 if os.path.isdir(d1):
@@ -122,6 +124,8 @@ options:
                 run('svn', 'add', d2, '-q')
 
             for f in dc.right_only:
+                if f.startswith('.'): 
+                    continue
                 d = os.path.join(t, f)
                 if os.path.isdir(d):
                     shutil.rmtree(d)
@@ -130,13 +134,16 @@ options:
                 run('svn', 'delete', d, '-q')
 
             for f in dc.diff_files:
+                if f.startswith('.'): 
+                    continue
                 d1 = os.path.join(s, f)
                 d2 = os.path.join(t, f)
                 shutil.copy2(d1, d2)
 
-            q.extend([os.path.join(part, d) for d in dc.common_dirs])
+            subdirs = filter(lambda x: not x.startswith('.'), dc.common_dirs)
+            q.extend([os.path.join(part, d) for d in subdirs])
     else:
-        shutil.copytree(source, vpath)
+        shutil.copytree(source, vpath, ignore=shutil.ignore_patterns('.*'))
         run('svn', 'add', vpath, '-q')
 
     run('svn', 'commit', path, '-mx')
