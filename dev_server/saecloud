@@ -1,0 +1,158 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import getopt
+import yaml 
+import shutil
+import filecmp
+import subprocess
+
+VERSION = '0.0.1'
+
+commands = {}
+
+def command(meth):
+    global commands
+    assert meth.__doc__, "%r have no docstring!!" % meth
+    commands[meth.func_name] = meth
+
+def usage(argv):
+    print "SAE command-line interface\n"
+    print "commands:"
+
+    out = []
+    for c in commands:
+        out.append((c, commands[c].__doc__.splitlines()[0]))
+    spacing = max(len(o[0])+3 for o in out)
+    for o in out:
+        print "    %-*s%s" % (spacing, o[0], o[1])
+
+    print
+
+@command
+def help(argv):
+    """print help information
+saecloud help [command]
+
+With no arguments, print a list of commands and a short description of each. 
+With a command, print descriptive help on how to use the command.
+"""
+    if not argv:
+        return usage(argv)
+
+    for c in commands:
+        if c == argv[0]:
+            print commands[c].__doc__.split('\n', 1)[1]
+            return
+    print >>sys.stderr, "unknown command '%s'" % argv[0]
+
+
+SVN_SERVER = 'https://svn.sinaapp.com/'
+LOCAL_CACHE_DIR = os.path.expanduser('~/.saecloud')
+
+def run(*args):
+    return subprocess.call(args, close_fds=True)
+
+@command
+def deploy(argv):
+    """deploy local source to server
+saecloud deploy [source] [options]
+
+Deploy code in source directory to sae server, by default source is current
+directory, version number is set in config.yaml. 
+
+options:
+    
+    --username=ARG      : specify a username ARG
+    --password=ARG      : specify a password ARG
+"""
+    try:
+        opts, args = getopt.gnu_getopt(
+            argv, '', ['username=', 'password=']) 
+    except getopt.GetoptError, e:
+        print >>sys.stderr, str(e)
+        return
+        
+    try:
+        source = args.pop(0)
+    except IndexError:
+        source = '.'
+    svn_opts = []
+    for o, a in opts:
+        if o == '--username' or o == '--password':
+            svn_opts.append(o)
+            svn_opts.append(a)
+
+    cache = LOCAL_CACHE_DIR
+
+    conf_file = os.path.join(source, 'config.yaml')
+    try:
+        conf =  yaml.load(open(conf_file))
+    except:
+        print >>sys.stderr, 'ERROR: Failed to load config.yaml'
+        return
+
+    name =  conf['name']
+    version = conf['version']
+
+    path = os.path.join(cache, name)
+    if not os.path.exists(path):
+        url = SVN_SERVER + name
+        run('svn', 'checkout', url, path, *svn_opts)
+    else:
+        run('svn', 'update', path, '-q')
+
+    vpath = os.path.join(path, str(version))
+    if os.path.exists(vpath):
+        q = ['',]
+        while len(q):
+            part = q.pop(0)
+            s = os.path.join(source, part)
+            t = os.path.join(vpath, part)
+            dc = filecmp.dircmp(s, t, ['.svn'])
+
+            for f in dc.left_only:
+                d1 = os.path.join(s, f)
+                d2 = os.path.join(t, f)
+                if os.path.isdir(d1):
+                    shutil.copytree(d1, d2)
+                else:
+                    shutil.copy2(d1, d2)
+                run('svn', 'add', d2, '-q')
+
+            for f in dc.right_only:
+                d = os.path.join(t, f)
+                if os.path.isdir(d):
+                    shutil.rmtree(d)
+                else:
+                    os.unlink(d)
+                run('svn', 'delete', d, '-q')
+
+            for f in dc.diff_files:
+                d1 = os.path.join(s, f)
+                d2 = os.path.join(t, f)
+                shutil.copy2(d1, d2)
+
+            q.extend([os.path.join(part, d) for d in dc.common_dirs])
+    else:
+        shutil.copytree(source, vpath)
+        run('svn', 'add', vpath, '-q')
+
+    run('svn', 'commit', path, '-mx')
+
+def main():
+    global commands
+
+    try:
+        cmd = sys.argv
+        cmd.pop(0)
+        if cmd and cmd[0] in commands:
+            # now dispatch and run!
+            return commands[cmd[0]](cmd[1:])
+        usage(cmd)
+    except KeyboardInterrupt:
+        pass
+
+if __name__ == '__main__':
+    main()
