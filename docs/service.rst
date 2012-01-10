@@ -199,6 +199,9 @@ Example:
 Cron
 ~~~~~~~~~~~~~~~~
 
+App的配置文件为 config.yaml. Cron的执行状态可在应用的管理界面 服务管理->
+Cron中查看。
+
 +   添加Cron:
 
     编辑config.yaml文件中，增加cron段，例如：   ::
@@ -233,8 +236,8 @@ Cron
                15 14 1 * *
                # 每个工作日的晚上10点执行
                0 22 * * 1-5
-               # 没分钟执行一次
-               \*/1 * * * *
+               # 每分钟执行一次
+               */1 * * * *
 
         具体的语法规则可以参考man手册，`man 5 crontab`。
         
@@ -258,28 +261,21 @@ Cron
 
     Cron使用POST方式请求URL。
 
-认证和CRSF
-~~~~~~~~~~~
-请确保任务URL访问时不需要登录或认证。
 
-开启CRSF在POST时，可能会导致问题。请关闭框架的CRSF功能。涉及框架有Flask, Django等。
+登录和CRSF
+~~~~~~~~~~~~~~~~~~~~
 
-POST or GET?
-~~~~~~~~~~~~~~~~~~
+SAE任务处理节点只是简单的请求任务URL，对于除http basic auth之外的登录信息，一无所知，故务必确认你的URL
+可以不用登录直接访问。
 
+http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被外界访问，请使用IP白名单。
+
+如果你在任务URL的POST处理程序中开启了CRSF，则会导致认证失败。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
 
 
 如何保护任务URL
 ~~~~~~~~~~~~~~~~~~
-为保护cron，taskqueue对应的url，可在app.yaml配置允许访问的IP地址。
-
-SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
-
-    - hostaccess: if(path ~ "/backends/") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backends/taskqueue") allow "10.0.0.0/8"
-    - hostaccess: if(path ~ "/backends/cron") allow "10.0.0.0/8"
-
-请确保SAE内部节点在白名单内，否则将无法正常执行。
+为保护cron，taskqueue对应的url，可在config.yaml配置允许访问的IP地址。
 
 建议将所有taskqueue，cron的url都挂载到/backend/下面::
 
@@ -287,12 +283,49 @@ SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问
    /backend/taskqueue/
    /backend/cron
 
-这样在app.yaml中只需一行配置::
+SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
 
     - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
 
+请确保SAE内部节点在白名单内，否则将无法正常执行。
 
-原有的PHP文档，仅供参考:
+
+Cron 完整示例
+~~~~~~~~~~~~~~~~~~~
+每五分钟请求一次 /backend/cron/update URL
+
+Flask URL 处理程序::
+
+    import pylibmc
+    import datetime
+
+    from appstack import app
+
+    mc = pylibmc.Client(['localhost'])
+
+    @app.route('/backend/cron/update', methods=['GET', 'POST'])
+    def update():
+        update_time = mc.get('update_time')
+        mc.set("update_time", str(datetime.datetime.now()))
+
+        return update_time
+
+config.yaml::
+
+    name: appstack
+    version: 4
+
+    cron:
+    - url: /backend/cron/update
+      schedule: */5 * * * *
+
+    handle:
+    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
+
+
+原有的PHP文档
+~~~~~~~~~~~~~~~~~
+仅供参考
 
 Taskqueue http://sae.sina.com.cn/?m=devcenter&catId=205
 
