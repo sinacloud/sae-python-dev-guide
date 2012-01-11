@@ -116,6 +116,8 @@ options:
         run('svn', 'update', path, '-q')
 
     print 'Finding changes'
+    modified = False
+
     vpath = os.path.join(path, str(version))
     if os.path.exists(vpath):
         q = ['',]
@@ -125,6 +127,7 @@ options:
             t = os.path.join(vpath, part)
             dc = filecmp.dircmp(s, t, ['.svn'])
 
+            # New files
             for f in dc.left_only:
                 if f.startswith('.'): 
                     continue
@@ -135,7 +138,9 @@ options:
                 else:
                     shutil.copy2(d1, d2)
                 run('svn', 'add', d2, '-q')
+                modified = True
 
+            # Deleted files
             for f in dc.right_only:
                 if f.startswith('.'): 
                     continue
@@ -145,20 +150,28 @@ options:
                 else:
                     os.unlink(d)
                 run('svn', 'delete', d, '-q')
+                modified = True
 
+            # Modified files
             for f in dc.diff_files:
                 if f.startswith('.'): 
                     continue
                 d1 = os.path.join(s, f)
                 d2 = os.path.join(t, f)
                 shutil.copy2(d1, d2)
+                modified = True
 
             subdirs = filter(lambda x: not x.startswith('.'), dc.common_dirs)
             q.extend([os.path.join(part, d) for d in subdirs])
     else:
+        # New version
         shutil.copytree(source, vpath, ignore=shutil.ignore_patterns('.*'))
         run('svn', 'add', vpath, '-q')
+        modified = True
 
+    if not modified:
+        print 'No changes found',
+        return 
     print 'Pushing to server... ',
     sys.stdout.flush()
     run('svn', 'commit', path, '-mx')

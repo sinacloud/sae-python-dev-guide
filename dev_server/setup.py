@@ -11,6 +11,7 @@ setup(
         'Werkzeug',
         'pip',
         'PyYAML',
+        'argparse',
         #'Django==1.2.7',
         #'bottle==0.9.6',
         #'tornado==2.1.1',
