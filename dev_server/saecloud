@@ -55,6 +55,14 @@ LOCAL_CACHE_DIR = os.path.expanduser('~/.saecloud')
 def run(*args):
     return subprocess.call(args, close_fds=True)
 
+def argv_split(argv):
+    opts = []
+    args = []
+    for a in argv:
+        if a.startswith('-'): opts.append(a)
+        else: args.append(a)
+    return (opts, args)
+
 @command
 def deploy(argv):
     """deploy local source to server
@@ -158,18 +166,20 @@ Export source currently deployed on the sae server to currently directory.
 Version 1 will be used unless you have specified a version number, also, 
 you can specify your svn username and password just as `saecloud depoly`
 """
+    opts, args = argv_split(argv)
     try: 
-        name = argv.pop(0)
+        name = args.pop(0)
     except: 
         help(['export',])
         return
+
     try: 
-        version = argv.pop(0)
+        version = args.pop(0)
     except: 
         version = "1"
 
     url = SVN_SERVER + name + '/' + version
-    run('svn', 'export', url, name)
+    run('svn', 'export', url, name, *opts)
 
 def main():
     global commands
