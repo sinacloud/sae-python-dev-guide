@@ -2,105 +2,54 @@
 
 import os
 import sys
-import getopt
 import yaml 
 import shutil
 import filecmp
 import subprocess
-
-VERSION = '0.0.1'
-
-commands = {}
-
-def command(meth):
-    global commands
-    assert meth.__doc__, "%r have no docstring!!" % meth
-    commands[meth.func_name] = meth
-    return meth
-
-def usage(argv):
-    print "SAE command line v%s\n" % VERSION
-    print "commands:"
-
-    out = []
-    for c in commands:
-        out.append((c, commands[c].__doc__.splitlines()[0]))
-    spacing = max(len(o[0])+3 for o in out)
-    for o in out:
-        print "    %-*s%s" % (spacing, o[0], o[1])
-
-    print
-
-@command
-def help(argv):
-    """print help information
-saecloud help [command]
-
-With no arguments, print a list of commands and a short description of each. 
-With a command, print descriptive help on how to use the command.
-"""
-    if not argv:
-        return usage(argv)
-
-    for c in commands:
-        if c == argv[0]:
-            print commands[c].__doc__.split('\n', 1)[1]
-            return
-    print >>sys.stderr, "unknown command '%s'" % argv[0]
-
+import argparse
 
 SVN_SERVER = 'https://svn.sinaapp.com/'
 LOCAL_CACHE_DIR = os.path.expanduser('~/.saecloud')
 
+VERSION = '0.0.1'
+verbose = False
+
+def version(args):
+    print "SAE command line v%s" % VERSION
+
 def run(*args):
     # FIXME: Check the return code please
-    return subprocess.call(args, close_fds=True, stdout=open(os.devnull, 'w'))
+    if verbose:
+        print '+', ' '.join(args)
+        return subprocess.call(args, close_fds=True)
+    else:
+        return subprocess.call(args, close_fds=True, stdout=open(os.devnull, 'w'))
 
-def argv_split(argv):
+def _get_svn_opts(args):
     opts = []
-    args = []
-    for a in argv:
-        if a.startswith('-'): opts.append(a)
-        else: args.append(a)
-    return (opts, args)
+    for opt in ['username', 'password']:
+        value = getattr(args, opt)
+        if value:
+            opts.append('--' + opt)
+            opts.append(value)
+    return opts
 
-@command
-def deploy(argv):
-    """deploy local source to server
-saecloud deploy [source] [options]
+def deploy(args):
+    """Deploy local source to server
 
-Deploy code in source directory to sae server, by default source is current
-directory, version number is set in config.yaml. 
+    Deploy code in source directory to sae server, by default source is current
+    directory, version number is set in config.yaml. 
 
-options:
-    
-    --username=ARG      : specify a username ARG
-    --password=ARG      : specify a password ARG
-"""
-    try:
-        opts, args = getopt.gnu_getopt(
-            argv, '', ['username=', 'password=']) 
-    except getopt.GetoptError, e:
-        print >>sys.stderr, str(e)
-        return
-        
-    try:
-        source = args.pop(0)
-    except IndexError:
-        source = '.'
-    svn_opts = []
-    for o, a in opts:
-        if o == '--username' or o == '--password':
-            svn_opts.append(o)
-            svn_opts.append(a)
-
+    """
+    source = args.dir 
+    opts = _get_svn_opts(args)
     cache = LOCAL_CACHE_DIR
 
     conf_file = os.path.join(source, 'config.yaml')
     try:
         conf =  yaml.load(open(conf_file))
     except:
-        print >>sys.stderr, 'ERROR: Failed to load config.yaml'
+        print >>sys.stderr, 'Error: Failed to load config.yaml'
         return
 
     name =  conf['name']
@@ -111,13 +60,12 @@ options:
     path = os.path.join(cache, name)
     if not os.path.exists(path):
         url = SVN_SERVER + name
-        run('svn', 'checkout', url, path, *svn_opts)
+        run('svn', 'checkout', url, path, *opts)
     else:
         run('svn', 'update', path, '-q')
 
     print 'Finding changes'
     modified = False
-
     vpath = os.path.join(path, str(version))
     if os.path.exists(vpath):
         q = ['',]
@@ -177,43 +125,50 @@ options:
     run('svn', 'commit', path, '-mx')
     print 'done'
 
-@command
-def export(argv):
-    """export source from sae server
-saecloud export application-name [VERSION]
+def export(args):
+    """Export source from sae server
 
-Export source currently deployed on the sae server to currently directory.
-Version 1 will be used unless you have specified a version number, also, 
-you can specify your svn username and password just as `saecloud depoly`
-"""
-    opts, args = argv_split(argv)
-    try: 
-        name = args.pop(0)
-    except: 
-        help(['export',])
-        return
+    Export source currently deployed on the sae server to currently directory.
+    Version 1 will be used unless you have specified a version number, also, 
+    you can specify your svn username and password just as `saecloud depoly`
 
-    try: 
-        version = args.pop(0)
-    except: 
-        version = "1"
-
-    url = SVN_SERVER + name + '/' + version
-    print 'Exporting to', name
-    run('svn', 'export', url, name, *opts)
+    """
+    url = SVN_SERVER + args.app + '/' + args.version
+    print 'Exporting to', args.app
+    opts = _get_svn_opts(args)
+    run('svn', 'export', url, args.app, *opts)
 
 def main():
-    global commands
 
-    try:
-        cmd = sys.argv
-        cmd.pop(0)
-        if cmd and cmd[0] in commands:
-            # now dispatch and run!
-            return commands[cmd[0]](cmd[1:])
-        usage(cmd)
-    except KeyboardInterrupt:
-        pass
+    credentials = argparse.ArgumentParser(add_help=False)
+    credentials.add_argument('-u', '--username', help='repo username')
+    credentials.add_argument('-p', '--password', help='repo password')
+    credentials.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show lowlevel repo operations')
+
+    parser = argparse.ArgumentParser(prog=sys.argv[0])
+    subparsers = parser.add_subparsers(help='sub commands')
+
+    pe = subparsers.add_parser('export', help='export source code to local directory', parents=[credentials])
+    pe.add_argument('app', help='app name')
+    pe.add_argument('version', nargs='?', default='1', help='which version to export, default to 1')
+    pe.set_defaults(func=export)
+
+    pd = subparsers.add_parser('deploy', help='deploy source directory to SAE', parents=[credentials])
+    pd.add_argument('dir', nargs='?', default='.', help='the source code directory to deploy, default to .')
+    pd.set_defaults(func=deploy)
+
+    pv = subparsers.add_parser('version', help='show version info')
+    pv.set_defaults(func=version)
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(-1)
+
+    args = parser.parse_args()
+    if args.verbose:
+        global verbose
+        verbose = True
+    args.func(args)
 
 if __name__ == '__main__':
     main()
