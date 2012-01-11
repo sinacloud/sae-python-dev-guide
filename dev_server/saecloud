@@ -145,7 +145,8 @@ def main():
     credentials.add_argument('-p', '--password', help='repo password')
     credentials.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show lowlevel repo operations')
 
-    parser = argparse.ArgumentParser(prog=sys.argv[0])
+    parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]))
+    parser.set_defaults(verbose=False)
     subparsers = parser.add_subparsers(help='sub commands')
 
     pe = subparsers.add_parser('export', help='export source code to local directory', parents=[credentials])
@@ -154,7 +155,7 @@ def main():
     pe.set_defaults(func=export)
 
     pd = subparsers.add_parser('deploy', help='deploy source directory to SAE', parents=[credentials])
-    pd.add_argument('dir', nargs='?', default='.', help='the source code directory to deploy, default to .')
+    pd.add_argument('dir', nargs='?', default='.', help='the source code directory to deploy, default to current dir')
     pd.set_defaults(func=deploy)
 
     pv = subparsers.add_parser('version', help='show version info')
