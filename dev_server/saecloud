@@ -19,7 +19,7 @@ def command(meth):
     return meth
 
 def usage(argv):
-    print "SAE command-line interface\n"
+    print "SAE command line v%s\n" % VERSION
     print "commands:"
 
     out = []
@@ -53,7 +53,8 @@ SVN_SERVER = 'https://svn.sinaapp.com/'
 LOCAL_CACHE_DIR = os.path.expanduser('~/.saecloud')
 
 def run(*args):
-    return subprocess.call(args, close_fds=True)
+    # FIXME: Check the return code please
+    return subprocess.call(args, close_fds=True, stdout=open(os.devnull, 'w'))
 
 def argv_split(argv):
     opts = []
@@ -105,6 +106,8 @@ options:
     name =  conf['name']
     version = conf['version']
 
+    print 'Deploying http://%s.%s.sinaapp.com' % (version, name)
+    print 'Updating cache'
     path = os.path.join(cache, name)
     if not os.path.exists(path):
         url = SVN_SERVER + name
@@ -112,6 +115,7 @@ options:
     else:
         run('svn', 'update', path, '-q')
 
+    print 'Finding changes'
     vpath = os.path.join(path, str(version))
     if os.path.exists(vpath):
         q = ['',]
@@ -155,7 +159,10 @@ options:
         shutil.copytree(source, vpath, ignore=shutil.ignore_patterns('.*'))
         run('svn', 'add', vpath, '-q')
 
+    print 'Pushing to server... ',
+    sys.stdout.flush()
     run('svn', 'commit', path, '-mx')
+    print 'done'
 
 @command
 def export(argv):
@@ -179,6 +186,7 @@ you can specify your svn username and password just as `saecloud depoly`
         version = "1"
 
     url = SVN_SERVER + name + '/' + version
+    print 'Exporting to', name
     run('svn', 'export', url, name, *opts)
 
 def main():
