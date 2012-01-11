@@ -421,3 +421,35 @@ flask, jinja2, wtforms等SAE已内置，所以不需要再上传，故从require
     sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle'))
     sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle.zip'))
 
+saecloud的使用
+~~~~~~~~~~~~~~~~
+
+saecloud是一个上传，下载SAE Python应用程序的工具，方便使用git等其他版本管理工具
+的应用部署代码到SAE。
+
+1. 上传应用程序。 ::
+
+    saecloud deploy myapp/ [--username=user@sina.com --password=113443]
+
+   第一次使用的时候需要带--username和--password选项，也就是svn的用户名和密码。
+   成功一次后就无须再带--username和--password选项了。
+
+   saecloud默认使用config.yaml中的appname和version配置，上面的命令会将代码部
+   署到服务端应用为appname的version版本下。
+
+    
+2. 下载当前server端部署的代码。 ::
+
+    saecloud export myapp/
+
+   此命令会将sae服务端部署的版本1的代码导出到当前目录的myapp目录中，当然你也可以
+   指定导出某个版本 ::
+
+    saecloud export myapp/ 2
+
+   该命令会导出版本2的代码导出到myapp目录下。
+
+.. note::
+
+   saecloud的上传下载只是svn的一个wrapper。
+
