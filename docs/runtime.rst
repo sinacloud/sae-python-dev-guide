@@ -421,35 +421,242 @@ flask, jinja2, wtforms等SAE已内置，所以不需要再上传，故从require
     sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle'))
     sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle.zip'))
 
-saecloud的使用
-~~~~~~~~~~~~~~~~
 
-saecloud是一个上传，下载SAE Python应用程序的工具，方便使用git等其他版本管理工具
-的应用部署代码到SAE。
+使用saecloud部署应用
+-----------------------------------
 
-1. 上传应用程序。 ::
+saecloud是一个简单的命令行部署工具。它分离了代码部署和代码托管，使你可以选择习惯使用的vcs工具，同时还能够快速部署本地app目录到SAE服务器上。
 
-    saecloud deploy myapp/ [--username=user@sina.com --password=113443]
+使用svn的代码目录结构::
 
-   第一次使用的时候需要带--username和--password选项，也就是svn的用户名和密码。
-   成功一次后就无须再带--username和--password选项了。
+    jaime@westeros:~/source/app/memorystone$ ls 
+    1  2
+    jaime@westeros:~/source/app/memorystone$ ls 1
+    index.wsgi
+    jaime@westeros:~/source/app/memorystone$ ls 2
+    index.wsgi
+    jaime@westeros:~/source/app/memorystone$ ls -a
 
-   saecloud默认使用config.yaml中的appname和version配置，上面的命令会将代码部
-   署到服务端应用为appname的version版本下。
+该app根目录下面有两个子目录，分别对应于两个app版本，颇为麻烦。
 
+使用saecloud deploy::
+
+    jaime@westeros:~/source/app/memorystone$ ls
+    index.wsgi
+    jaime@westeros:~/source/app/memorystone$
+
+不再需要数字格式的版本目录了。
+
+
+安装
+~~~~~~
+
+ ::
+
+    jaime@westeros:~/saepythondevguide/dev_server$ sudo python setup.py install
+    [sudo] password for jaime: 
+    running install
+    ....
+    jaime@westeros:~/saepythondevguide/dev_server$ saecloud version
+    SAE command line v0.0.1
+    jaime@westeros:~/saepythondevguide/dev_server$ 
+
+导出已有应用代码
+~~~~~~~~~~~~~~~~~~~~~~
+
+帮助信息::
+
+    jaime@westeros:~/source/app$ saecloud 
+    usage: saecloud [-h] {version,export,deploy} ...
+
+    positional arguments:
+      {version,export,deploy}
+                            sub commands
+        export              export source code to local directory
+        deploy              deploy source directory to SAE
+        version             show version info
+
+    optional arguments:
+      -h, --help            show this help message and exit
+    jaime@westeros:~/source/app$ 
+
+导出memorystone应用版本2到本地目录::
+
+    jaime@westeros:~/source/app$ saecloud export memorystone 2 --username fooxxx@gmail.com --password barxxx
+    Exporting to memorystone
+    jaime@westeros:~/source/app$ cd memorystone
+    jaime@westeros:~/source/app/memorystone$ ls
+    index.wsgi
+    jaime@westeros:~/source/app/memorystone$
+
+第一个参数为应用名字，第二个参数为版本，可选，默认为版本1。
+
+第一次使用时，请指定你的代码访问帐号信息：username 安全邮箱, password。之后的命令不用在输入此信息。
+
+
+部署新代码
+~~~~~~~~~~~~~~~~~~~
+
+新建config.yaml::
+
+    jaime@westeros:~/source/app/memorystone$ vi config.yaml
+    jaime@westeros:~/source/app/memorystone$ cat config.yaml 
+    name: memorystone
+    version: 2
+    jaime@westeros:~/source/app/memorystone$ ls
+    config.yaml  index.wsgi
+
+saecloud从config.yaml文件获得信息，判断将要把代码部署到哪个应用的哪个版本。
+
+修改一下index.wsgi，然后运行 saecloud deploy::
+
+    jaime@westeros:~/source/app/memorystone$ saecloud deploy 
+    Deploying http://2.memorystone.sinaapp.com
+    Updating cache
+    Finding changes
+    Pushing to server...  done
+    jaime@westeros:~/source/app/memorystone$ 
+
+That's it.
+
+saecloud deploy命令接受一个可选参数: app代码所在路径，默认为当前目录'.'。
+--username, --password同export命令。
+
+修改一下config.yaml，部署到一个新版本3::
+
+    jaime@westeros:~/source/app/memorystone$ vi config.yaml 
+    jaime@westeros:~/source/app/memorystone$ saecloud deploy 
+    Deploying http://3.memorystone.sinaapp.com
+    Updating cache
+    Finding changes
+    Pushing to server...  done
+    jaime@westeros:~/source/app/memorystone$ cat config.yaml 
+    name: memorystone
+    version: 3
+    jaime@westeros:~/source/app/memorystone$ 
+
+
+注意:
+
+- 删除应用版本目前仍然只能在前端管理界面中操作。
+
+.. warning::
+
+    cron中的配置 schedule: \*/5 * * * * 目前无法识别，会报语法错误
+
+saecloud和git workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+::
+
+    jaime@westeros:~/source/app$ rm -rf memorystone
+    jaime@westeros:~/source/app$ saecloud export memorystone 2
+    Exporting to memorystone
+    jaime@westeros:~/source/app$ cd memorystone
+    jaime@westeros:~/source/app/memorystone$ ls
+    config.yaml  index.wsgi
+    jaime@westeros:~/source/app/memorystone$ git init
+    Initialized empty Git repository in /home/jaime/source/app/memorystone/.git/
+    jaime@westeros:~/source/app/memorystone$ git add .
+    jaime@westeros:~/source/app/memorystone$ git ci -am "Testing saecloud"
+    [master (root-commit) fe7131e] Testing saecloud
+     2 files changed, 11 insertions(+), 0 deletions(-)
+     create mode 100644 config.yaml
+     create mode 100644 index.wsgi
+    jaime@westeros:~/source/app/memorystone$ git branch
+    * master
+
+
+    jaime@westeros:~/source/app/memorystone$ git co -b v3
+    Switched to a new branch 'v3'
+    jaime@westeros:~/source/app/memorystone$ git branch
+      master
+    * v3
+    jaime@westeros:~/source/app/memorystone$ git st
+    # On branch v3
+    nothing to commit (working directory clean)
+    jaime@westeros:~/source/app/memorystone$ vi config.yaml 
+    jaime@westeros:~/source/app/memorystone$ vi index.wsgi 
+    jaime@westeros:~/source/app/memorystone$ git df
+    diff --git a/config.yaml b/config.yaml
+    index 658ce65..c645699 100644
+    --- a/config.yaml
+    +++ b/config.yaml
+    @@ -1,2 +1,2 @@
+     name: memorystone
+    -version: 2
+    +version: 3
+    diff --git a/index.wsgi b/index.wsgi
+    index d2df150..7157797 100644
+    --- a/index.wsgi
+    +++ b/index.wsgi
+    @@ -4,6 +4,6 @@ def app(environ, start_response):
+         status = '200 OK'
+         response_headers = [('Content-type', 'text/plain')]
+         start_response(status, response_headers)
+    -    return ['Hello, world! saecloud deploy']
+    +    return ['Hello, world! -v3']
+     
+     application = sae.create_wsgi_app(app)
+    jaime@westeros:~/source/app/memorystone$ git ci -am "Fix on v3"
+    [v3 a6e6c65] Fix on v3
+     2 files changed, 2 insertions(+), 2 deletions(-)
+    jaime@westeros:~/source/app/memorystone$ saecloud deploy
+    Deploying http://3.memorystone.sinaapp.com
+    Updating cache
+    Finding changes
+    Pushing to server...  done
+
+
+    jaime@westeros:~/source/app/memorystone$ git branch
+      master
+    * v3
+    jaime@westeros:~/source/app/memorystone$ git co master
+    Switched to branch 'master'
+    jaime@westeros:~/source/app/memorystone$ vi index.wsgi 
+    jaime@westeros:~/source/app/memorystone$ git df
+    diff --git a/index.wsgi b/index.wsgi
+    index d2df150..5704e33 100644
+    --- a/index.wsgi
+    +++ b/index.wsgi
+    @@ -4,6 +4,6 @@ def app(environ, start_response):
+         status = '200 OK'
+         response_headers = [('Content-type', 'text/plain')]
+         start_response(status, response_headers)
+    -    return ['Hello, world! saecloud deploy']
+    +    return ['Hello, world! -v2']
+     
+     application = sae.create_wsgi_app(app)
+    jaime@westeros:~/source/app/memorystone$ git ci -am "Fix on v2"
+    [master c6a90a4] Fix on v2
+     1 files changed, 1 insertions(+), 1 deletions(-)
+    jaime@westeros:~/source/app/memorystone$ saecloud deploy
+    Deploying http://2.memorystone.sinaapp.com
+    Updating cache
+    Finding changes
+    Pushing to server...  done
+    jaime@westeros:~/source/app/memorystone$ git branch
+    * master
+      v3
+    jaime@westeros:~/source/app/memorystone$ saecloud deploy
+    Deploying http://2.memorystone.sinaapp.com
+    Updating cache
+    Finding changes
+    No changes found
+    jaime@westeros:~/source/app/memorystone$
+
+
+注意:
+
+- 如果代码量较大，则上传时间较慢，请耐心等待
+
+- 不推荐混合使用saecloud deploy和svn
+  
+  虽然saecloud deploy部署之前会自动更新代码，但是如果有代码冲突则会导致本地状态不一致。
+
+  解决办法为删除本地cache目录::
     
-2. 下载当前server端部署的代码。 ::
+    rm -rf ~/.saecloud
 
-    saecloud export myapp/
-
-   此命令会将sae服务端部署的版本1的代码导出到当前目录的myapp目录中，当然你也可以
-   指定导出某个版本 ::
-
-    saecloud export myapp/ 2
-
-   该命令会导出版本2的代码导出到myapp目录下。
-
-.. note::
-
-   saecloud的上传下载只是svn的一个wrapper。
+- saecloud deploy 分离了部署和代码管理，导致用户不能像原来的svn方式那样，在不同机器之间共享代码版本历史。
+  请使用你的vcs工具在不同机器之间同步代码。
 

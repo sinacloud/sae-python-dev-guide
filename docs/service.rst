@@ -175,21 +175,21 @@ Example:
     from sae.taskqueue import Task, TaskQueue
 
     queue = TaskQueue('queue_name')
-    queue.add(Task("/tasks/cd"))
+    queue.add(Task("/tasks/foo"))
 
 2. 添加一个POST任务。   ::
 
-    queue.add(Task("/tasks/strip", "clothes"))
+    queue.add(Task("/tasks/bar", "data"))
 
 3. 批量添加任务。   ::
 
-    tasks = [Task("/tasks/touch", w) for w in body]
+    tasks = [Task("/tasks/update", user) for user in users]
     queue.add(tasks)
 
 4. 快速添加任务。   ::
 
     from sae.taskqueue import add_task
-    add_task('queue_name', '/tasks/fsck', 'everywhere')
+    add_task('queue_name', '/tasks/push', 'msg')
 
 ..  note:: 
 
