@@ -111,15 +111,20 @@ SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注
 * 数据库设置是否正确，是否已在SAE管理界面启用MYSQL，是否已创建数据表，初始化
 * 是否已经打开framework的debug功能
 
+有的framework默认关闭了debug功能，如果程序有问题则只返回500 internal error，没有异常堆栈信息，
+这样调试起来很困难。在开发过程中，请确认框架的debug功能处于开启状态。
+
 如果有404错误，试试访问  http://$appname.sinaapp.com/debug 
 
-建议优先使用框架的debug功能。 未捕获的WSGI异常，将会被打印到浏览器上。
-
+未捕获的WSGI异常，将会被打印到浏览器上。
 注意：在header已经发出的情况下，异常处理可能不会工作。
 
+如何寻求帮助？
+http://www.douban.com/group/topic/26638508/
 
-dev_server 本地开发
---------------------
+
+使用dev_server进行调试
+-------------------------
 
 注意：本工具仅为应用开发便利之用，与真实的sae环境相差较大。
 
@@ -173,25 +178,6 @@ Install
 
 因为这个简单的应用并没有用到MySQL，所以不需要配置app.py，访问本地
 8080端口就可看到Hello, world!
-
-
-MySQL
-~~~~~~~~~~~~
-
-如果你使用sae.core.Application的方式指定数据库信息，可在当前目录
-建立一个app.py文件，存放mysql配置信息，示例文件::
-
-    class Application:
-
-        def __init__(self):
-
-            self.mysql_db = ''
-            self.mysql_user = ''
-            self.mysql_pass = ''
-            self.mysql_host = ''
-            self.mysql_port = ''
-
-如果你使用的是sae.const常量，则可自行修改。
 
 
 使用virtualenv管理依赖关系
