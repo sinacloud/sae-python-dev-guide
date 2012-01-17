@@ -16,8 +16,9 @@ setup(
         #'bottle==0.9.6',
         #'tornado==2.1.1',
         #'Flask==0.7.2',
-        #'flask-sqlalchemy',
         #'Uliweb',
+        #"web.py==0.36",
+        #'flask-sqlalchemy',
         #'jinja2',
         #'MySQL-python'
         ],
