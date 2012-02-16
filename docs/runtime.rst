@@ -94,6 +94,15 @@ Python限制
 svn commit 会自动触发代码重新加载，不需再手动修改index.wsgi。
 
 
+错误输出
+---------
+打印到stderr的信息，会被自动记录到日志中，可在管理界面 应用调优->日志中心->HTTP
+中查看，类别为debug。
+
+此功能可配合 logging 模块使用，方便的打印日志。请参阅:
+http://docs.python.org/library/logging.handlers.html#streamhandler
+ 
+
 如何调试
 ------------
 复杂程序建议您本地调试成功后，再上传运行。
