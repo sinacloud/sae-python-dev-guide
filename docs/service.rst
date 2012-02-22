@@ -270,7 +270,7 @@ SAE任务处理节点只是简单的请求任务URL，对于除http basic auth�
 
 http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被外界访问，请使用IP白名单。
 
-如果你在任务URL的POST处理程序中开启了CRSF，则会导致认证失败。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
+如果你在任务URL的POST处理程序中开启了CRSF，则会导致403认证失败错误。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
 
 
 如何保护任务URL
@@ -519,4 +519,110 @@ Example ::
 
     # LIST一个domain下所有的object 
     s.list('domain-name')
+
+
+KVDB(TBD)
+----------
+
+开启和关闭
+~~~~~~~~~~~~
+
+http://sae.sina.com.cn/?m=kv
+
+kvdb服务禁用后会清除所有数据，请谨慎操作。
+
+sae.kvdb
+~~~~~~~~~
+
+..  py:class:: Error
+    :module: sae.kvdb
+
+    通用错误
+
+..  py:class:: RouterError
+    :module: sae.kvdb
+
+    路由meta信息错误
+
+..  py:class:: StatusError
+    :module: sae.kvdb
+
+    kvdb状态不为OK
+
+..  py:class:: KVClient(**kw)
+    :module: sae.kvdb
+
+    KVDB客户端封装，基于python-memcached-1.48 memcache.Client，大多数method使用方法相同。
+    如果不能成功创建KVClient，则抛出 sae.kvdb.Error 异常。
+
+    kw: 传递给memcache.Client的keyword参数
+
+    .. py:method:: set(key, val, time=0, min_compress_len=0)
+
+        设置key的值为val，成功则返回True
+
+        time 该key的超时时间，请参阅memcached协议Storage commands:
+        http://code.sixapart.com/svn/memcached/trunk/server/doc/protocol.txt
+
+        min_compress_len 启用zlib.compress压缩val的最小长度，如果val的长度大于此值
+        则启用压缩，0表示不压缩。
+
+    .. py:method:: add(key, val, time=0, min_compress_len=0)
+
+        同set，但只在key不存在时起作用
+
+    .. py:method:: replace(key, val, time=0, min_compress_len=0)
+
+        同set，但只在key存在时起作用
+
+    .. py:method:: delete(key, time=0)
+
+        删除key，成功返回1，失败返回0。
+
+        time 为后续多少秒内set/update操作会失败。 
+
+    .. py:method:: get(key)
+
+        获取key的值，失败则返回None
+
+    .. py:method:: get_info()
+
+        获取本应用kvdb统计数据，返回一个字典::
+
+            {
+                'outbytes': 126, 
+                'total_size': 3, 
+                'inbytes': 180, 
+                'set_count': 60,
+                'delete_count': 21, 
+                'total_count': 1, 
+                'get_count': 42
+            }
+
+    .. py:method:: disconnect_all()
+        
+        关闭kvdb连接
+
+示例代码
+~~~~~~~~~
+
+::
+
+    import sae.kvdb
+
+    kv = sae.kvdb.KVClient()
+
+    k = 'foo'
+    kv.set(k, 2)
+    kv.delete(k)
+
+    kv.add(k, 3)
+    kv.get(k)
+
+    kv.replace(k, 4)
+    kv.get(k)
+
+    print kv.get_info()
+
+参考 http://sae.sina.com.cn/?m=devcenter&catId=199
 
