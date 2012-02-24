@@ -261,6 +261,8 @@ Cron中查看。
 
     Cron使用POST方式请求URL。
 
+什么是POST和GET？请见 http://en.wikipedia.org/wiki/HTTP#Request_methods
+
 
 登录和CRSF
 ~~~~~~~~~~~~~~~~~~~~
@@ -271,6 +273,8 @@ SAE任务处理节点只是简单的请求任务URL，对于除http basic auth�
 http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被外界访问，请使用IP白名单。
 
 如果你在任务URL的POST处理程序中开启了CRSF，则会导致403认证失败错误。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
+
+什么是CRSF？ http://en.wikipedia.org/wiki/Cross-site_request_forgery
 
 
 如何保护任务URL

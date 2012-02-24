@@ -1,6 +1,12 @@
 FAQ
 ===============
 
+怎么寻求帮助
+-------------------------
+
+http://www.douban.com/group/topic/26638508/
+
+
 什么是app版本
 ---------------
 
@@ -100,12 +106,18 @@ flask-sqlalchemy 如何在每次请求时重新连接数据库
 http://www.douban.com/group/topic/24103570/
 
 
-怎么寻求帮助
--------------------------
-
-http://www.douban.com/group/topic/26638508/
-
-
 资费说明
 ---------------
 http://sae.sina.com.cn/?m=devcenter&catId=155
+
+
+如何区分本地开发环境和线上环境？
+-------------------------------------
+
+一个可靠的方法::
+
+    if 'APP_NAME' in os.environ: 
+        # SAE 
+    else: 
+        # Local 
+
