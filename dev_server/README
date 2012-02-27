@@ -45,24 +45,3 @@ Install
 因为这个简单的应用并没有用到MySQL，所以不需要配置app.py，访问本地
 8080端口就可以看到Hello, world!了。
 
-
-MySQL
------------
-
-在应用发布目录下建立app.py文件，存放app的配置信息，可复制本目录下
-的示例文件:
-
-    class Application:
-
-        def __init__(self):
-
-            self.mysql_db = ''
-            self.mysql_user = ''
-            self.mysql_pass = ''
-            self.mysql_host = ''
-            self.mysql_port = ''
-
-此时，使用app = sae.core.Application(); app.mysql_db.. 的代码就可在
-本地工作。当然，你也可以不使用这种方式，直接指定MySQL数据库的连接信息。
-
-

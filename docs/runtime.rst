@@ -655,3 +655,44 @@ saecloud和git workflow
 - saecloud deploy 分离了部署和代码管理，导致用户不能像原来的svn方式那样，在不同机器之间共享代码版本历史。
   请使用你的vcs工具在不同机器之间同步代码。
 
+
+可用插件
+--------------
+
+SAE Python Shell(暂未集成)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+运行在SAE上的Python虚拟机shell， shellpy_  的一个变种，可运行简单的Python语句，便于调试app，查看系统信息等。
+
+.. _shellpy: http://code.google.com/p/google-app-engine-samples/source/browse/trunk/shell/shell.py
+
+使用步骤:
+
+- 该shell需要sae.kvdb服务，请开启 http://appstack.sinaapp.com/static/doc/release/testing/service.html#id9
+
+- 修改index.wsgi，启用shell插件，示例如下::
+
+    import sae
+    from sae.util import ShellMiddleware
+
+    def app(environ, start_response):
+        status = '200 OK'
+        response_headers = [('Content-type', 'text/plain')]
+        start_response(status, response_headers)
+        return ["Hello, world!"]
+
+    application = sae.create_wsgi_app(ShellMiddleware(app, 'hugoxxxx'))
+
+..  py:class:: ShellMiddleware(app, secret_code)
+    :module: sae.util
+
+ShellMiddleware 是一个wsgi中间件，参数如下：
+
+- app 你的应用callable
+
+- secret_code 登录shell时需要输入的口令，用于保护shell不被非法访问。如本例的口令为 hugoxxxx，你可以设置你自己的口令，长度应不小于8个字节
+
+访问地址 http://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
+
+..  warning::
+
+    由于暂不支持https连接，口令为明文传输，开启此插件可能导致你的app代码泄露，请谨慎使用。 不使用的时候建议不要开启此shell。
