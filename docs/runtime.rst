@@ -691,8 +691,8 @@ ShellMiddleware 是一个wsgi中间件，参数如下：
 
 - secret_code 登录shell时需要输入的口令，用于保护shell不被非法访问。如本例的口令为 hugoxxxx，你可以设置你自己的口令，长度应不小于8个字节
 
-访问地址 http://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
+访问地址 https://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
 
 ..  warning::
 
-    由于暂不支持https连接，口令为明文传输，开启此插件可能导致你的app代码泄露，请谨慎使用。 不使用的时候建议不要开启此shell。
+    请使用https方式访问shell地址 /_web/shell，这样可以加密传输口令。测试期间请谨慎使用，建议不使用时从源码中注释掉此shell。
