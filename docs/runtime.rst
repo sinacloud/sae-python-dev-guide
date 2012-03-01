@@ -660,20 +660,33 @@ saecloud和git workflow
 可用插件
 --------------
 
-SAE Python Shell(暂未集成)
+SAE Python Shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-运行在SAE上的Python虚拟机shell， shellpy_  的一个变种，可运行简单的Python语句，便于调试app，查看系统信息等。
+
+SAE Python Shell是一个wsgi中间件，提供了一个在线的interactive shell，便于在线调
+试app，查看系统信息等。（由 shellpy_ 修改而来)。
 
 .. _shellpy: http://code.google.com/p/google-app-engine-samples/source/browse/trunk/shell/shell.py
 
+
+..  py:class:: ShellMiddleware(app, secret_code)
+    :module: sae.util
+
+    app: 你的应用callable
+
+    secret_code: 登录shell时需要输入的口令，用于保护shell不被非法访问。如本例的口令为 hugoxxxx，你可以设置你自己的口令，长度应不小于8个字节
+
+
 使用步骤:
 
-- 该shell需要sae.kvdb服务，请开启 http://appstack.sinaapp.com/static/doc/release/testing/service.html#id9
+- 该插件需要使用 sae.kvdb_ 服务，请事先开启。
+
+.. _sae.kvdb: http://appstack.sinaapp.com/static/doc/release/testing/service.html#id9
 
 - 修改index.wsgi，启用shell插件，示例如下::
 
     import sae
-    from sae.util import ShellMiddleware
+    from sae.ext.shell import ShellMiddleware
 
     def app(environ, start_response):
         status = '200 OK'
@@ -683,16 +696,7 @@ SAE Python Shell(暂未集成)
 
     application = sae.create_wsgi_app(ShellMiddleware(app, 'hugoxxxx'))
 
-..  py:class:: ShellMiddleware(app, secret_code)
-    :module: sae.util
-
-ShellMiddleware 是一个wsgi中间件，参数如下：
-
-- app 你的应用callable
-
-- secret_code 登录shell时需要输入的口令，用于保护shell不被非法访问。如本例的口令为 hugoxxxx，你可以设置你自己的口令，长度应不小于8个字节
-
-访问地址 https://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
+- 访问地址 https://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
 
 ..  warning::
 
