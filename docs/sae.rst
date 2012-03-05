@@ -72,21 +72,6 @@
    输入headers示例:  [('Content-type', 'text/plain'), ...]
 
 
-:mod:`sae.urlfetch` -- fetchurl服务
--------------------------------------------------
-
-.. module:: sae.urlfetch
-   :synopsis: 
-
-fetchurl检测已经嵌入到urllib2，一般情况下不需要直接使用该模块。
-
-.. function:: wrap(req)
-
-   封装req对象，设置fetchurl服务headers，返回一个新req对象
-   
-   如果req.host在可信主机列表中，直接返回原req
-
-
 SAE服务
 ------------------
 Mail, TaskQueue, Memcache, Storage等SAE服务封装模块会陆续提供。

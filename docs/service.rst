@@ -5,9 +5,8 @@
 
 访问互联网
 -------------
-目前仅支持通过urllib2模块，urllib2.urlopen访问网络资源，其他如httplib,
-urllib没有开放网络权限。故其他网络服务客户端封装，只能使用urllib2模块。
 
+直接使用urllib, urllib2或者httplib模块访问网络资源即可。
 
 MySQL
 ------------
