@@ -669,7 +669,7 @@ SAE Python Shell是一个wsgi中间件，提供了一个在线的interactive she
 
 
 ..  py:class:: ShellMiddleware(app, secret_code)
-    :module: sae.util
+    :module: sae.ext.shell
 
     app: 你的应用callable
 
