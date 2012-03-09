@@ -6,14 +6,16 @@
 SAE Python 开发者手册
 =================================================
 
-Git: https://github.com/SAEPython/saepythondevguide
-包含文档，示例代码及本地测试server。
+目前SAE Python还处于测试阶段，欢迎使用。
 
-::
+如果你有邀请码，请 `点此进入`_ 。没有邀请码？试试 `等待队列`_ 。
+
+.. _点此进入: /invite
+.. _等待队列: /queue
+
+本文档，示例代码以及本地测试server下载：  ::
 
     git clone http://github.com/SAEPython/saepythondevguide.git
-
-打包下载: https://github.com/SAEPython/saepythondevguide/zipball/master
 
 Contents:
     
