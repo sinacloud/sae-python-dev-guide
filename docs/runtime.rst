@@ -89,14 +89,12 @@ Python限制
 可写目录: sae.core.get_tmp_dir(), 暂不可用
 
 
-错误输出
+日志系统
 ---------
-打印到stderr的信息，会被自动记录到日志中，可在管理界面 应用调优->日志中心->HTTP
-中查看，类别为debug。
+打印到stdout和stderr的内容会记录到应用的日志中心中，
+所以直接使用print语句或者logging模块来记录应用的日志就可以了。
 
-此功能可配合 logging 模块使用，方便的打印日志。请参阅:
-http://docs.python.org/library/logging.handlers.html#streamhandler
- 
+日志内容在 `应用»日志中心» HTTP` 中查看，类别为debug。
 
 如何调试
 ------------
