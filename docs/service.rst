@@ -292,6 +292,22 @@ SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问
 
 请确保SAE内部节点在白名单内，否则将无法正常执行。
 
+Cron和Taskqueue中使用weibo api
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+因为现在weibo api需要提供调用者的ip（合法的公网ip），sae默认提供的是http请求的client的ip，
+但是对于cron和taskqueue，由于是sae的内部请求，无法获取公网ip。所以需要用户手工设置一个。
+设置方法如下： ::
+
+    import os
+    os.environ['REMOTE_ADDR'] = 调用者公网ip
+
+请务必将这段代码放在请求处理代码执行的必经路径上。比如在Flask中：::
+
+    @app.before_request
+    def before_request():
+        import os
+        os.environ['REMOTE_ADDR'] = 调用者公网ip
 
 Cron 完整示例
 ~~~~~~~~~~~~~~~~~~~
