@@ -18,6 +18,8 @@ sys.modules['pylibmc'] = sae.memcache
 
 def main(app_root, options):
 
+    os.environ['HTTP_HOST'] = 'localhost:%d' % options.port
+
     try:
         index = imp.load_source('index', 'index.wsgi')
     except IOError:
