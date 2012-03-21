@@ -13,6 +13,9 @@ from optparse import OptionParser
 
 import sae.core
 
+import sae.memcache
+sys.modules['pylibmc'] = sae.memcache
+
 def main(app_root, options):
 
     try:
