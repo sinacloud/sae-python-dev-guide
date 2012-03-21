@@ -42,7 +42,7 @@ def main(app_root, options):
                     use_reloader = True,
                     use_debugger = True,
                     extra_files = files,
-                    static_files = statics)
+                    static_files = statics, threaded=True)
 
     except KeyboardInterrupt:
         print "OK"
