@@ -176,7 +176,7 @@ class TaskQueue:
                 # Try to make a sync call.
                 rep = urllib2.urlopen(url, payload, 5)
                 print rep.read()
-            except urllib2.URLError:
+            except:
                 import traceback
                 print 'TASKQUEUE_ERROR:', t    
                 traceback.print_exc()
