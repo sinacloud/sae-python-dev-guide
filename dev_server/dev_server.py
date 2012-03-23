@@ -38,12 +38,14 @@ def setup_sae_environ(options):
             raise Exception("Invalid mysql configuration")
 
         user, password, host, port = m.groups()
-
-        sae.const.MYSQL_DB = 'app_' + appname
+        dbname = 'app_' + appname
+        sae.const.MYSQL_DB = dbname
         sae.const.MYSQL_USER = user
         sae.const.MYSQL_PASS = password
         sae.const.MYSQL_PORT = port
         sae.const.MYSQL_HOST = host
+
+        print 'MySQL: %s.%s' % (options.mysql, dbname)
     else:
         print 'MySQL config not found'
 
