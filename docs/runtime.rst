@@ -128,40 +128,30 @@ http://www.douban.com/group/topic/26638508/
 使用dev_server进行调试
 -------------------------
 
-注意：本工具仅为应用开发便利之用，与真实的sae环境相差较大。
+目前支持的服务包括：mysql, taskqueue, memcache, storage, mail。
+大部分的服务直接运行dev_server.py进行调试就可以了，部分服务需要做一些配置。
 
-dev_server地址  https://github.com/SAEPython/saepythondevguide
-
-下载
-~~~~~~~
-使用git clone ::
-
-    git clone http://github.com/SAEPython/saepythondevguide.git
-
-或打包下载: https://github.com/SAEPython/saepythondevguide/zipball/master
-
+注意： 本工具仅为应用开发便利之用，对sae python环境的模拟并不完整。
 
 Install
-~~~~~~~~~~~~
+~~~~~~~~~
+
 ::
 
-    cd dev_server
-    sudo python setup.py install
+    $ git clone http://github.com/SAEPython/saepythondevguide.git
+    $ sudo python setup.py install
 
-由于预装模块太多，全部安装太过耗时，故所有依赖关系已在 setup.py 中注掉，
-请自行使用pip安装你要使用的框架，注意版本号应于SAE内置的相同。
-
-
-运行
+基本使用
 ~~~~~~~~~~
-使用svn检出app代码之后，建立以数字为标识的发布目录，切换到发布目录::
 
-    jaime@westeros:~/source/blackfire/1$ pwd
+使用svn检出app代码之后，建立以数字为标识的发布目录，切换到发布目录: ::
+
+    $ pwd
     /home/jaime/source/blackfire/1
 
-建立index.wsgi::
+编辑index.wsgi和config.yaml： ::
 
-    jaime@westeros:~/source/blackfire/1$ cat index.wsgi
+    $ vi index.wsgi
     import sae
 
     def app(environ, start_response):
@@ -172,15 +162,59 @@ Install
 
     application = sae.create_wsgi_app(app)
 
-运行dev_server.py::
+    $ vi config.yaml
+    ---
+    name: blackfire
+    version: 1
+    ...
 
-    jaime@westeros:~/source/blackfire/1$ dev_server.py 
+运行dev_server.py。 ::
+
+    $ dev_server.py 
     MySQL config not found: app.py
     Start development server on http://localhost:8080/
 
-因为这个简单的应用并没有用到MySQL，所以不需要配置app.py，访问本地
-8080端口就可看到Hello, world!
+访问 http://localhost:8080 端口就可以看到Hello, world!了。
 
+使用MySQL服务
+~~~~~~~~~~~~~~
+
+配置好MySQL本地开发server，使用 `--mysql` 参数运行dev_server.py。 ::
+
+    $ dev_server.py --mysql=user:password@host:port
+
+现在你可以在应用代码中像在SAE线上环境一样使用MySQL服务了。
+dev_server.py默认使用名为 `app_应用名` 的数据库。
+
+使用storage服务
+~~~~~~~~~~~~~~~~
+
+使用 `--storage-path` 参数运行dev_server.py。 ::
+
+    $ dev_server.py --storage-path=/path/to/local/storage/data
+
+本地的storage服务使用以下的目录结构来模拟线上的storage。 ::
+
+    storage-path/
+          domain1/
+                key1
+                key2
+          domain2/
+          domain3/
+
+--storage-path配置的路径下每个子文件夹会映射为storage中的一个domain，
+而每个子文件夹下的文件映射为domain下的一个key，其内容为对应key的数据。
+
+.. note: 
+
+    为方便调试，dev_server自带的sae.storage在某个domain不存在的情况下会自动创建该domain。
+    线上环境中的domain需要在sae后台面板中手动创建。
+
+使用pylibmc
+~~~~~~~~~~~~~
+
+dev_server自带了一个dummy pylibmc，所以无须安装pylibmc就可以直接使用memcache服务了。
+该模块将所有的数据存贮在内存中，dev_server.py进程结束时，所有的数据都会丢失。
 
 使用virtualenv管理依赖关系
 -------------------------------------------
