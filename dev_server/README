@@ -3,29 +3,27 @@ SAE Python development server - experimental
 All Rights Reserved 2011
 SAE Python Team
 
-注意：本工具仅为应用开发便利之用，对sae环境的模拟并不完整
+目前支持的服务包括：mysql, taskqueue, memcache, storage, mail。
+大部分的服务直接运行dev_server.py进行调试就可以了，部分服务需要做一些配置。
 
+注意： 本工具仅为应用开发便利之用，对sae python环境的模拟并不完整。
 
 Install
 --------------
 
     sudo python setup.py install
 
-自动安装相应版本的框架，注意如果系统已安装某些框架，可能会有版本冲突。
-
-框架的依赖关系在 setup.py 中已注掉，故默认不安装任何框架，请自行安装。
-
-
-使用
+基本使用
 ------------
+
 使用svn检出app代码之后，建立以数字为标识的发布目录，切换到发布目录:
 
-    jaime@westeros:~/source/blackfire/1$ pwd
+    $ pwd
     /home/jaime/source/blackfire/1
 
-建立index.wsgi:
+编辑index.wsgi和config.yaml:
 
-    jaime@westeros:~/source/blackfire/1$ cat index.wsgi
+    $ vi index.wsgi
     import sae
 
     def app(environ, start_response):
@@ -36,12 +34,57 @@ Install
 
     application = sae.create_wsgi_app(app)
 
+    $ vi config.yaml
+    ---
+    name: blackfire
+    version: 1
+    ...
+
 运行dev_server.py:
 
-    jaime@westeros:~/source/blackfire/1$ dev_server.py 
+    $ dev_server.py 
     MySQL config not found: app.py
     Start development server on http://localhost:8080/
 
-因为这个简单的应用并没有用到MySQL，所以不需要配置app.py，访问本地
-8080端口就可以看到Hello, world!了。
+访问 http://localhost:8080 端口就可以看到Hello, world!了。
 
+使用MySQL服务
+----------------
+
+配置好MySQL本地开发server，使用 `--mysql` 参数运行dev_server.py。
+
+    $ dev_server.py --mysql=user:password@host:port
+
+现在你可以在应用代码中像在SAE线上环境一样使用MySQL服务了。dev_server.py默认使用
+名为 `app_应用名` 的数据库。
+
+使用storage服务
+---------------
+
+使用 `--storage-path` 参数运行dev_server.py。
+
+    $ dev_server.py --storage-path=/path/to/local/storage/data
+
+本地的storage服务使用以下的目录结构来模拟线上的storage。
+
+    storage-path/
+          domain1/
+                key1
+                key2
+          domain2/
+          domain3/
+
+--storage-path配置的路径下每个子文件夹会映射为storage中的一个domain，而每个子文
+件夹下的文件映射为domain下的一个key，其内容为对应key的数据。
+
+.. note: 
+
+    为方便调试，dev_server自带的sae.storage在某个domain不存在的情况下会自动创建
+    该domain。线上环境中的domain需要在sae后台面板中手动创建。
+
+使用pylibmc
+--------------
+
+dev_server自带了一个dummy pylibmc，所以无须安装pylibmc就可以直接使用memcache服务
+了。该模块将所有的数据存贮在内存中，dev_server.py进程结束时，所有的数据都会丢失
+。
