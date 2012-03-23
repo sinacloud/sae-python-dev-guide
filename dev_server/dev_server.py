@@ -47,6 +47,9 @@ def setup_sae_environ(options):
     else:
         print 'MySQL config not found'
 
+    if options.storage:
+        os.environ['STORAGE_PATH'] = os.path.abspath(options.storage)
+        
     # Add custom environment variable
     os.environ['HTTP_HOST'] = 'localhost:%d' % options.port
     os.environ['APP_NAME'] = appname
@@ -75,6 +78,9 @@ def main(options):
         '/media': os.path.join(app_root,  'media'),
         '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
     }
+    if options.storage:
+        # stor dispatch: for test usage only
+        statics['/stor-stub'] = os.path.abspath(options.storage)
 
     # FIXME: All files under current directory
     files = ['index.wsgi']
