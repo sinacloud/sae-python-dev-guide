@@ -22,9 +22,9 @@ Contents:
     
     quickstart
     runtime
-    framework
     service
-    auth
+    tools
+    framework
     faq 
 
 

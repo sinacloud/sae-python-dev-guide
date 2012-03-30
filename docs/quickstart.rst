@@ -7,8 +7,9 @@ Hello, world!
 创建新应用
 ~~~~~~~~~~~
 
-http://sae.sina.com.cn/?m=myapp&a=create
+登录SAE，进入 `我的首页`_ ，点击 `创建新应用` ，创建一个新的应用blackfire。
 
+.. _我的首页: http://sae.sina.com.cn/?m=myapp&a=create
 
 检出svn代码
 ~~~~~~~~~~~~~
@@ -48,8 +49,6 @@ index.wsgi
 在浏览器中输入 `http://blackfire.sinaapp.com` ，就可以访问刚提交的应用了。
 
 
-Notes:
-
-svn用户名为sae安全邮箱
+.. note:: svn用户名为sae安全邮箱
 
 Windows用户svn使用可以参考 http://sae.sina.com.cn/?m=devcenter&content_id=215&catId=212
