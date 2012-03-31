@@ -12,53 +12,24 @@ MySQL
 ------------
 
 连接信息
-~~~~~~~~~~
+~~~~~~~~~~~
 
-MySQL 连接超时时间为30s 。
-
-有两种方式获取mysql的连接信息，推荐使用sae.const中定义的常量::
+获取mysql的连接信息。 ::
 
     import sae.const
 
-    sae.const.MYSQL_DB
-    sae.const.MYSQL_USER
-    sae.const.MYSQL_PASS
-    sae.const.MYSQL_HOST
-    sae.const.MYSQL_PORT   #请根据框架要求自行转换为int
-    sae.const.MYSQL_HOST_S #salve mysql server
+    sae.const.MYSQL_DB      # 数据库名
+    sae.const.MYSQL_USER    # 用户名
+    sae.const.MYSQL_PASS    # 密码
+    sae.const.MYSQL_HOST    # 主库域名（可读写）
+    sae.const.MYSQL_PORT    # 端口，类型为<type 'str'>，请根据框架要求自行转换为int
+    sae.const.MYSQL_HOST_S  # 从库域名（只读）
 
-下面的方式已不推荐使用::
+下面就可以跟平常一样使用MySQL服务了，SAE Python内置了MySQLdb模块，对于MySQLdb的使用，可以参考其 `官方文档`_ 。
 
-        
-        import sae.core
-        app = sae.core.Application()
+.. _官方文档: http://mysql-python.sourceforge.net/MySQLdb.html
 
-        DATABASES = {
-            'default': {
-                'ENGINE': 'mysql',
-                'NAME': app.mysql_db,
-                'USER': app.mysql_user,
-                'PASSWORD': app.mysql_pass,
-                'HOST': app.mysql_host,
-                'PORT': app.mysql_port,
-            }
-        }
-
-MySQL数据库静态信息 ::
-
-    SAE_MYSQL_HOST_M = 'w.rdc.sae.sina.com.cn'
-    SAE_MYSQL_HOST_S = 'r.rdc.sae.sina.com.cn'
-    SAE_MYSQL_PORT = '3307' 
-    
-    mysql_db = 'app_%s' % app_name
-    mysql_user = access_key
-    mysql_pass = secret_key
-
-应用的access_key, secret_key，可在应用管理界面的汇总信息中看到。
-
-不推荐直接使用这些KEY信息。
-
-http://sae.sina.com.cn/?m=devcenter&catId=192
+注意： MySQL 连接超时时间为30s 。
 
 数据库导入
 ~~~~~~~~~~~~~~
@@ -91,10 +62,6 @@ http://sae.sina.com.cn/?m=devcenter&catId=192
 
 请把要导入的sql文件中，所有LOCK, UNLOCK语句全部删除并重试。
 
-
-http://pythondemo.sinaapp.com/admin/ root:root
-
-http://pythondemo.sinaapp.com/demo/
 
 字符集问题
 ~~~~~~~~~~~
