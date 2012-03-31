@@ -24,7 +24,6 @@ Contents:
     runtime
     service
     tools
-    framework
     faq 
 
 
