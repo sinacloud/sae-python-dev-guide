@@ -4,31 +4,31 @@ SAE Python环境
 环境信息
 ----------
 
-SAE Python运行于沙箱环境之中，
+SAE Python应用运行于沙箱环境之中，SAE会根据负载在后端的多个节点中选择一个来处理HTTP请求。
+SAE Python支持标准WSGI应用。
 
 命名规范: 
 
 * 应用目录
+
+  SAE上的每个应用可以同时运行多个版本，版本以数字为标示，默认版本为1。
+  每个版本对应于应用svn根目录下以其版本号命名的一个目录，称为版本目录，
+  应用的代码（index.wsgi等）必须放到版本目录里。
+
+  以应用longtalk为例，这个应用有6个版本： ::
   
-    应用默认版本代码所在的目录，即index.wsgi所在目录，如 /data1/www/htdocs/115/longtalk/1。
-    该目录会添加到Python runtime的 sys.path 中。该目录也为应用运行时的当前目录。
-
-    不推荐使用os.getcwd()来获取路径信息，建议使用__file__属性。
-
-* 应用版本目录
-
-    你可同时运行多个版本的app，每个版本以数字为标识，如 `~/source/app/longtalk` 为app longtalk的根目录，下面有6个版本::
-
-        jaime@westeros:~/source/app/longtalk$ ls
+        jaime@westeros:~/longtalk$ ls
         1  2  3  4  5  6
+        jaime@westeros:~/longtalk/1$ ls
+        index.wsgi myapp.py
+  
+  应用默认版本代码所在的目录，称为应用目录。
+  该目录会添加到Python runtime的 sys.path 中。该目录也为应用运行时的当前目录。
 
-    应用代码必须放到版本目录里::
+  访问指定版本的应用： `http://<version>.<application-name>.sinaapp.com`
 
-        jaime@westeros:~/source/app/longtalk$ cd 1
-        jaime@westeros:~/source/app/longtalk/1$ ls
-        dispatcher.py  index.wsgi  myapp.py
-
-
+  不推荐使用os.getcwd()来获取路径信息，建议使用__file__属性。
+  
 预装模块列表
 ---------------------
 ::
@@ -54,8 +54,6 @@ SAE Python运行于沙箱环境之中，
 
 请求处理
 -------------
-
-SAE Python支持标准WSGI应用，
 
 静态目录
 
