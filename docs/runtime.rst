@@ -66,7 +66,14 @@ SAE Python支持标准WSGI应用，
 其他所有请求，都被路由到/index.wsgi:application，即应用根目录index.wsgi文件,
 名为application的callable，暂不可修改。
 
-application 使用下列方式创建::
+application 使用下列方式创建
+
+.. module:: sae
+.. function:: create_wsgi_app(app)
+
+   将标准wsgi应用封装为适宜在SAE上运行的应用
+
+::
 
     import sae
 

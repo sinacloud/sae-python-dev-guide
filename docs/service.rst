@@ -14,7 +14,12 @@ MySQL
 连接信息
 ~~~~~~~~~~~
 
-获取mysql的连接信息。 ::
+获取mysql的连接信息。
+
+.. module:: sae.const
+   :synopsis: MYSQL连接信息
+
+::
 
     import sae.const
 
@@ -88,8 +93,9 @@ SAE的任务，实际上对应于一个URL地址。SAE worker节点每请求一�
 Taskqueue
 ~~~~~~~~~~~~~~
 
+.. module:: sae.taskqueue
+
 .. py:function:: add_task(queue_name, url, payload=None) 
-   :module: sae.taskqueue
 
    快速添加任务    
 
@@ -115,7 +121,6 @@ Taskqueue
    prior: 可选，如果设置为True，则任务会被添加到任务队列的头部。
  
 .. py:class:: TaskQueue(name, auth_token=None)
-   :module: sae.taskqueue
 
    TaskQueue类
 
@@ -165,8 +170,7 @@ Example:
 Cron
 ~~~~~~~~~~~~~~~~
 
-App的配置文件为 config.yaml. Cron的执行状态可在应用的管理界面 服务管理->
-Cron中查看。
+Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理界面 `服务管理>Cron` 中查看。
 
 +   添加Cron:
 
@@ -188,13 +192,13 @@ Cron中查看。
 
 +   语法字段含义
 
-    ..  attribute:: url
+    - url
 
-        cron任务的url。例如 `/relative/url/to/cron` 。
+      cron任务的url。例如 `/relative/url/to/cron` 。
      
-    ..  attribute:: schedule
+    - schedule
 
-        任务描述，也就是何时执行这个cron，支持unix crontab语法。例如：  ::
+      任务描述，也就是何时执行这个cron，支持unix crontab语法。例如：  ::
 
                # 每天00：05分执行
                5 0 * * *
@@ -205,23 +209,23 @@ Cron中查看。
                # 每分钟执行一次
                */1 * * * *
 
-        具体的语法规则可以参考man手册，`man 5 crontab`。
+      具体的语法规则可以参考man手册，`man 5 crontab`。
         
-    ..  attribute:: description
+    - description
 
-        可选。任务的说明，默认为空。
+      可选。任务的说明，默认为空。
      
-    ..  attribute:: timezone
+    - timezone
 
-        可选。默认为Beijing，目前支持：Beijing, NewYork, London, Sydney, Moscow, Berlin
+      可选。默认为Beijing，目前支持：Beijing, NewYork, London, Sydney, Moscow, Berlin
      
-    ..  attribute:: login
+    - login
 
-        可选。http basic auth设置，格式： `用户名@密码`
+      可选。http basic auth设置，格式： `用户名@密码`
      
-    ..  attribute:: times
+    - times
 
-        可选。设置cron最大执行的次数，默认没有次数限制。
+      可选。设置cron最大执行的次数，默认没有次数限制。
 
 ..  warning::
 
@@ -323,6 +327,8 @@ AppConfig http://sae.sina.com.cn/?m=devcenter&catId=193
 Mail
 -----------
 
+..  module:: sae.mail
+
 ..  py:class:: EmailMessage(**kwargs)
     :module: sae.mail
 
@@ -393,6 +399,9 @@ Memcache
 -----------
 请在前端管理界面启用Memcache服务。
 
+..  module:: pylibmc
+    :synopsis: memcache模块
+
 SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
 不同之处在于，创建Client时不用指定servers。 
 
@@ -424,8 +433,9 @@ Storage是SAE为开发者提供的分布式文件存储服务，用来存放用�
 
 用户需要先在在线管理平台创建Domain，每一个domain下面包含了你上传的数据。 
 
+..  module:: sae.storage
+
 ..  py:class:: Object(data, **kwargs)
-    :module: sae.storage
 
     Object类
 
@@ -439,7 +449,6 @@ Storage是SAE为开发者提供的分布式文件存储服务，用来存放用�
     content_encoding: 设置Object的Cotent-Encoding Header。
 
 ..  py:class:: Client(accesskey=ACCESS_KEY, secretkey=SECRET_KEY, prefix=APP_NAME)
-    :module: sae.storage
 
     Client类
 
@@ -519,6 +528,8 @@ kvdb服务禁用后会清除所有数据，请谨慎操作。
 
 sae.kvdb
 ~~~~~~~~~
+
+..  module:: sae.kvdb
 
 ..  py:class:: Error
     :module: sae.kvdb
