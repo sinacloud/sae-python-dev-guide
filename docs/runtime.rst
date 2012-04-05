@@ -94,6 +94,13 @@ Python runtime使用的是Python 2.6.7。
 本地文件系统可以读取本应用目录，Python标准库下的内容，不支持写入。
 如需读写临时文件建议使用StringIO或者cStringIO来替代。
 
+SAE设置了一些自定义的环境变量，这些环境变量可以通过os.environ这个dict获取。 
+
++ APP_NAME：应用名。
++ APP_VERSION: 当前应用使用的版本号。
++ SERVER_SOFTWARE: 当前server的版本（目前为sae/1.0.testing）。
+  可以使用这个环境变量来区分本地开发环境还是在线环境，本地开发环境未设置这个值。
+
 日志系统
 ---------
 打印到stdout和stderr的内容会记录到应用的日志中心中，

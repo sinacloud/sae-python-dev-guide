@@ -116,7 +116,7 @@ http://sae.sina.com.cn/?m=devcenter&catId=155
 
 一个可靠的方法::
 
-    if 'APP_NAME' in os.environ: 
+    if 'SERVER_SOFTWARE' in os.environ: 
         # SAE 
     else: 
         # Local 
