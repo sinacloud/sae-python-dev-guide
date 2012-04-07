@@ -57,6 +57,7 @@ def deploy(args):
 
     print 'Deploying http://%s.%s.sinaapp.com' % (version, name)
     print 'Updating cache'
+    name = str(name)
     path = os.path.join(cache, name)
     if not os.path.exists(path):
         url = SVN_SERVER + name
