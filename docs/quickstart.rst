@@ -70,10 +70,6 @@ Django
 
     django-admin.py startproject mysite
    
-#. 从django安装目录复制admin 的media目录::
-   
-    cp -rf django/contrib/admin/media/ .
-
    最终目录结构如下::
 
     jaime@westeros:~/pythondemo/1$ ls
@@ -93,36 +89,27 @@ Django
 
    .. literalinclude:: ../examples/pythondemo/1/mysite/views.py
 
-   修改urls.py，新增一条规则解析hello，同时打开admin的注释 ::
+   修改urls.py，新增一条规则解析hello。 ::
 
         # Uncomment the next two lines to enable the admin:
-        from django.contrib import admin
-        admin.autodiscover()
+        # from django.contrib import admin
+        # admin.autodiscover()
 
         urlpatterns = patterns('',
             ...
             (r'^$', 'mysite.views.hello),
-            (r'^admin/', include(admin.site.urls)),
+            #(r'^admin/', include(admin.site.urls)),
         )
-
-   在setttings.py中开启admin组件 ::
-
-        INSTALLED_APPS = (
-            'django.contrib.auth',
-            'django.contrib.contenttypes',
-            ...
-            # Uncomment the next line to enable the admin:
-            'django.contrib.admin',
-            # Uncomment the next line to enable admin documentation:
-            # 'django.contrib.admindocs',
-        )
-
 
    提交代码，访问 `http://<your-application-name>.sinaapp.com/` ，ok，熟悉的Hello，World!出现了。
 
+因为django的WSGI Handler不会处理静态文件请求（静态文件是由manage.py来处理的），如果你需要使用django的admin模块，
+你需要从django安装目录复制admin 的media目录到应用目录下的/media目录中。 ::
+
+    cp -rf django/contrib/admin/media/ <your-application-home>/media
 
 如果你定义了自己的templates目录，admin应用的模板可能无法使用，需要将admin的系统模块添加到settings.py中::
-
+   
     TEMPLATE_DIRS = (
         # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
         # Always use forward slashes, even on Windows.
@@ -132,7 +119,6 @@ Django
     )
 
 FIXME: admin模块和自定义模块关系
-
 
 Flask
 ~~~~~~~~~~
