@@ -94,6 +94,14 @@ Python runtime使用的是Python 2.6.7。
 本地文件系统可以读取本应用目录，Python标准库下的内容，不支持写入。
 如需读写临时文件建议使用StringIO或者cStringIO来替代。
 
+Python默认的模块搜索路径为：当前目录 > 系统目录。添加模块搜索目录的方法为： ::
+
+    import sys
+    sys.path.insert(0, your_custom_module_path)
+
+注意：Python当前目录下的子目录只有包含__init__.py才会被Python认为是一个package，
+才可以直接import。
+
 SAE设置了一些自定义的环境变量，这些环境变量可以通过os.environ这个dict获取。 
 
 + APP_NAME：应用名。
