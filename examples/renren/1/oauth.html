@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>RenRen OAuth Example</title>
+    </head>
+    <body>
+        {% if current_user %}
+        <p>
+            <a target="_blank" href="http://www.renren.com/profile?id={{ current_user.uid }}"><img src="{{ current_user.avatar }}" alt="首页" /></a>
+        </p>
+        <p>
+            You are logged in as <a target="_blank" href="http://www.renren.com/profile?id={{ current_user.uid }}">{{ current_user.name }}</a>
+        </p>
+        <p>
+            <a href="/auth/logout">Log out</a>
+        </p>
+        {% else %}
+        <p>
+            You are not yet logged into this site
+        </p>
+        <p>
+            <a href="/auth/login">Log in with RenRen</a>
+        </p>
+        {% end %}
+    </body>
+</html>

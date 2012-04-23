@@ -10,12 +10,15 @@ setup(
     install_requires = [
         'Werkzeug',
         'pip',
+        'PyYAML',
+        'argparse',
         #'Django==1.2.7',
         #'bottle==0.9.6',
         #'tornado==2.1.1',
         #'Flask==0.7.2',
-        #'flask-sqlalchemy',
         #'Uliweb',
+        #"web.py==0.36",
+        #'flask-sqlalchemy',
         #'jinja2',
         #'MySQL-python'
         ],
@@ -23,5 +26,5 @@ setup(
     license = "",
     url = "http://appstack.sinaapp.com",
     packages=['sae'],
-    scripts = ['dev_server.py'],
+    scripts = ['dev_server.py', 'saecloud'],
 )

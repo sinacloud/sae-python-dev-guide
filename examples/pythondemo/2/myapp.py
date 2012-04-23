@@ -5,13 +5,15 @@ from flask import Flask, g, request
 app = Flask(__name__)
 app.debug = True
 
-import sae.core
+from sae.const import (MYSQL_HOST, MYSQL_HOST_S,
+    MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DB
+)
 
 @app.before_request
 def before_request():
     appinfo = sae.core.Application()
-    g.db = MySQLdb.connect(appinfo.mysql_host, appinfo.mysql_user, appinfo.mysql_pass,
-    appinfo.mysql_db, port=int(appinfo.mysql_port))
+    g.db = MySQLdb.connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS,
+                           MYSQL_DB, port=int(MYSQL_PORT))
 
 @app.teardown_request
 def teardown_request(exception):
