@@ -1,5 +1,7 @@
 build/*
 docs/_build/*
+dev_server/build/*
+dev_server/sae_python_dev.egg-info/*
 *~
 *.DS_Store
 *.default

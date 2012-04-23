@@ -1,14 +1,15 @@
 FAQ
 ===============
 
-<<<<<<< HEAD
-=====================
 
 怎么寻求帮助
 -------------------------
 
-http://www.douban.com/group/topic/26638508/
->>>>>>> ecb9c00f1e12f4f50f6a9cfb48b619fcf50d8625
+- 豆瓣小组: http://www.douban.com/group/topic/26638508/
+- 反馈BUG:  http://sae.sina.com.cn/?m=feedback#bug
+- 论坛:   http://cloudbbs.org/
+- Sina App Engine Blog: http://blog.sae.sina.com.cn/
+- SinaAppEngine的微博 : http://e.weibo.com/saet
 
 
 什么是app版本
