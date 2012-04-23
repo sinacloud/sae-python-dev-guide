@@ -5,24 +5,15 @@ FAQ
 怎么寻求帮助
 -------------------------
 
-- 豆瓣小组: http://www.douban.com/group/topic/26638508/
-- 反馈BUG:  http://sae.sina.com.cn/?m=feedback#bug
-- 论坛:   http://cloudbbs.org/
-- Sina App Engine Blog: http://blog.sae.sina.com.cn/
-- SinaAppEngine的微博 : http://e.weibo.com/saet
+关于SAE Python相关服务的问题可以在以下地方反馈： 
 
+* `SAE Python豆瓣小组 <http://www.douban.com/group/topic/26638508/>`_
+* `SAE论坛 <http://cloudbbs.org/>`_
 
-什么是app版本
----------------
+关于Python编程的其它问题，推荐到 `CPyUG邮件列表`_ 和 `Python编程豆瓣小组`_ 寻求帮助。
 
-SAE app 代码以数字标识版本，如pythondemo应用有4个版本::
-
-    jaime@westeros:~/source/chenfeng/pythondemo$ ls
-    1  2  3  4
-
-代码必须被放到某个版本数字目录里，默认为版本 1，可以在网页界面更改。
-
-改变默认版本之后，请确保当前版本路径在sys.path最前面，防止误导入到旧版本的模块
+.. _CPyUG邮件列表: http://groups.google.com/group/python-cn?hl=zh-CN
+.. _Python编程豆瓣小组: http://www.douban.com/group/python/
 
 如何调试
 ------------
@@ -52,58 +43,30 @@ SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注
 
 Python新手？入门教程
 --------------------------
-笨办法学Python, Learn Python The Hard Way
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-作者: Zed Shaw, 译者: wangdingwei82@gmail.com
 
-http://readthedocs.org/docs/learn-python-the-hard-way-zh_cn-translation/en/latest/index.html
+* 笨办法学Python, Learn Python The Hard Way
 
+  作者: Zed Shaw, 译者: wangdingwei82@gmail.com
 
-Python 2.6.7 官方教程
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-http://docs.python.org/release/2.6.7/tutorial/index.html
+  http://readthedocs.org/docs/learn-python-the-hard-way-zh_cn-translation/en/latest/index.html
 
-模块索引
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Python编程必备书签
+* Python 2.6.7 官方教程
 
-http://docs.python.org/release/2.6.7/modindex.html
+  http://docs.python.org/release/2.6.7/tutorial/index.html
 
+* Python模块索引
 
-怎么使用邀请码 
------------------------------------------------------------------- 
-首先，你必须有一个sae帐户，如果没有请在 http://sae.sina.com.cn 注册。 
-
-其次，你需要正确设置你sae帐户的安全邮箱，请见 http://appstack.sinaapp.com/invite/。 
-
-然后，打开邀请入口， http://appstack.sinaapp.com/invite/  ，输入邀请码。 
-如果你收到的邀请码是链接形式，直接点击就行。 
-
-系统完成授权需5分钟左右。之后你可直接创建python应用，并无邮件通知。 
-
-如果按上述步骤操作仍有问题，请发帖说明。 
-
-如果你在输入邀请码之前没有sae帐户，没有设置安全邮箱，或设置了错误的 
-安全邮箱，邀请码仍是有效的。请注册帐户，修改安全邮箱，等待5分钟左右再试。 
-
-
-没有邀请码？试试等待队列
-------------------------------
-http://appstack.sinaapp.com/queue
-
+  http://docs.python.org/release/2.6.7/modindex.html
 
 没有我要使用的包，怎么办？ 
 ------------------------------------------ 
-Don't panic.
 
-使用virtualenv管理依赖关系
-http://appstack.sinaapp.com/static/doc/release/testing/runtime.html#virtualenv
-
+Don't panic.  See :ref:`howto-use-sae-python-with-virtualenv`
 
 关于svn的问题 
 --------------------------- 
 
-+++++++++++++++++++千万不要用svn cp，mv。You're warned.++++++++++++++ 
+.. warning:: 不要使用svn cp，mv，目前还不支持这两个操作。
 
 http://sae.sina.com.cn/?m=devcenter&catId=211 
 
