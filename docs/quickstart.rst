@@ -143,6 +143,8 @@ index.wsgi
 Tornado
 ~~~~~~~~~~~
 
+.. warning:: Tornado目前只支持WSGI模式，异步等功能无法使用。
+
 index.wsgi
 
 .. literalinclude:: ../examples/pythondemo/4/index.wsgi
