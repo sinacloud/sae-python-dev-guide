@@ -122,3 +122,38 @@ SAE设置了一些自定义的环境变量，这些环境变量可以通过os.en
 SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而缩短请求响应时间，
 对于缓存了的应用，请求处理只是取出index.wsgi中application这个callable并调用。
 
+
+应用程序配置
+-------------
+
+应用程序的配置文件为应用目录下的config.yaml文件。
+
+* 使用第三方库 ::
+
+    libraries:
+    - name: django
+      version: "1.4"
+
+    - name: numpy
+      version: "1.5.0"
+
+  name为第三方模块的名称，version为需要使用的版本，这两个字段为必填字段。
+
+* 静态文件处理 
+
+  静态文件夹 ::
+
+    handlers:
+    - url: /static
+      static_dir: static
+  
+  url为URL的前缀，static_dir为静态文件所在的目录（相对于应用目录）。
+
+.. note::
+
+   1. 部分第三方库已经包含在默认搜索路径中，可以不在config.yaml中指定直接使用。
+
+   2. 如果config.yaml中没有设置静态文件相关的handlers，系统会默认将/static，/media
+      为前缀的URL转发到应用目录下的static和media目录。
+
+   3. 以上两条规则仅为兼容性考虑保留，不推荐使用，请在config.yaml明确配置。
