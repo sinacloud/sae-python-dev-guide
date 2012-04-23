@@ -31,25 +31,28 @@ SAE Python支持标准WSGI应用。
   
 预装模块列表
 ---------------------
-::
 
-    Django-1.2.7.tar.gz
-    mitsuhiko-flask-sqlalchemy-0.15-0-g08689c7.zip
-    mitsuhiko-werkzeug-0.7.1-0-g22cca39.zip
-    mitsuhiko-jinja2-2.6-0-gabfbc18.zip
-    Flask-0.7.2.tar.gz
-    MySQL-python-1.2.3.tar.gz
-    tornado-2.1.1.tar.gz
-    bottle-0.9.6.tar.gz
-    sinatpy2.x-(2011-6-8).zip
-    Uliweb-0.0.1a7.zip
-    SQLAlchemy-0.7.3.tar.gz
-    web.py-0.36.tar.gz
-    setuptools-0.6c11/pkg_resources.py
-    pylibmc-1.2.2.tar.gz
-    Flask-WTF-0.5.2.tar.gz
-    WTForms-0.6.3.zip
-    Imaging-1.1.7.tar.gz
+    =============================== =================== ====================
+    名称                            支持的版本          默认版本
+    =============================== =================== ====================
+    django                          1.2.7, 1.4          1.2.7
+    flask                           0.7.2               0.7.2
+    flask-sqlalchemy                0.15                0.15
+    werkzeug                        0.7.1               0.7.1
+    jinjia2                         2.6                 2.6
+    tornado                         2.1.1               2.1.1
+    bottle                          0.9.6               0.9.6
+    ulibweb                         0.0.1a7             0.0.1a7
+    sqlalchemy                      0.7.3               0.7.3
+    webpy                           0.36                0.36
+    Flask-WTF                       0.5.2               0.5.2
+    WTForms                         0.6.3               0.6.3
+    GIL                             1.1.7               1.1.7
+    MySQLdb                         1.2.3               1.2.3
+    sinatpy                         2.x-(2011-6-8)      2.x-(2011-6-8)
+    =============================== =================== ====================
+
+.. note:: 需要使用非默认版本可以在config.yaml中指定。
 
 
 请求处理
