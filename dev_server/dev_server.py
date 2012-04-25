@@ -14,7 +14,7 @@ import yaml
 from werkzeug.serving import run_simple
 from optparse import OptionParser
 
-def setup_sae_environ(options):
+def setup_sae_environ(conf, options):
     # Add dummy pylibmc module
     import sae.memcache
     sys.modules['pylibmc'] = sae.memcache
@@ -24,8 +24,6 @@ def setup_sae_environ(options):
     if cwd not in sys.path:
         sys.path.insert(0, cwd)
 
-    conf_path = os.path.join(cwd, 'config.yaml')
-    conf = yaml.load(open(conf_path, "r"))
     appname = conf['name']
     appversion = str(conf['version'])
 
@@ -58,7 +56,12 @@ def setup_sae_environ(options):
     os.environ['APP_VERSION'] = appversion
 
 def main(options):
-    setup_sae_environ(options)
+    app_root = os.getcwd()
+
+    conf_path = os.path.join(app_root, 'config.yaml')
+    conf = yaml.load(open(conf_path, "r"))
+
+    setup_sae_environ(conf, options)
 
     try:
         index = imp.load_source('index', 'index.wsgi')
@@ -74,12 +77,20 @@ def main(options):
         print "application is not a callable"
         return
 
-    app_root = os.getcwd()
-    statics = {
-        '/static': os.path.join(app_root,  'static'),
-        '/media': os.path.join(app_root,  'media'),
-        '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
-    }
+    statics = {}
+    if conf.has_key('handlers'):
+        for h in conf['handlers']:
+            url = h['url']
+            if h.has_key['static_dir']:
+                statics[url] = os.path.join(app_root, h['static_dir'])
+
+    if not len(statics):
+        statics.update({
+            '/static': os.path.join(app_root,  'static'),
+            '/media': os.path.join(app_root,  'media'),
+            '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
+        })
+
     if options.storage:
         # stor dispatch: for test usage only
         statics['/stor-stub'] = os.path.abspath(options.storage)
