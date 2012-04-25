@@ -92,6 +92,8 @@ dev_server.py默认使用名为 `app_应用名` 的数据库。
 dev_server自带了一个dummy pylibmc，所以无须安装pylibmc就可以直接使用memcache服务了。
 该模块将所有的数据存贮在内存中，dev_server.py进程结束时，所有的数据都会丢失。
 
+.. _howto-use-sae-python-with-virtualenv:
+
 使用virtualenv管理依赖关系
 -------------------------------------------
 
