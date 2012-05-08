@@ -19,6 +19,11 @@ def setup_sae_environ(conf, options):
     import sae.memcache
     sys.modules['pylibmc'] = sae.memcache
 
+    # Save kvdb data in this file else the data will lost
+    # when the dev_server.py is down
+    if options.kvdb:
+        os.environ['kvdb_file'] = options.kvdb
+
     # Add app_root to sys.path
     cwd = os.getcwd()
     if cwd not in sys.path:
@@ -81,7 +86,7 @@ def main(options):
     if conf.has_key('handlers'):
         for h in conf['handlers']:
             url = h['url']
-            if h.has_key['static_dir']:
+            if h.has_key('static_dir'):
                 statics[url] = os.path.join(app_root, h['static_dir'])
 
     if not len(statics):
@@ -113,6 +118,7 @@ if __name__ == '__main__':
                       help="Which port to listen")
     parser.add_option("--mysql", dest="mysql", help="Mysql configuration: user:password@host:port")
     parser.add_option("--storage-path", dest="storage", help="Directory used as local stoarge")
+    parser.add_option("--kvdb-file", dest="kvdb", help="File to save kvdb data")
     (options, args) = parser.parse_args()
 
     main(options)
