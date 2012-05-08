@@ -181,7 +181,7 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
         cron:
           - description: cron_test
             url: /cron/make
-            schedule: */5 * * * *
+            schedule: "*/5 * * * *"
 
     上面的示例添加了一个cron任务，
     该任务每5分钟执行`http://crontest.sinaapp.com/cron/make`一次。
