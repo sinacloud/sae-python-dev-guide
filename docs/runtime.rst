@@ -50,6 +50,7 @@ SAE Python支持标准WSGI应用。
     PIL                             1.1.7               1.1.7
     MySQLdb                         1.2.3               1.2.3
     sinatpy                         2.x-(2011-6-8)      2.x-(2011-6-8)
+    numpy                           1.6.1               None
     =============================== =================== ====================
 
 .. note:: 需要使用非默认版本可以在config.yaml中指定。
@@ -138,7 +139,7 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
       version: "1.4"
 
     - name: numpy
-      version: "1.5.0"
+      version: "1.6.1"
 
   name为第三方模块的名称，version为需要使用的版本，这两个字段为必填字段。
 
