@@ -397,6 +397,13 @@ saecloud和git workflow
   请使用你的vcs工具在不同机器之间同步代码。
 
 
+使用saecloud上传文件到storage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+对于无法在storage管理页面上传的大文件，可以使用saecloud提供的命令行工具来上传。 ::
+
+    saecloud upload-data app-name domain file [file ...]
+
 可用插件
 --------------
 
