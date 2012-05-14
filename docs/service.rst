@@ -623,6 +623,13 @@ sae.kvdb
 
 参考 http://sae.sina.com.cn/?m=devcenter&catId=199
 
+
+socket代理服务
+-----------------
+
+直接使用socket模块即可。
+
+
 第三方认证接入
 --------------
 
