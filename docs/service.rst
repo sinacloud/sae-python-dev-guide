@@ -190,7 +190,7 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
             schedule: "*/5 * * * *"
 
     上面的示例添加了一个cron任务，
-    该任务每5分钟执行`http://crontest.sinaapp.com/cron/make`一次。
+    该任务每5分钟执行 `http://crontest.sinaapp.com/cron/make` 一次。
 
 +   删除cron:
 
@@ -207,15 +207,15 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
       任务描述，也就是何时执行这个cron，支持unix crontab语法。例如：  ::
 
                # 每天00：05分执行
-               5 0 * * *
+               "5 0 * * *"
                # 每月1号的14：15分执行
-               15 14 1 * *
+               "15 14 1 * *"
                # 每个工作日的晚上10点执行
-               0 22 * * 1-5
+               "0 22 * * 1-5"
                # 每分钟执行一次
-               */1 * * * *
+               "*/1 * * * *"
 
-      具体的语法规则可以参考man手册，`man 5 crontab`。
+      具体的语法规则可以参考man手册， `man 5 crontab`_ 。
         
     - description
 
@@ -232,6 +232,8 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
     - times
 
       可选。设置cron最大执行的次数，默认没有次数限制。
+
+.. _man 5 crontab: http://man.he.net/man5/crontab
 
 ..  warning::
 
