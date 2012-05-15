@@ -9,7 +9,7 @@
 直接使用urllib, urllib2或者httplib模块访问网络资源即可。
 
 默认使用sae提供的fetchurl服务来抓取网页，对于fetchurl不支持的功能（HTTP代理等），可以禁用掉fetchurl服务，
-使用socket代理来处理请求。 ::
+使用socket服务来处理请求。 ::
 
     import os
     os.environ['disable_fetchurl'] = True
@@ -632,7 +632,7 @@ sae.kvdb
 参考 http://sae.sina.com.cn/?m=devcenter&catId=199
 
 
-socket代理服务
+socket服务
 -----------------
 
 直接使用socket模块即可。
