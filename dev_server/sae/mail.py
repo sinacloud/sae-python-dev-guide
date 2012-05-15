@@ -230,6 +230,7 @@ class EmailMessage(object):
 
         import smtplib
         from email import encoders
+        from email.Header import Header
         from email.mime.text import MIMEText
         from email.MIMEBase import MIMEBase
         from email.MIMEMultipart import MIMEMultipart
@@ -245,12 +246,12 @@ class EmailMessage(object):
         msg = MIMEMultipart()
         msg['From'] = args['from']
         msg['To'] = args['to']
-        msg['Subject'] = args['subject']
+        msg['Subject'] = Header(args['subject'],'utf-8').encode()
 
         if args['content_type'] == 'plain':
-            msg.attach(MIMEText(args['content']))
+            msg.attach(MIMEText(args['content'], _charset="utf-8"))
         else:
-            msg.attach(MIMEText(args['content'], 'html'))
+            msg.attach(MIMEText(args['content'], 'html', _charset="utf-8"))
 
         for k, v in args.iteritems():
             if not k.startswith('attach'):
