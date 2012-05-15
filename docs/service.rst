@@ -315,7 +315,7 @@ config.yaml::
 
     cron:
     - url: /backend/cron/update
-      schedule: */5 * * * *
+      schedule: "*/5 * * * *"
 
     handle:
     - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
