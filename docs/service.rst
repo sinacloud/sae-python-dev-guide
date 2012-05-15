@@ -335,6 +335,8 @@ AppConfig http://sae.sina.com.cn/?m=devcenter&catId=193
 Mail
 -----------
 
+Mail是SAE为开发者提供的邮件发送服务，用来异步发送标准SMTP邮件。Mail的日志可以在 `日志中心» Mail` 中查看。
+
 ..  module:: sae.mail
 
 ..  py:class:: EmailMessage(**kwargs)
@@ -348,7 +350,7 @@ Mail
 
         初始化邮件的内容。
 
-        to: 收件人列表，多个收件人之间用逗号隔开。
+        to: 收件人，收件人邮件地址或者收件人邮件地址的列表。
 
         subject: 邮件的标题。
 
@@ -384,6 +386,13 @@ Examle:
 
         send_mail("katherine@vampire.com", "invite", "to tonight's party"
                   ("smtp.vampire.com", 25, "damon@vampire.com", "password", False))
+
+2.  发送邮件给多个收件人 ::
+
+        to = ["katherine@vampire.com", 'rebecca@vampire.com', 'elena@vampire.com']
+        send_mail(to, "invite", "to tonight's party"
+                  ("smtp.vampire.com", 25, "damon@vampire.com", "password", False))
+    
 
 2.  发送一封html格式的邮件 ::
 
