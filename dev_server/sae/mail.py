@@ -167,6 +167,13 @@ class EmailMessage(object):
             raise ValueError("May not set empty value for '%s'" % attr)
 
         if attr == 'to':
+            if isinstance(value, list):
+                for v in value:
+                    self._check_email_valid(v)
+                to = ','.join(value)
+                super(EmailMessage, self).__setattr__(attr, to) 
+                return
+
             self._check_email_valid(value)
         elif attr == 'smtp':
             self._check_smtp_valid(value)
@@ -256,7 +263,7 @@ class EmailMessage(object):
             part.add_header('Content-Disposition', 'attachment', filename=ap[1])
             msg.attach(part)
 
-        s.sendmail(args['from'], args['to'], msg.as_string())
+        s.sendmail(args['from'], args['to'].split(','), msg.as_string())
 
         s.quit()
 
