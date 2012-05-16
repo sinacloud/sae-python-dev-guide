@@ -19,5 +19,5 @@ print opener.open(url, payload).read()
 # sending sms
 print 'call sae sms api:'
 url = 'http://inno.smsinter.sina.com.cn/sae_sms_service/sendsms.php'
-payload = 'mobile=18611978203&msg=helloworld'
+payload = 'mobile=186****8203&msg=helloworld'
 print opener.open(url, payload).read()
