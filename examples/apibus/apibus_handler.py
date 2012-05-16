@@ -43,9 +43,9 @@ class APIBusHandler(BaseHandler):
             ('Accesskey', self.accesskey),
         ]
         headers.append(('Signature', self._signature(headers)))
-        headers.extend(req.header_items())
         # Create a new request
         _req = Request(_APIBUS_ENDPOINT, req.get_data(), origin_req_host=orig_url)
+        _req.headers.update(req.header_items())
         _req.headers.update(headers)
         _req.timeout = req.timeout
         return _req
