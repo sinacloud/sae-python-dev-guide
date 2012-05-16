@@ -246,12 +246,12 @@ class EmailMessage(object):
         msg = MIMEMultipart()
         msg['From'] = args['from']
         msg['To'] = args['to']
-        msg['Subject'] = Header(args['subject'],'utf-8').encode()
+        msg['Subject'] = Header(args['subject'], 'utf-8').encode()
 
         if args['content_type'] == 'plain':
-            msg.attach(MIMEText(args['content'], _charset="utf-8"))
+            msg.attach(MIMEText(args['content'].encode('utf-8'), _charset="utf-8"))
         else:
-            msg.attach(MIMEText(args['content'], 'html', _charset="utf-8"))
+            msg.attach(MIMEText(args['content'].encode('utf-8'), 'html', _charset="utf-8"))
 
         for k, v in args.iteritems():
             if not k.startswith('attach'):
