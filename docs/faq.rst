@@ -63,6 +63,21 @@ Python新手？入门教程
 
 Don't panic.  See :ref:`howto-use-sae-python-with-virtualenv`
 
+如何使用新浪微博API
+----------------------
+
++   使用 `weibopy`_
+
+    该模块已经内置，可以直接使用。 完整示例请参考： `examples/weibo`_  。
+
++   使用 `sinaweibopy`_ (推荐)
+
+    新浪微博API OAuth 2 Python客户端
+
+.. _weibopy: http://code.google.com/p/sinatpy/
+.. _examples/weibo: https://github.com/SAEPython/saepythondevguide/tree/master/examples/weibo/1
+.. _sinaweibopy: http://open.weibo.com/wiki/SDK#Python_SDK
+
 关于svn的问题 
 --------------------------- 
 
