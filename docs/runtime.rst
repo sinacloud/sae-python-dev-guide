@@ -39,7 +39,7 @@ SAE Python支持标准WSGI应用。
     flask                           0.7.2               0.7.2
     flask-sqlalchemy                0.15                0.15
     werkzeug                        0.7.1               0.7.1
-    jinjia2                         2.6                 2.6
+    jinja2                          2.6                 2.6
     tornado                         2.1.1               2.1.1
     bottle                          0.9.6               0.9.6
     ulibweb                         0.0.1a7             0.0.1a7
