@@ -78,6 +78,13 @@ Don't panic.  See :ref:`howto-use-sae-python-with-virtualenv`
 .. _examples/weibo: https://github.com/SAEPython/saepythondevguide/tree/master/examples/weibo/1
 .. _sinaweibopy: http://open.weibo.com/wiki/SDK#Python_SDK
 
+Django框架下数据库的主从读写
+-----------------------------
+
+参见Django官方文档 `Multiple databases`_
+
+.. _Multiple databases: https://docs.djangoproject.com/en/1.2/topics/db/multi-db/#multiple-databases
+
 关于svn的问题 
 --------------------------- 
 
