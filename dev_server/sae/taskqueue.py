@@ -97,7 +97,7 @@ class Task:
         if payload:
             self.info['postdata'] = base64.b64encode(payload)
                 
-        for k, v in kwargs:
+        for k, v in kwargs.iteritems():
             if k == 'delay':
                 self.info['delay'] = v
             elif k == 'prior':
