@@ -790,3 +790,36 @@ parameters为请求参数，多个参数之间使用&分割，以下列出了这
     url = _SEGMENT_BASE_URL + '?' + args
     result = urllib2.urlopen(url, payload).read()
 
+短信服务
+------------------
+
+**短信服务请求**
+
+SAE短信服务请求采用以下形式的HTTP网址： ::
+
+    http://inno.smsinter.sina.com.cn/sae_sms_service/sendsms.php
+
+参数采用POST的方法提交，以下列出了这些参数和其可能的值。
+
+* mobile: 对方的手机号码。
+* msg: 短信发送的内容。
+* encoding: 可选。短信内容的编码格式，可以为：GB2312、UTF-8，默认为UTF-8。
+
+**短信服务响应**
+
+短信服务的响应为json格式，格式如下： ::
+
+    {
+        "sms": {
+            "encoding": "GB2312", 
+            "mobile": "18911978203", 
+            "msg": "hello....."
+        }, 
+        "status": "\\u77ed\\u4fe1\\u63d0\\u4ea4\\u6210\\u529f"
+    }
+
+响应数据为一个dict，dict中包含以下数据:
+
+* sms: 短信服务请求的参数。
+* status：短信发送的状态。 
+
