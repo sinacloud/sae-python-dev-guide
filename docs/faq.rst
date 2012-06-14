@@ -61,7 +61,15 @@ Python新手？入门教程
 没有我要使用的包，怎么办？ 
 ------------------------------------------ 
 
-Don't panic.  See :ref:`howto-use-sae-python-with-virtualenv`
+Don't panic.  
+
+对于pure python的package，See :ref:`howto-use-sae-python-with-virtualenv`
+
+对于含有c extension的package，目前SAE还无法直接支持，如果需要这些package，可以申请预装。
+
+`预装申请`_
+
+.. _预装申请: https://github.com/SAEPython/saepythondevguide/issues/new
 
 如何使用新浪微博API
 ----------------------
