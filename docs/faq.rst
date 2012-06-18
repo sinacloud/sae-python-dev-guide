@@ -71,6 +71,12 @@ Don't panic.
 
 .. _预装申请: https://github.com/SAEPython/saepythondevguide/issues/new
 
+.. note::
+
+   很多package对package里的c extension都会提供一个python的版本，这类package在sae上也可以
+   直接使用，只是速度上相对于使用c extension会稍慢一点。
+
+
 如何使用新浪微博API
 ----------------------
 
