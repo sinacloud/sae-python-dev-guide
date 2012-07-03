@@ -187,39 +187,17 @@ class Client(local):
             it.  The values are not converted from strings.
         '''
 
-        total_bytes= 0
-        for k, e in _cache.iteritems():
-            total_bytes += len(str(e.value))
-
-        curr_items = len(_cache)
-
-        name = '10.67.15.110:9211 (0)'
-        stats = {
-            'bytes': str(total_bytes),
-            'bytes_read': '920852',
-            'bytes_written': '3615514',
-            'cmd_get': str(self._cmd_get),
-            'cmd_set': str(self._cmd_set),
-            'connection_structures': '676',
-            'curr_connections': '3',
-            'curr_items': str(curr_items),
-            'evictions': '0',
-            'get_hits': str(self._get_hits),
-            'get_misses': str(self._get_misses),
-            'limit_maxbytes': '1048576',
-            'pid': '24925',
-            'pointer_size': '64',
-            'rusage_system': '38237.950000',
-            'rusage_user': '53464.940000',
-            'threads': '0',
-            'time': str(int(time.time())),
-            'total_connections': '350149607',
-            'total_items': str(curr_items),
-            'uptime': '2541642',
-            'version': '1.4.5'
+        info = {
+            'outbytes': 41, 
+            'total_size': 22, 
+            'inbytes': 62, 
+            'set_count': 16, 
+            'delete_count': 0, 
+            'total_count': 4, 
+            'get_count': 11
         }
 
-        return [(name, stats),]
+        return info
 
     def debuglog(self, str):
         if self.debug:
