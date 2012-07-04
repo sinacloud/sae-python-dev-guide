@@ -248,28 +248,11 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
 SAE任务处理节点只是简单的请求任务URL，对于除http basic auth之外的登录信息，一无所知，故务必确认你的URL
 可以不用登录直接访问。
 
-http basic auth虽然支持，但是不推荐使用。 要保护任务URL不被外界访问，请使用IP白名单。
+http basic auth虽然支持，但是不推荐使用。
 
 如果你在任务URL的POST处理程序中开启了CRSF，则会导致403认证失败错误。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
 
 什么是CRSF？ http://en.wikipedia.org/wiki/Cross-site_request_forgery
-
-
-如何保护任务URL
-~~~~~~~~~~~~~~~~~~
-为保护cron，taskqueue对应的url，可在config.yaml配置允许访问的IP地址。
-
-建议将所有taskqueue，cron的url都挂载到/backend/下面::
-
-   /backend/
-   /backend/taskqueue/
-   /backend/cron
-
-SAE内部节点IP范围: 10.0.0.0/8，如下配置只允许SAE内部节点访问::
-
-    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
-
-请确保SAE内部节点在白名单内，否则将无法正常执行。
 
 Cron和Taskqueue中使用weibo api
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,21 +299,6 @@ config.yaml::
     cron:
     - url: /backend/cron/update
       schedule: "*/5 * * * *"
-
-    handle:
-    - hostaccess: if(path ~ "/backend/") allow "10.0.0.0/8"
-
-
-原有的PHP文档
-~~~~~~~~~~~~~~~~~
-仅供参考
-
-Taskqueue http://sae.sina.com.cn/?m=devcenter&catId=205
-
-Cron http://sae.sina.com.cn/?m=devcenter&catId=195
-
-AppConfig http://sae.sina.com.cn/?m=devcenter&catId=193 
-
 
 Mail
 -----------
