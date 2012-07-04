@@ -45,11 +45,8 @@ SAE Python支持标准WSGI应用。
     ulibweb                         0.0.1a7             0.0.1a7
     sqlalchemy                      0.7.3               0.7.3
     webpy                           0.36                0.36
-    Flask-WTF                       0.5.2               0.5.2
-    WTForms                         0.6.3               0.6.3
     PIL                             1.1.7               1.1.7
     MySQLdb                         1.2.3               1.2.3
-    sinatpy                         2.x-(2011-6-8)      2.x-(2011-6-8)
     numpy                           1.6.1               None
     =============================== =================== ====================
 
@@ -59,14 +56,13 @@ SAE Python支持标准WSGI应用。
 请求处理
 -------------
 
-静态目录
+默认符合以下规则的请求会作为静态文件处理：
 
-* /media
-* /static
+* /static/\*
 * /favicon.ico
 
 其他所有请求，都被路由到/index.wsgi:application，即应用根目录index.wsgi文件,
-名为application的callable，暂不可修改。
+名为application的callable，不可修改。
 
 application 使用下列方式创建
 
@@ -157,7 +153,7 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
    1. 部分第三方库已经包含在默认搜索路径中，可以不在config.yaml中指定直接使用。
 
-   2. 如果config.yaml中没有设置静态文件相关的handlers，系统会默认将/static，/media
-      为前缀的URL转发到应用目录下的static和media目录。
+   2. 如果config.yaml中没有设置静态文件相关的handlers，系统会默认将/static为前缀
+      的URL转发到应用目录下的static目录。
 
    3. 以上两条规则仅为兼容性考虑保留，不推荐使用，请在config.yaml明确配置。
