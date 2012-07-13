@@ -235,41 +235,9 @@ Cron的配置文件为 `config.yaml` ，Cron的执行状态可在应用的管理
 
 .. _man 5 crontab: http://man.he.net/man5/crontab
 
-..  warning::
+..  note::
 
-    Cron使用POST方式请求URL。
-
-什么是POST和GET？请见 http://en.wikipedia.org/wiki/HTTP#Request_methods
-
-
-登录和CRSF
-~~~~~~~~~~~~~~~~~~~~
-
-SAE任务处理节点只是简单的请求任务URL，对于除http basic auth之外的登录信息，一无所知，故务必确认你的URL
-可以不用登录直接访问。
-
-http basic auth虽然支持，但是不推荐使用。
-
-如果你在任务URL的POST处理程序中开启了CRSF，则会导致403认证失败错误。请在任务处理程序中关闭CRSF功能，涉及框架: Django, Flask等。
-
-什么是CRSF？ http://en.wikipedia.org/wiki/Cross-site_request_forgery
-
-Cron和Taskqueue中使用weibo api
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-因为现在weibo api需要提供调用者的ip（合法的公网ip），sae默认提供的是http请求的client的ip，
-但是对于cron和taskqueue，由于是sae的内部请求，无法获取公网ip。所以需要用户手工设置一个。
-设置方法如下： ::
-
-    import os
-    os.environ['REMOTE_ADDR'] = 调用者公网ip
-
-请务必将这段代码放在请求处理代码执行的必经路径上。比如在Flask中：::
-
-    @app.before_request
-    def before_request():
-        import os
-        os.environ['REMOTE_ADDR'] = 调用者公网ip
+    Cron使用GET方式请求URL。
 
 Cron 完整示例
 ~~~~~~~~~~~~~~~~~~~

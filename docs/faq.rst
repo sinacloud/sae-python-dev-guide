@@ -92,6 +92,24 @@ Don't panic.
 .. _examples/weibo: https://github.com/SAEPython/saepythondevguide/tree/master/examples/weibo/1
 .. _sinaweibopy: http://open.weibo.com/wiki/SDK#Python_SDK
 
+
+如何在Cron中使用微博API
+------------------------
+
+因为现在weibo api需要提供调用者的ip（合法的公网ip），sae默认提供的是http请求的client的ip，
+但是对于cron和taskqueue，由于是sae的内部请求，无法获取公网ip。所以需要用户手工设置一个。
+设置方法如下： ::
+
+    import os
+    os.environ['REMOTE_ADDR'] = 调用者公网ip
+
+请务必将这段代码放在请求处理代码执行的必经路径上。比如在Flask中：::
+
+    @app.before_request
+    def before_request():
+        import os
+        os.environ['REMOTE_ADDR'] = 调用者公网ip
+
 Django框架下数据库的主从读写
 -----------------------------
 
