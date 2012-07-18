@@ -5,10 +5,23 @@ FAQ
 怎么寻求帮助
 -------------------------
 
-关于SAE Python相关服务的问题可以在以下地方反馈： 
+关于SAE Python相关服务的问题可以在以下地方提问。
+
+* SAE Python邮件列表 
+
+  订阅邮件列表
+  发送邮件至： sae-python+subscribe@googlegroups.com
+  
+  退订邮件列表
+  发送邮件至： sae-python+unsubscribe@googlegroups.com
+  
+  发表主题
+  发送邮件至： sae-python@googlegroups.com
+  
+  订阅和退订时发送空邮件即可。如果想修改订阅方式，可以登录Google论坛后在设置中进行更改。
+
 
 * `SAE Python豆瓣小组 <http://www.douban.com/group/topic/26638508/>`_
-* `SAE论坛 <http://cloudbbs.org/>`_
 
 关于Python编程的其它问题，推荐到 `CPyUG邮件列表`_ 和 `Python编程豆瓣小组`_ 寻求帮助。
 
