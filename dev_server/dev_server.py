@@ -29,7 +29,7 @@ def setup_sae_environ(conf, options):
     if cwd not in sys.path:
         sys.path.insert(0, cwd)
 
-    appname = conf['name']
+    appname = str(conf['name'])
     appversion = str(conf['version'])
 
     if options.mysql:
