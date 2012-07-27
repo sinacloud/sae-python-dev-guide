@@ -175,7 +175,7 @@ class Client:
 
         try:
             st = os.stat(fullpath)
-        except:
+        except OSError, e:
             if e.errno == errno.ENOENT:
                 raise ObjectNotExistsError()
             else:
@@ -218,7 +218,7 @@ class Client:
 
             try:
                 st = os.stat(filepath)
-            except:
+            except OSError:
                 raise InternalError()
 
             data.append({
