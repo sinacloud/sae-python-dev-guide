@@ -472,8 +472,6 @@ if __name__ == "__main__":
             print "OK"
      
 db_file = os.environ.get('kvdb_file', None)
-if db_file is not None:
-    print "KVDB: %s" % db_file
 
 import pickle
 
@@ -481,7 +479,7 @@ def _save_cache():
     if db_file is None: return
 
     try:
-        pickle.dump(_cache, open(db_file, 'w'))
+        pickle.dump(_cache, open(db_file, 'wb'))
     except Exception, e:
         print "save kvdb to '%s' failed: %s" % (db_file, str(e))
 
@@ -489,7 +487,7 @@ def _restore_cache():
     if db_file is None: return
 
     try:
-        _cache.update(pickle.load(open(db_file)))
+        _cache.update(pickle.load(open(db_file, 'rb')))
     except Exception, e:
         print "load kvdb from '%s' failed: %s" % (db_file, str(e))
     

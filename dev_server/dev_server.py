@@ -22,6 +22,7 @@ def setup_sae_environ(conf, options):
     # Save kvdb data in this file else the data will lost
     # when the dev_server.py is down
     if options.kvdb:
+        print 'KVDB: ', options.kvdb
         os.environ['kvdb_file'] = options.kvdb
 
     # Add app_root to sys.path
@@ -66,21 +67,28 @@ def main(options):
     conf_path = os.path.join(app_root, 'config.yaml')
     conf = yaml.load(open(conf_path, "r"))
 
-    setup_sae_environ(conf, options)
+    # if env `WERKZEUG_RUN_MAIN` is not defined, then we are in 
+    # the reloader process.
+    if os.environ.get('WERKZEUG_RUN_MAIN', False):
+        setup_sae_environ(conf, options)
 
-    try:
-        index = imp.load_source('index', 'index.wsgi')
-    except IOError:
-        print "Seems you don't have an index.wsgi"
-        return
+        try:
+            index = imp.load_source('index', 'index.wsgi')
+        except IOError:
+            print "Seems you don't have an index.wsgi"
+            return
 
-    if not hasattr(index, 'application'):
-        print "application not found in index.wsgi"
-        return
+        if not hasattr(index, 'application'):
+            print "application not found in index.wsgi"
+            return
 
-    if not callable(index.application):
-        print "application is not a callable"
-        return
+        if not callable(index.application):
+            print "application is not a callable"
+            return
+
+        application = index.application
+    else:
+        application = 1
 
     statics = {}
     if conf.has_key('handlers'):
@@ -104,7 +112,7 @@ def main(options):
     files = ['index.wsgi']
 
     try:
-        run_simple('localhost', options.port, index.application,
+        run_simple('localhost', options.port, application,
                     use_reloader = True,
                     use_debugger = True,
                     extra_files = files,
