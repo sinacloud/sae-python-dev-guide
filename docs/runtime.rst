@@ -129,6 +129,12 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
 应用程序的配置文件为应用目录下的config.yaml文件。
 
+* 设置使用的worker类型 ::
+
+    worker: tornado | wsgi
+
+  如果没有设置则默认使用wsgi worker。
+
 * 使用第三方库 ::
 
     libraries:

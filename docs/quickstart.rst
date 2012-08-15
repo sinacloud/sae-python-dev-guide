@@ -140,16 +140,6 @@ index.wsgi
 .. literalinclude:: ../examples/pythondemo/3/index.wsgi
 
 
-Tornado
-~~~~~~~~~~~
-
-.. warning:: Tornado目前只支持WSGI模式，异步等功能无法使用。
-
-index.wsgi
-
-.. literalinclude:: ../examples/pythondemo/4/index.wsgi
-
-
 Uliweb
 ~~~~~~~~~~~
 
@@ -270,4 +260,29 @@ index.wsgi
    以上所有的示例代码的完整版本可以在我们的github repo中获得。
 
    https://github.com/SAEPython/saepythondevguide/tree/master/examples/
+
+Tornado
+~~~~~~~~~~~
+
+**WSGI模式**
+
+index.wsgi
+
+.. literalinclude:: ../examples/pythondemo/4/index.wsgi
+
+**使用Torando Worker**
+
+config.yaml
+
+.. literalinclude:: ../examples/pythondemo/5/config.yaml
+
+index.yaml
+
+.. literalinclude:: ../examples/pythondemo/5/index.wsgi
+
+.. note::
+
+   1. tornado worker还处在bleeding edge，use at your own risk。
+   2. 在应用出现异常的情况下，SAE可能会返回502错误，请在日志中心中查看详细的错误信息。
+   3. 目前仅支持预安装的tornado-2.1.1，用户自己上传的tornado无法使用该worker。
 
