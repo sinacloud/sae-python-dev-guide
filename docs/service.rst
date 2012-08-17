@@ -469,18 +469,12 @@ Example ::
     s.list('domain-name')
 
 
-KVDB(TBD)
+KVDB
 ----------
 
-开启和关闭
-~~~~~~~~~~~~
+kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以在面板中禁用，禁用会删除所有数据。
 
-http://sae.sina.com.cn/?m=kv
-
-kvdb服务禁用后会清除所有数据，请谨慎操作。
-
-sae.kvdb
-~~~~~~~~~
+.. _管理面板: http://sae.sina.com.cn/?m=kv
 
 ..  module:: sae.kvdb
 
@@ -502,42 +496,73 @@ sae.kvdb
 ..  py:class:: KVClient(**kw)
     :module: sae.kvdb
 
-    KVDB客户端封装，基于python-memcached-1.48 memcache.Client，大多数method使用方法相同。
+    KVDB客户端基于python-memcached，大多数method使用方法相同。
     如果不能成功创建KVClient，则抛出 sae.kvdb.Error 异常。
 
     kw: 传递给memcache.Client的keyword参数
 
     .. py:method:: set(key, val, time=0, min_compress_len=0)
 
-        设置key的值为val，成功则返回True
+       设置key的值为val，成功则返回True
 
-        time 该key的超时时间，请参阅memcached协议Storage commands:
-        http://code.sixapart.com/svn/memcached/trunk/server/doc/protocol.txt
+       time 该key的超时时间，请参阅memcached协议Storage commands:
+       http://code.sixapart.com/svn/memcached/trunk/server/doc/protocol.txt
 
-        min_compress_len 启用zlib.compress压缩val的最小长度，如果val的长度大于此值
-        则启用压缩，0表示不压缩。
+       min_compress_len 启用zlib.compress压缩val的最小长度，如果val的长度大于此值
+       则启用压缩，0表示不压缩。
 
     .. py:method:: add(key, val, time=0, min_compress_len=0)
 
-        同set，但只在key不存在时起作用
+       同set，但只在key不存在时起作用
 
     .. py:method:: replace(key, val, time=0, min_compress_len=0)
 
-        同set，但只在key存在时起作用
+       同set，但只在key存在时起作用
 
     .. py:method:: delete(key, time=0)
 
-        删除key，成功返回1，失败返回0。
+       删除key，成功返回1，失败返回0。
 
-        time 为后续多少秒内set/update操作会失败。 
+       time 为后续多少秒内set/update操作会失败。 
 
     .. py:method:: get(key)
 
-        获取key的值，失败则返回None
+       从kvdb中获取一个key的值。
+
+       成功返回key的值，失败则返回None
+
+    .. py:method:: get_multi(keys, key_prefix='')
+
+       从kvdb中一次获取多个key的值。
+
+       keys: key的列表，类型必须为list。
+       key_prefix: 所有key的前缀。请求时会在所有的key前面加上该前缀，返回值里所有的key都会去掉该前缀。
+
+       返回一个key/value的dict。
+
+    .. py:method:: get_by_prefix(prefix, max_count=100, start_key=None)
+
+       从kvdb中查找指定前缀的 key/value pair。
+
+       prefix: 需要查找的key的前缀。
+       max_count: 最多返回的item个数，默认为100。
+       start_key: 指定返回的第一个item的key，该key不包含在返回中。
+
+       返回一个list，该list中每个item为一个(key, value)的tuple。
+
+    .. py:method:: getkeys_by_prefix(prefix, max_count=100, start_key=None)
+
+       从kvdb中查找指定前缀的key。
+
+       prefix: 需要查找的key的前缀。
+       max_count: 最多返回的key的个数，默认为100。
+       start_key: 指定返回的第一个key，该key不包含在返回中。
+
+       返回符合条件的key的list。
 
     .. py:method:: get_info()
 
-        获取本应用kvdb统计数据，返回一个字典::
+       获取本应用kvdb统计数据，返回一个字典::
 
             {
                 'outbytes': 126, 
@@ -551,12 +576,9 @@ sae.kvdb
 
     .. py:method:: disconnect_all()
         
-        关闭kvdb连接
+       关闭kvdb连接
 
-示例代码
-~~~~~~~~~
-
-::
+示例代码: ::
 
     import sae.kvdb
 
@@ -574,8 +596,13 @@ sae.kvdb
 
     print kv.get_info()
 
-参考 http://sae.sina.com.cn/?m=devcenter&catId=199
+服务限制:
 
++ 存储空间：100G
++ 最大记录条数：1,000,000,000
++ key的最大长度：200 Bytes
++ value的最大长度：4M
++ get_multi获取的最大KEY个数：32
 
 socket服务
 -----------------
