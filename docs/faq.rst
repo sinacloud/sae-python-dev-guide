@@ -2,10 +2,10 @@ FAQ
 ===============
 
 
-怎么寻求帮助
+BUG反馈以及问题求助
 -------------------------
 
-关于SAE Python相关服务的问题可以在以下地方提问。
+关于SAE Python相关服务的问题可以在以下地方反馈和提问。
 
 * `SAE Python邮件列表`_ （推荐）
 
@@ -21,9 +21,9 @@ FAQ
   订阅和退订时发送空邮件即可。如果想修改订阅方式，可以登录Google论坛后在设置中进行更改。
 
 
-* `SAE Python豆瓣小组 <http://www.douban.com/group/topic/26638508/>`_
+* `SAE Python豆瓣小组（一些旧帖子的存档） <http://www.douban.com/group/pythoncitadel/>`_
 
-关于Python编程的其它问题，推荐到 `CPyUG邮件列表`_ 和 `Python编程豆瓣小组`_ 寻求帮助。
+关于Python编程的其它问题，推荐到 `CPyUG邮件列表`_ 寻求帮助。
 
 .. _SAE Python邮件列表: http://groups.google.com/group/sae-python
 .. _CPyUG邮件列表: http://groups.google.com/group/python-cn?hl=zh-CN

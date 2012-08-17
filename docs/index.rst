@@ -27,11 +27,6 @@ Contents:
     faq 
 
 
-意见反馈
-=============
-
-SAE Python 小组 http://www.douban.com/group/373262/ 
-
 Indices and tables
 ==================
 
