@@ -107,7 +107,7 @@ SAE设置了一些自定义的环境变量，这些环境变量可以通过os.en
 
 + APP_NAME：应用名。
 + APP_VERSION: 当前应用使用的版本号。
-+ SERVER_SOFTWARE: 当前server的版本（目前为sae/1.0.testing）。
++ SERVER_SOFTWARE: 当前server的版本（目前为direwolf/0.1）。
   可以使用这个环境变量来区分本地开发环境还是在线环境，本地开发环境未设置这个值。
 
 日志系统
