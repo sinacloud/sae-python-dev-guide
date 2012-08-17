@@ -86,7 +86,7 @@ application 使用下列方式创建
 Python环境
 -------------------
 
-Python runtime使用的是Python 2.6.7。
+Python runtime使用的是Python 2.7.3。
 
 * 仅支持运行纯Python的应用，不能动态加载C扩展，即.so，.dll等格式的模块不能使用
 * 进程，线程操作受限

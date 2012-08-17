@@ -33,7 +33,7 @@ FAQ
 ------------
 复杂程序建议您本地调试成功后，再上传运行。
 
-SAE Python 版本为 2.6.7。如果你使用内置的第三方库版本，请注意使用同样的版本调试，
+SAE Python 版本为 2.7.3。如果你使用内置的第三方库版本，请注意使用同样的版本调试，
 如支持的Django为1.2.7。
 
 如何捕获wsgi应用的异常，请参阅 http://www.python.org/dev/peps/pep-0333/
@@ -64,13 +64,13 @@ Python新手？入门教程
 
   http://readthedocs.org/docs/learn-python-the-hard-way-zh_cn-translation/en/latest/index.html
 
-* Python 2.6.7 官方教程
+* Python 官方教程
 
-  http://docs.python.org/release/2.6.7/tutorial/index.html
+  http://docs.python.org/tutorial/index.html
 
 * Python模块索引
 
-  http://docs.python.org/release/2.6.7/modindex.html
+  http://docs.python.org/release/2.7.3/py-modindex.html
 
 没有我要使用的包，怎么办？ 
 ------------------------------------------ 
