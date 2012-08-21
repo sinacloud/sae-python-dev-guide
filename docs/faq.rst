@@ -1,7 +1,6 @@
 FAQ
 ===============
 
-
 BUG反馈以及问题求助
 -------------------------
 
@@ -27,57 +26,26 @@ BUG反馈以及问题求助
 
 .. _SAE Python邮件列表: http://groups.google.com/group/sae-python
 .. _CPyUG邮件列表: http://groups.google.com/group/python-cn?hl=zh-CN
-.. _Python编程豆瓣小组: http://www.douban.com/group/python/
 
 如何调试
 ------------
+
 复杂程序建议您本地调试成功后，再上传运行。
 
-SAE Python 版本为 2.7.3。如果你使用内置的第三方库版本，请注意使用同样的版本调试，
-如支持的Django为1.2.7。
+SAE Python 版本为 2.7.3，本地调试时注意不要使用高于此版本的python。
 
-如何捕获wsgi应用的异常，请参阅 http://www.python.org/dev/peps/pep-0333/
+如果你使用内置的第三方库，本地调试时最好使用同样的版本。
 
-501 页面对应的常见处理办法，请检查:
-
-* 使用dev_server查看是否有语法错误
-* 模块是否正确安装
-* 是否遵循WSGI规范，返回iterator
-* 数据库设置是否正确，是否已在SAE管理界面启用MYSQL，是否已创建数据表，初始化
-* 是否已经打开framework的debug功能
-
-有的framework默认关闭了debug功能，如果程序有问题则只返回500 internal error，没有异常堆栈信息，
-这样调试起来很困难。在开发过程中，请确认框架的debug功能处于开启状态。
-
-对于无法加载index.wsgi，index.wsgi中没有application callable等等严重错误，SAE Python会直接在浏览器中打印出异常，
-其余应用没有捕获的异常会打印到应用的日志中，如果需要SAE Python将所有应用未捕获的异常打印到浏览器，请按如下创建application。
+对于50x页面，如果异常被web框架捕获，则需要打开web框架的调试开关，查看详细的异常信息。如果异常被python server捕获，
+python server会直接在浏览器中打印出异常。
 
 .. note:: 在header已经发出的情况下，异常在浏览器中可能显示不出来，请查看日志。
 
 
-Python新手？入门教程
---------------------------
+没有我要使用的包怎么办
+------------------------
 
-* 笨办法学Python, Learn Python The Hard Way
-
-  作者: Zed Shaw, 译者: wangdingwei82@gmail.com
-
-  http://readthedocs.org/docs/learn-python-the-hard-way-zh_cn-translation/en/latest/index.html
-
-* Python 官方教程
-
-  http://docs.python.org/tutorial/index.html
-
-* Python模块索引
-
-  http://docs.python.org/release/2.7.3/py-modindex.html
-
-没有我要使用的包，怎么办？ 
------------------------------------------- 
-
-Don't panic.  
-
-对于pure python的package，See :ref:`howto-use-sae-python-with-virtualenv`
+对于纯python的package，See :ref:`howto-use-sae-python-with-virtualenv`
 
 对于含有c extension的package，目前SAE还无法直接支持，如果需要这些package，可以申请预装。
 
@@ -87,7 +55,7 @@ Don't panic.
 
 .. note::
 
-   很多package对package里的c extension都会提供一个python的版本，这类package在sae上也可以
+   很多package对package里的c extension都会提供一个python的fallback版本，这类package在sae上也可以
    直接使用，只是速度上相对于使用c extension会稍慢一点。
 
 
@@ -136,46 +104,22 @@ Django框架下数据库的主从读写
 
 .. warning:: 不要使用svn cp，mv，目前还不支持这两个操作。
 
-http://sae.sina.com.cn/?m=devcenter&catId=211 
+遇到奇怪的SVN错误，可以： 
 
-大文件，文件数多上传 
-http://www.douban.com/group/topic/23353500/ 
-
-bug 静态目录不支持多级？ 
-http://www.douban.com/group/topic/23692928/ 
-
-建议遇到奇怪svn错误，可以： 
-
-1. 重新在本地新建目录，检出干净的svn 
-
-2. 或者先保存代码，然后删除该版本，重新导入 
++ 重新在本地新建目录，检出干净的svn 
++ 或者先保存代码，然后删除该版本，重新导入 
 
 你也许需要新建一个版本，默认版本无法删除。 
 
 
-WTF！ MySQL gone away 
----------------------------------------- 
-MySQL连接超时时间为30s，所以你需要在代码中检查是否超时，是否需要重连。
+MySQL gone away问题
+----------------------
 
-【bug？】我用tornado db连接 出现了mysql gone away... 
-http://www.douban.com/group/topic/23673391/ 
+MySQL连接超时时间为30s，不是mysql默认的8小时，所以你需要在代码中检查是否超时，是否需要重连。
 
-mysql中创建表的问题 
-http://www.douban.com/group/topic/23689631/ 
-
-flask-sqlalchemy 如何在每次请求时重新连接数据库
-http://www.douban.com/group/topic/24103570/
-
-
-资费说明
----------------
-http://sae.sina.com.cn/?m=devcenter&catId=155
-
-
-如何区分本地开发环境和线上环境？
+如何区分本地开发环境和线上环境
 -------------------------------------
-
-一个可靠的方法::
+::
 
     if 'SERVER_SOFTWARE' in os.environ: 
         # SAE 
