@@ -49,7 +49,8 @@ SAE Python支持标准WSGI应用。
     MySQLdb                         1.2.3               1.2.3
     numpy                           1.6.1               None
     lxml                            2.3.4               None
-    PyYaml                          3.10                3.10
+    PyYAML                          3.10                3.10
+    misaka                          1.0.2               None
     =============================== =================== ====================
 
 .. note:: 需要使用非默认版本可以在config.yaml中指定。
