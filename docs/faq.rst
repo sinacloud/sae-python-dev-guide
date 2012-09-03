@@ -126,3 +126,55 @@ MySQL连接超时时间为30s，不是mysql默认的8小时，所以你需要在
     else: 
         # Local 
 
+
+如何serve django admin app的静态文件
+------------------------------------
+
+方法一：
+
+修改 `settings.py` 中的 `STATIC_ROOT` 为 `static/` 。
+
+运行 `python manage.py collectstatic` 将静态文件收集到应用的 `static` 子目录下。
+
+修改 `config.yaml` ，添加对static文件夹下的静态文件的handlers。 ::
+
+    handlers:
+    - url: /static
+      static_dir: path/to/mysite/static
+
+方法二：
+
+在开发调试过程中，可以将 `staticfiles_urlpatterns`_ 加到你的URLConf，让django来处理admin app的静态文件： ::
+
+    urls.py
+    --------
+    from django.contrib import admin
+    admin.autodiscover()
+
+    urlpatterns = patterns('',
+        ...
+
+        # Uncomment the next line to enable the admin:
+        url(r'^admin/', include(admin.site.urls)),
+    )
+
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
+
+由于sae默认static为静态文件目录，需要修改config.yaml，添加任意一条规则覆盖默认行为。 ::
+
+    config.yaml
+    -----------
+    ...
+
+    handlers:
+    - url: /foo
+      static_dir: foo
+
+ref:
+
+https://docs.djangoproject.com/en/1.4/ref/contrib/staticfiles/
+https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/#serving-the-admin-files
+
+.. _staticfiles_urlpatterns: https://docs.djangoproject.com/en/dev/howto/static-files/#staticfiles-development
+
