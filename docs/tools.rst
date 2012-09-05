@@ -104,7 +104,7 @@ kvdb默认数据存在内存中，dev_server.py进程结束时，数据会全部
 
     (ENV)$ bundle_local.py -r requirements.txt
     (ENV)$ cd virtualenv.bundle/
-    (ENV)$ zip -r ../virtualenv.bundle.zip。
+    (ENV)$ zip -r ../virtualenv.bundle.zip .
 
 将virutalenv.bundle目录或者virtualenv.bundle.zip拷贝到应用的目录下。
 
