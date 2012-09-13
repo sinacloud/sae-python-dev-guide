@@ -155,7 +155,7 @@ class Client:
         fullpath = os.path.join(_stor_path, domain, key_name)
 
         try:
-            data = open(fullpath).read()
+            data = open(fullpath, 'rb').read()
         except IOError, e:
             if e.errno == errno.ENOENT:
                 raise ObjectNotExistsError()
