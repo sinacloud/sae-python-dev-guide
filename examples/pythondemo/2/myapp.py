@@ -11,7 +11,6 @@ from sae.const import (MYSQL_HOST, MYSQL_HOST_S,
 
 @app.before_request
 def before_request():
-    appinfo = sae.core.Application()
     g.db = MySQLdb.connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS,
                            MYSQL_DB, port=int(MYSQL_PORT))
 

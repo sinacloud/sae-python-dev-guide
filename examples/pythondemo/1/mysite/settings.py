@@ -1,8 +1,5 @@
 # Django settings for mysite project.
 
-import sae.core
-app = sae.core.Application()
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -12,14 +9,18 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+from sae.const import (MYSQL_HOST, MYSQL_HOST_S,
+    MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DB
+)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql',
-        'NAME': app.mysql_db,
-        'USER': app.mysql_user,
-        'PASSWORD': app.mysql_pass,
-        'HOST': app.mysql_host,
-        'PORT': app.mysql_port,
+        'ENGINE':   'mysql',
+        'NAME':     MYSQL_DB,
+        'USER':     MYSQL_USER, 
+        'PASSWORD': MYSQL_PASS,
+        'HOST':     MYSQL_HOST,
+        'PORT':     MYSQL_PORT,
     }
 }
 
