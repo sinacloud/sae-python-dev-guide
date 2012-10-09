@@ -42,45 +42,20 @@ MySQL
 
 注意： MySQL 连接超时时间为30s 。
 
-数据库导入
+数据库管理
 ~~~~~~~~~~~~~~
 
-创建数据表::
-    
-    django-admin.py sqlall all-installed-app-names > some-file
-    
-开发可使用本地mysql数据库，在发布时将其导入到SAE线上数据库:
+SAE支持使用PHPMyAdmin来管理Mysql，点击管理面板 `服务管理 > MySQL > 管理MySQL` 即可进入。
 
-#. 使用mysqldump或者phpMyAdmin等工具从本地数据库导出数据库。
-#. 进入SAE后台应用管理>服务管理>MySQL页面，初始化MySQL。
-#.  进入管理MySQL页面，选择导入，导入刚才导出的sql文件即可。
+开发时可使用本地mysql数据库，在发布时再将其导入到SAE线上数据库中。
 
+.. note::
 
-导入时如果出现下面的错误::
+   导入sql文件时，请先删除所有的LOCK, UNLOCK语句。
 
-    Error 
-    SQL query: 
-
-    -- 
-    -- Dumping data for table `***` 
-    -- 
-    LOCK TABLES `***` WRITE ; 
-
-
-    MySQL said: 
-
-    #1044 - Access denied for user '****'@'10.67.15.%' to database 'app_***'
-
-请把要导入的sql文件中，所有LOCK, UNLOCK语句全部删除并重试。
-
-
-字符集问题
-~~~~~~~~~~~
-在管理界面创建数据表，默认字符集为utf8，也可设为其他编码。
-
-如果你是在本地开发环境建立的数据表，请确保使用utf8。在管理界面导入本地数据库时，
-也可完成字符集的转换。
-
+   在管理界面创建数据表，默认字符集为utf8，也可设为其他编码。
+   如果你是在本地开发环境建立的数据表，请确保使用utf8。在管理界面导入本地数据库时，
+   也可完成字符集的转换。
 
 TaskQueue, Cron
 ---------------
@@ -527,38 +502,35 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 
     .. py:method:: get(key)
 
-       从kvdb中获取一个key的值。
-
-       成功返回key的值，失败则返回None
+       从kvdb中获取一个key的值。成功返回key的值，失败则返回None
 
     .. py:method:: get_multi(keys, key_prefix='')
 
-       从kvdb中一次获取多个key的值。
+       从kvdb中一次获取多个key的值。返回一个key/value的dict。
 
        keys: key的列表，类型必须为list。
-       key_prefix: 所有key的前缀。请求时会在所有的key前面加上该前缀，返回值里所有的key都会去掉该前缀。
 
-       返回一个key/value的dict。
+       key_prefix: 所有key的前缀。请求时会在所有的key前面加上该前缀，返回值里所有的key都会去掉该前缀。
 
     .. py:method:: get_by_prefix(prefix, max_count=100, start_key=None)
 
-       从kvdb中查找指定前缀的 key/value pair。
+       从kvdb中查找指定前缀的 key/value pair。返回一个list，该list中每个item为一个(key, value)的tuple。
 
        prefix: 需要查找的key的前缀。
-       max_count: 最多返回的item个数，默认为100。
-       start_key: 指定返回的第一个item的key，该key不包含在返回中。
 
-       返回一个list，该list中每个item为一个(key, value)的tuple。
+       max_count: 最多返回的item个数，默认为100。
+
+       start_key: 指定返回的第一个item的key，该key不包含在返回中。
 
     .. py:method:: getkeys_by_prefix(prefix, max_count=100, start_key=None)
 
-       从kvdb中查找指定前缀的key。
+       从kvdb中查找指定前缀的key。返回符合条件的key的list。
 
        prefix: 需要查找的key的前缀。
-       max_count: 最多返回的key的个数，默认为100。
-       start_key: 指定返回的第一个key，该key不包含在返回中。
 
-       返回符合条件的key的list。
+       max_count: 最多返回的key的个数，默认为100。
+
+       start_key: 指定返回的第一个key，该key不包含在返回中。
 
     .. py:method:: get_info()
 
@@ -604,7 +576,7 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 + value的最大长度：4M
 + get_multi获取的最大KEY个数：32
 
-socket服务
+SOCKET
 -----------------
 
 直接使用socket模块即可。目前仅支持AF_INET, SOCK_STREAM连接，暂时不支持异步socket。bind/listen方法无法使用。
@@ -753,7 +725,7 @@ parameters为请求参数，多个参数之间使用&分割，以下列出了这
     url = _SEGMENT_BASE_URL + '?' + args
     result = urllib2.urlopen(url, payload).read()
 
-短信服务
+短信
 ------------------
 
 **短信服务请求**
