@@ -284,5 +284,5 @@ index.yaml
 
    1. tornado worker还处在bleeding edge，use at your own risk。
    2. 在应用出现异常的情况下，SAE可能会返回502错误，请在日志中心中查看详细的错误信息。
-   3. 目前仅支持预安装的tornado-2.1.1，用户自己上传的tornado无法使用该worker。
+   3. 目前仅测试过预安装的tornado-2.1.1，其它版本的tornado可能无法使用。
 
