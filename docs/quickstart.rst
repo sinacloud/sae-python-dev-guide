@@ -30,7 +30,7 @@ Hello, world!
 
 编辑index.wsgi，内容如下：
 
-.. literalinclude:: ../examples/blackfire/1/index.wsgi
+.. literalinclude:: ../examples/helloworld/1/index.wsgi
 
 提交代码
 ~~~~~~~~~~~~
