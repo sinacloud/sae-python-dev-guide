@@ -346,13 +346,9 @@ SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
         mc.set("key", "1")
     mc.incr("key")
 
-文档参考:
+pylibmc接口和 `python-memcached`_ 基本兼容，可以直接替换使用。 `python-memcache文档 <_static/memcache.html>`_ 。
 
-http://sendapatch.se/projects/pylibmc/
-
-详细用法和 python-memcached 基本一样，可参考下面安装包中的 memcache.html 文件
-
-http://ftp.tummy.com/pub/python-memcached/old-releases/python-memcached-1.48.tar.gz
+.. _python-memcached: http://www.tummy.com/Community/software/python-memcached/
 
 Storage
 ----------
