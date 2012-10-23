@@ -276,7 +276,7 @@ config.yaml
 
 .. literalinclude:: ../examples/pythondemo/5/config.yaml
 
-index.yaml
+index.wsgi
 
 .. literalinclude:: ../examples/pythondemo/5/index.wsgi
 
