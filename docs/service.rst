@@ -464,13 +464,13 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 
     kvdb状态不为OK
 
-..  py:class:: KVClient(**kw)
+..  py:class:: KVClient(debug=0)
     :module: sae.kvdb
 
     KVDB客户端基于python-memcached，大多数method使用方法相同。
     如果不能成功创建KVClient，则抛出 sae.kvdb.Error 异常。
 
-    kw: 传递给memcache.Client的keyword参数
+    debug 是否输出详细调试、错误信息到日志，默认关闭
 
     .. py:method:: set(key, val, time=0, min_compress_len=0)
 
