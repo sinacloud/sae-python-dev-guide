@@ -142,7 +142,7 @@ MySQL连接超时时间为30s，不是mysql默认的8小时，所以你需要在
 
 方法二：
 
-在开发调试过程中，可以将 `staticfiles_urlpatterns`_ 加到你的URLConf，让django来处理admin app的静态文件： ::
+在开发调试（settings.py中debug=True）过程中，可以将 `staticfiles_urlpatterns`_ 加到你的URLConf，让django来处理admin app的静态文件： ::
 
     urls.py
     --------
