@@ -138,7 +138,6 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     jinja2                          2.6                 2.6
     tornado                         2.1.1               2.1.1
     bottle                          0.9.6               0.9.6
-    ulibweb                         0.0.1a7             0.0.1a7
     sqlalchemy                      0.7.3               0.7.3
     webpy                           0.36                0.36
     PIL                             1.1.7               1.1.7
