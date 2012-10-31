@@ -3,7 +3,7 @@
 from django.http import HttpResponse
 from django.template import Template, Context
 from django.core.context_processors import csrf
-from mysite.demo.models import Demo
+from demo.models import Demo
 
 def showdemo(request):
     if request.method == 'POST':

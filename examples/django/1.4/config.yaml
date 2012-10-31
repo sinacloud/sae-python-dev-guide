@@ -1,0 +1,12 @@
+---
+name: pylabs
+version: 9
+
+libraries:
+- name: "django"
+  version: "1.4"
+
+handlers:
+- url: /foo
+  static_dir: foo
+...
