@@ -313,6 +313,73 @@ class Client(local):
         '''
         return self._get('get', key)
 
+    def get_multi(self, keys, key_prefix=''):
+        '''
+        Retrieves multiple keys from the memcache doing just one query.
+
+        >>> success = mc.set("foo", "bar")
+        >>> success = mc.set("baz", 42)
+        >>> mc.get_multi(["foo", "baz", "foobar"]) == {"foo": "bar", "baz": 42}
+        1
+
+        get_mult [ and L{set_multi} ] can take str()-ables like ints / longs as keys too. Such as your db pri key fields.
+        They're rotored through str() before being passed off to memcache, with or without the use of a key_prefix.
+        In this mode, the key_prefix could be a table name, and the key itself a db primary key number.
+
+        This method is recommended over regular L{get} as it lowers the number of
+        total packets flying around your network, reducing total latency, since
+        your app doesn't have to wait for each round-trip of L{get} before sending
+        the next one.
+
+        See also L{set_multi}.
+
+        @param keys: An array of keys.
+        @param key_prefix: A string to prefix each key when we communicate with memcache.
+            Facilitates pseudo-namespaces within memcache. Returned dictionary keys will not have this prefix.
+        @return:  A dictionary of key/value pairs that were available. If key_prefix was provided, the keys in the retured dictionary will not have it present.
+
+        '''
+        retval = {}
+        for e in keys:
+            _key = key_prefix + str(e)
+            val = self._get('get', _key)
+            if val is not None:
+                retval[e] = val
+        return retval
+
+    def get_by_prefix(self, prefix, max_count=100, start_key=None):
+        '''
+        >>> success = mc.set('k1', 1)
+        >>> success = mc.set('k2', 2)
+        >>> success = mc.set('xyz', 'xxxxxxx')
+        >>> mc.get_by_prefix('k') == [('k2', 2), ('k1', 1)]
+        1
+
+        '''
+        retval = []
+
+        ignore = False
+        if start_key is not None:
+            ignore = True
+
+        for k, e in _cache.iteritems():
+            if ignore:
+                if k == start_key:
+                    ignore = False
+                continue
+
+            if e.is_expired():
+                continue
+
+            if str(k).startswith(prefix):
+                retval.append((k, e.value))
+
+        return retval[:max_count]
+
+    def getkeys_by_prefix(self, prefix, max_count=100, start_key=None):
+        kv = self.get_by_prefix(prefix, max_count, start_key)
+        return [e[0] for e in kv]
+
     def check_key(self, key, key_extra_len=0):
         """Checks sanity of key.  Fails if:
             Key length is > SERVER_MAX_KEY_LENGTH (Raises MemcachedKeyLength).
@@ -404,8 +471,8 @@ if __name__ == "__main__":
                 print "OK"
             else:
                 print "FAIL"; failures = failures + 1
-        #print "Testing get_multi ...",
-        #print mc.get_multi(["a_string", "an_integer"])
+        print "Testing get_multi ...",
+        print mc.get_multi(["a_string", "an_integer"])
 
         #  removed from the protocol
         #if test_setget("timed_delete", 'foo'):
