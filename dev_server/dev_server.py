@@ -2,7 +2,7 @@
 
 """Simple development server
 
-Make sure you're use python 2.6 for developing
+Make sure you're use python 2.7 for developing
 
 """
 import sys
