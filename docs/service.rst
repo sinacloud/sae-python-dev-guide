@@ -76,7 +76,7 @@ Taskqueue
 
 .. module:: sae.taskqueue
 
-.. py:function:: add_task(queue_name, url, payload=None) 
+.. py:function:: add_task(queue_name, url, payload=None, **kws)
 
    快速添加任务    
 
@@ -86,6 +86,8 @@ Taskqueue
 
    payload: 可选，如果payload存在且不为None，则该任务为一POST任务，payload会作为请求
    的POST的数据。
+
+   delay/prior: 可选，使用方法参见Task。
 
 
 .. py:class:: Task(url, payload=None, **kwargs)

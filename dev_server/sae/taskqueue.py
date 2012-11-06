@@ -192,7 +192,7 @@ class TaskQueue:
 
         return headers
 
-def add_task(queue_name, url, payload=None):
+def add_task(queue_name, url, payload=None, **kws):
     """A shortcut for adding task
     
     Args:
@@ -200,4 +200,4 @@ def add_task(queue_name, url, payload=None):
       url: URL where the taskqueue daemon should handle this task.
       payload: The post data if you want to do a POST task.
     """
-    TaskQueue(queue_name).add(Task(url, payload))
+    TaskQueue(queue_name).add(Task(url, payload, **kws))
