@@ -96,7 +96,7 @@ Django
 最终目录结构如下 ::
 
     jaime@westeros:~/pythondemo$ ls 1
-    index.wsgi manage.py mysite/ 
+    config.yaml index.wsgi manage.py mysite/ 
     jaime@westeros:~/pythondemo/1$ ls 1/mysite
     __init__.py settings.py  urls.py  views.py
 
