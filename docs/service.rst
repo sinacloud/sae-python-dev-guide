@@ -297,13 +297,13 @@ Examle:
 
         from sae.mail import send_mail
 
-        send_mail("katherine@vampire.com", "invite", "to tonight's party"
+        send_mail("katherine@vampire.com", "invite", "to tonight's party",
                   ("smtp.vampire.com", 25, "damon@vampire.com", "password", False))
 
 2.  发送邮件给多个收件人 ::
 
         to = ["katherine@vampire.com", 'rebecca@vampire.com', 'elena@vampire.com']
-        send_mail(to, "invite", "to tonight's party"
+        send_mail(to, "invite", "to tonight's party",
                   ("smtp.vampire.com", 25, "damon@vampire.com", "password", False))
     
 
