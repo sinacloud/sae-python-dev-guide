@@ -210,19 +210,17 @@ SAE Python Shell是一个wsgi中间件，提供了一个在线的interactive she
 .. _shellpy: http://code.google.com/p/google-app-engine-samples/source/browse/trunk/shell/shell.py
 
 
-..  py:class:: ShellMiddleware(app, secret_code)
+..  py:class:: ShellMiddleware(app, password=None)
     :module: sae.ext.shell
 
     app: 你的应用callable
 
-    secret_code: 登录shell时需要输入的口令，用于保护shell不被非法访问。如本例的口令为 hugoxxxx，你可以设置你自己的口令，长度应不小于8个字节
+    password: 可选，登录shell时需要输入的口令，用于保护shell不被非法访问。
 
 
 使用步骤:
 
-- 该插件需要使用 sae.kvdb_ 服务，请事先开启。
-
-.. _sae.kvdb: http://appstack.sinaapp.com/static/doc/release/testing/service.html#id9
+- 该插件需要使用 `memcache` 服务，请事先开启。
 
 - 修改index.wsgi，启用shell插件，示例如下::
 
@@ -235,10 +233,10 @@ SAE Python Shell是一个wsgi中间件，提供了一个在线的interactive she
         start_response(status, response_headers)
         return ["Hello, world!"]
 
-    application = sae.create_wsgi_app(ShellMiddleware(app, 'hugoxxxx'))
+    application = sae.create_wsgi_app(ShellMiddleware(app))
 
-- 访问地址 https://$yourappname.sinaapp.com/_web/shell ，根据提示输入你设置的口令
+- 访问地址 https://<your-app-name>.sinaapp.com/_sae/shell ，根据提示输入你设置的口令
 
 ..  warning::
 
-    请使用https方式访问shell地址 /_web/shell，这样可以加密传输口令。测试期间请谨慎使用，建议不使用时从源码中注释掉此shell。
+    测试期间请谨慎使用，建议不使用时从源码中注释掉此shell。
