@@ -57,7 +57,7 @@ def setup_sae_environ(conf, options):
         os.environ['STORAGE_PATH'] = os.path.abspath(options.storage)
         
     # Add custom environment variable
-    os.environ['HTTP_HOST'] = 'localhost:%d' % options.port
+    os.environ['HTTP_HOST'] = '%s:%d' % (options.host, options.port)
     os.environ['APP_NAME'] = appname
     os.environ['APP_VERSION'] = appversion
 
@@ -124,6 +124,8 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-p", "--port", type="int", dest="port", default="8080",
                       help="Which port to listen")
+    parser.add_option("-h", "--host", dest="host", default="localhost",
+                      help="Which host to listen")
     parser.add_option("--mysql", dest="mysql", help="Mysql configuration: user:password@host:port")
     parser.add_option("--storage-path", dest="storage", help="Directory used as local stoarge")
     parser.add_option("--kvdb-file", dest="kvdb", help="File to save kvdb data")
