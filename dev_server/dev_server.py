@@ -112,7 +112,7 @@ def main(options):
     files = ['index.wsgi']
 
     try:
-        run_simple('localhost', options.port, application,
+        run_simple(options.host, options.port, application,
                     use_reloader = True,
                     use_debugger = True,
                     extra_files = files,
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-p", "--port", type="int", dest="port", default="8080",
                       help="Which port to listen")
-    parser.add_option("-h", "--host", dest="host", default="localhost",
+    parser.add_option("--host", dest="host", default="localhost",
                       help="Which host to listen")
     parser.add_option("--mysql", dest="mysql", help="Mysql configuration: user:password@host:port")
     parser.add_option("--storage-path", dest="storage", help="Directory used as local stoarge")
