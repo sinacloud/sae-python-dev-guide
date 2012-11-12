@@ -42,6 +42,9 @@ def plot():
     data = __f__.getvalue()
     __f__.close()
 
+    # close current session
+    plt.close()
+
     response.content_type = 'image/png'
     return data
 
