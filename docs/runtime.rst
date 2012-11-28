@@ -146,6 +146,7 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     PyYAML                          3.10                3.10
     misaka                          1.0.2               None
     matplotlib                      1.1.1               None
+    py-bcrypt                       0.2                 None
     =============================== =================== ====================
 
 .. note:: 需要使用非默认版本可以在config.yaml中指定。
