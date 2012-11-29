@@ -312,6 +312,43 @@ def upload_data(args):
     for f in files:
         uploadfile2(f, (appname, accesskey, secretkey), domain)
 
+def install(args):
+    dest = os.path.join(os.getcwd(), 'site-packages')
+
+    argv = ['install', '-I',
+            '--install-option=--install-lib=%s' % dest,
+            '--install-option=--install-data=%s' % dest]
+    # only compile if it is python2.7.3
+    import imp
+    magic = imp.get_magic()[:2]
+    if magic != '\x03\xf3':
+        argv.append('--install-option=--no-compile')
+    argv.extend(args.package)
+
+    # In virtualenv, the install command will remove the old installed
+    # distribution, patch to skip it.
+    try:
+        def _(*arg, **kws):
+            pass
+        import pip.req
+        pip.req.InstallRequirement.uninstall = _
+        pip.req.InstallRequirement.commit_uninstall = _
+    except:
+        pass
+
+    import pip
+    pip.main(argv)
+
+    for f in os.listdir(dest):
+        pth = os.path.join(dest, f)
+        if os.path.isfile(pth) and f.endswith('.egg'):
+            print 'uncompress: %s' % f
+            import zipfile
+            zf = zipfile.ZipFile(pth)
+            zf.extractall(dest)
+            zf.close()
+            os.unlink(pth)
+
 def main():
 
     parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]))
@@ -337,6 +374,11 @@ def main():
     p.add_argument('dir', nargs='?', default='.', 
                    help='the source code directory to deploy, default to current dir')
     p.set_defaults(func=deploy)
+
+    p = subparsers.add_parser('install',
+                              help='helper to install packages for SAE application')
+    p.add_argument('package', nargs='+', help='package name to install')
+    p.set_defaults(func=install)
 
     p = subparsers.add_parser('upload-data', parents=[credentials],
                               help='upload files to storage')
