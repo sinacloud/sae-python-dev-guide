@@ -55,7 +55,7 @@ def main():
 
     top_levels = []
     for dist in dists:
-        mods = [os.path.join(dist.location, mod) for mod in dist.get_metadata('top_level.txt').splitlines()]
+        mods = [(dist.location, mod) for mod in dist.get_metadata('top_level.txt').splitlines()]
         top_levels += mods
 
     top_levels = list(set(top_levels))
@@ -63,12 +63,22 @@ def main():
 
 
 def copy_modules(mod_paths, dest):
-    for mod in mod_paths:
-        if os.path.isdir(mod):
-            shutil.copytree(mod, os.path.join(dest, os.path.basename(mod)), ignore=shutil.ignore_patterns('*.pyc'))
+    for loc, mod in mod_paths:
+        if os.path.isdir(loc):
+            src = os.path.join(loc, mod)
+            if os.path.isdir(src):
+                shutil.copytree(src, os.path.join(dest, mod), ignore=shutil.ignore_patterns('*.pyc'))
+            else:
+                # Single file module
+                shutil.copy2(src + '.py', dest)
         else:
-            # Single file module
-            shutil.copy2(mod + '.py', dest)
+            # Egg file ?
+            import zipfile
+            zf = zipfile.ZipFile(loc)
+            members = filter(lambda f: f.startswith(mod), zf.namelist())
+            for m in members:
+                zf.extract(m, dest)
+            zf.close()
 
 if __name__ == '__main__':
     main()
