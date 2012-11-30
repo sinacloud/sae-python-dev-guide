@@ -107,13 +107,25 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
 * 静态文件处理 
 
-  静态文件夹 ::
+  ``静态文件夹`` ::
 
     handlers:
-    - url: /static
-      static_dir: static
+    - url: /static/
+      static_path: static
   
-  url为URL的前缀，static_dir为静态文件所在的目录（相对于应用目录）。
+  url为URL的前缀，static_path为静态文件所在的目录（相对于应用目录）。
+
+  当请求的url为目录时，服务器会首先尝试static_path下的index.html，当index.html存在时，
+  返回index.html的内容，否则返回404。
+
+  ``静态文件``  ::
+
+    handlers:
+    - url: /robots.txt
+      static_path: robots.txt
+
+    - url: /favicon.ico
+      static_path: favicon.ico
 
 .. note::
 
