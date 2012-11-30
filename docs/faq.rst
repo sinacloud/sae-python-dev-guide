@@ -179,6 +179,61 @@ https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/#serving-the
 
 .. _staticfiles_urlpatterns: https://docs.djangoproject.com/en/dev/howto/static-files/#staticfiles-development
 
+如何使用virtualenv管理依赖关系
+-------------------------------
+
+当你的应用依赖很多第三方包时，可以使用virtualenv来管理并导出这些依赖包，
+流程如下：
+
+首先，创建一个全新的Python虚拟环境目录ENV，启动虚拟环境。 ::
+
+    $ virtualenv --no-site-packages ENV
+    $ source ENV/bin/activate
+    (ENV)$
+
+可以看到命令行提示符的前面多了一个(ENV)的前缀，现在我们已经在一个全新的虚拟环境中了。
+
+使用pip安装应用所依赖的包并导出依赖关系到requirements.txt。 ::
+
+    (ENV)$ pip install Flask Flask-Cache Flask-SQLAlchemy 
+    (ENV)$ pip freeze > requirements.txt
+
+编辑requirements.txt文件，删除一些sae内置的模块，eg. flask, jinja2, wtforms。
+
+使用dev_server/bundle_local.py工具，
+将所有requirements.txt中列出的包导出到本地目录virtualenv.bundle目录中。
+如果文件比较多的话，推荐压缩后再上传。 ::
+
+    (ENV)$ bundle_local.py -r requirements.txt
+    (ENV)$ cd virtualenv.bundle/
+    (ENV)$ zip -r ../virtualenv.bundle.zip .
+
+将virutalenv.bundle目录或者virtualenv.bundle.zip拷贝到应用的目录下。
+
+修改index.wsgi文件，在导入其它模块之前，将virtualenv.bundle目录或者
+virtualenv.bundle.zip添加到module的搜索路径中，示例代码如下： ::
+
+    import os
+    import sys
+
+    app_root = os.path.dirname(__file__)
+
+    # 两者取其一
+    sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle'))
+    sys.path.insert(0, os.path.join(app_root, 'virtualenv.bundle.zip'))
+
+到此，所有的依赖包已经导出并加入到应用的目录里了。
+
+更多virtualenv的使用可以参考其官方文档。 http://pypi.python.org/pypi/virtualenv
+
+.. note::
+
+   1. 请删除requirements.txt中的wsgiref==0.1.2这个依赖关系，否则可能导致
+      bundle_local.py导出依赖包失败。
+
+   2. 有些包是not-zip-safe的，可能不工作，有待验证。 含有c扩展的package
+      不能工作。
+
 如何在SAE上使用Uliweb
 ----------------------
 
