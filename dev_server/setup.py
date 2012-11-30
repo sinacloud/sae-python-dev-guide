@@ -1,6 +1,12 @@
 
 from setuptools import setup
 
+scripts = ['dev_server.py', 'saecloud']
+
+import os
+if os.name == 'nt':
+    scripts.append('saecloud.bat')
+
 setup(
     name = "sae-python-dev",
     version = "1.0testing",
@@ -12,19 +18,10 @@ setup(
         'pip',
         'PyYAML',
         'argparse',
-        #'Django==1.2.7',
-        #'bottle==0.9.6',
-        #'tornado==2.1.1',
-        #'Flask==0.7.2',
-        #'Uliweb',
-        #"web.py==0.36",
-        #'flask-sqlalchemy',
-        #'jinja2',
-        #'MySQL-python'
         ],
     platforms='any',
     license = "",
     url = "http://appstack.sinaapp.com",
     packages=['sae'],
-    scripts = ['dev_server.py', 'saecloud'],
+    scripts = scripts
 )
