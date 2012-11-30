@@ -80,7 +80,7 @@ dev_server.py默认使用名为 `app_应用名` 的数据库。
 --storage-path配置的路径下每个子文件夹会映射为storage中的一个domain，
 而每个子文件夹下的文件映射为domain下的一个key，其内容为对应key的数据。
 
-.. note: 
+.. note::
 
     为方便调试，dev_server自带的sae.storage在某个domain不存在的情况下会自动创建该domain。
     线上环境中的domain需要在sae后台面板中手动创建。
@@ -168,6 +168,10 @@ saecloud deploy命令接受一个可选参数: app代码所在路径，默认为
     sys.path.insert(0, os.path.join(root, 'site-packages.zip'))
 
 这样就可以在应用中使用这些依赖包了。
+
+.. tip::
+
+   安装指定版本的package：saecloud install package==version
 
 
 可用插件
