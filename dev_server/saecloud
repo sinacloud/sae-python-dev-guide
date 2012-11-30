@@ -315,9 +315,15 @@ def upload_data(args):
 def install(args):
     dest = os.path.join(os.getcwd(), 'site-packages')
 
+    if not os.path.exists(dest):
+        os.mkdir(dest)
+
+    import tempfile
+    tmpdir = tempfile.gettempdir()
     argv = ['install', '-I',
             '--install-option=--install-lib=%s' % dest,
-            '--install-option=--install-data=%s' % dest]
+            '--install-option=--install-data=%s' % dest,
+            '--install-option=--install-scripts=%s' % tmpdir]
     # only compile if it is python2.7.3
     import imp
     magic = imp.get_magic()[:2]
