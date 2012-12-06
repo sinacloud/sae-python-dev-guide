@@ -107,6 +107,10 @@ Django
 .. _django tutorial: https://docs.djangoproject.com/en/1.4/intro/tutorial01/
 .. _完整示例: https://github.com/SAEPython/saepythondevguide/tree/master/examples/django/1.4
 
+`django-1.2.7示例`_
+
+.. _django-1.2.7示例: https://github.com/SAEPython/saepythondevguide/tree/master/examples/django/1.2.7
+
 Flask
 ~~~~~~~~~~
 
