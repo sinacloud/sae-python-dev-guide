@@ -94,7 +94,7 @@ def main(options):
     if conf.has_key('handlers'):
         for h in conf['handlers']:
             url = h['url']
-            if h.has_key('static_dir'):
+            if h.has_key('static_dir') or h.has_key('static_path'):
                 statics[url] = os.path.join(app_root, h['static_dir'])
 
     if not len(statics):
