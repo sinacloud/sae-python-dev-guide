@@ -116,11 +116,11 @@ Flask
 
 index.wsgi
 
-.. literalinclude:: ../examples/pythondemo/2/index.wsgi
+.. literalinclude:: ../examples/flask/index.wsgi
 
 myapp.py 
 
-.. literalinclude:: ../examples/pythondemo/2/myapp.py
+.. literalinclude:: ../examples/flask/myapp.py
 
 
 Bottle
@@ -128,14 +128,14 @@ Bottle
 
 index.wsgi
 
-.. literalinclude:: ../examples/pythondemo/3/index.wsgi
+.. literalinclude:: ../examples/bottle/index.wsgi
 
 web.py
 ~~~~~~~~
 
 index.wsgi
 
-.. literalinclude:: ../examples/webpy/1/index.wsgi
+.. literalinclude:: ../examples/webpy/index.wsgi
 
 Tornado
 ~~~~~~~~~~~
@@ -144,17 +144,17 @@ Tornado
 
 index.wsgi
 
-.. literalinclude:: ../examples/pythondemo/4/index.wsgi
+.. literalinclude:: ../examples/tornado/wsgi/index.wsgi
 
 **使用Torando Worker**
 
 config.yaml
 
-.. literalinclude:: ../examples/pythondemo/5/config.yaml
+.. literalinclude:: ../examples/tornado/async/config.yaml
 
 index.wsgi
 
-.. literalinclude:: ../examples/pythondemo/5/index.wsgi
+.. literalinclude:: ../examples/tornado/async/index.wsgi
 
 .. note::
 
