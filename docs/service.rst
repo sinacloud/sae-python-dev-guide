@@ -270,7 +270,9 @@ Mail是SAE为开发者提供的邮件发送服务，用来异步发送标准SMTP
         body/html: 邮件正文。如果内容为纯文本，使用body，如果是html则使用html。
 
         smtp: smtp服务器的信息。是一个包含5个元素的tuple。
-        (smtp主机，smtp端口， 用户名，密码，是否启用TLS）。
+        (smtp主机，smtp端口， 邮件地址或用户名，密码，是否启用TLS）。
+
+        from_addr: 可选。发件人，邮件的from字段，默认使用smtp的配置信息。
 
         attachments: 可选。邮件的附件，必须为一个list，list里每个元素为一个
         tuple，tuple的第一个元素为文件名，第二个元素为文件的内容。
