@@ -476,29 +476,24 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 
     debug 是否输出详细调试、错误信息到日志，默认关闭
 
-    .. py:method:: set(key, val, time=0, min_compress_len=0)
+    .. py:method:: set(key, val, min_compress_len=0)
 
        设置key的值为val，成功则返回True
-
-       time 该key的超时时间，请参阅memcached协议Storage commands:
-       http://code.sixapart.com/svn/memcached/trunk/server/doc/protocol.txt
 
        min_compress_len 启用zlib.compress压缩val的最小长度，如果val的长度大于此值
        则启用压缩，0表示不压缩。
 
-    .. py:method:: add(key, val, time=0, min_compress_len=0)
+    .. py:method:: add(key, val, min_compress_len=0)
 
        同set，但只在key不存在时起作用
 
-    .. py:method:: replace(key, val, time=0, min_compress_len=0)
+    .. py:method:: replace(key, val, min_compress_len=0)
 
        同set，但只在key存在时起作用
 
-    .. py:method:: delete(key, time=0)
+    .. py:method:: delete(key)
 
        删除key，成功返回1，失败返回0。
-
-       time 为后续多少秒内set/update操作会失败。 
 
     .. py:method:: get(key)
 
