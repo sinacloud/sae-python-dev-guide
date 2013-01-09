@@ -12,7 +12,7 @@
 使用socket服务来处理请求。 ::
 
     import os
-    os.environ['disable_fetchurl'] = True
+    os.environ['disable_fetchurl'] = "1"
 
 MySQL
 ------------
