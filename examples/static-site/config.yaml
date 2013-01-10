@@ -1,0 +1,6 @@
+name: staticsite
+version: 1
+
+handlers:
+- url: /
+  static_path: www
