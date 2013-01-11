@@ -1,1 +1,4 @@
+name: pylabs
+version: 1
+
 worker: tornado
