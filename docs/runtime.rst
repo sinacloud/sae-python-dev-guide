@@ -138,6 +138,8 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
   url为URL的前缀。
 
+  注意，当客户端支持gzip（HTTP请求的Accept-Encoding中包含gzip）时，服务端才会开启压缩。
+
 .. note::
 
    1. 部分第三方库已经包含在默认搜索路径中，可以不在config.yaml中指定直接使用。
