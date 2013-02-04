@@ -166,15 +166,15 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     webpy                           0.36                0.36
     PIL                             1.1.7               1.1.7
     MySQLdb                         1.2.3               1.2.3
-    numpy                           1.6.1               None
-    lxml                            2.3.4               None
+    numpy                           1.6.1               无
+    lxml                            2.3.4               无
     PyYAML                          3.10                3.10
-    misaka                          1.0.2               None
-    matplotlib                      1.1.1               None
-    PyCrypto                        2.6                 None
-    py-bcrypt                       0.2                 None
+    misaka                          1.0.2               无
+    matplotlib                      1.1.1               无
+    PyCrypto                        2.6                 无
+    py-bcrypt                       0.2                 无
     =============================== =================== ====================
 
-.. note:: 需要使用非默认版本可以在config.yaml中指定。
+.. note:: 如果模块不存在默认版本或者需要使用非默认版本请在应用配置文件config.yaml中指定。
 
 
