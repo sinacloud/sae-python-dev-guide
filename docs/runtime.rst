@@ -90,9 +90,11 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
 * 设置使用的worker类型 ::
 
-    worker: tornado | wsgi
+    worker: tornado | gevent | wsgi
 
   如果没有设置则默认使用wsgi worker。
+
+  .. warning:: gevent和tornado worker还处在bleeding edge, use at your own risk。
 
 * 使用第三方库 ::
 
@@ -173,6 +175,8 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     matplotlib                      1.1.1               无
     PyCrypto                        2.6                 无
     py-bcrypt                       0.2                 无
+    greenlet                        0.4.0               0.4.0
+    gevent                          1.0rc2              1.0rc2
     =============================== =================== ====================
 
 .. note:: 如果模块不存在默认版本或者需要使用非默认版本请在应用配置文件config.yaml中指定。
