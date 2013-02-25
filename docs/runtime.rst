@@ -76,6 +76,8 @@ SAE设置了一些自定义的环境变量，这些环境变量可以通过os.en
 
 日志内容在 `应用»日志中心» HTTP` 中查看，类别为debug。
 
+.. note:: logging默认设置的level是WARNING，也就是level >= WARNING的消息才会被输出。
+
 应用缓存
 ----------
 
