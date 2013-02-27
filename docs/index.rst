@@ -6,11 +6,6 @@
 SAE Python 开发者手册
 =================================================
 
-目前SAE Python还处于测试阶段，欢迎使用。 `点此申请内测`_ 。
-
-.. _点此进入: /invite
-.. _点此申请内测: /apply
-
 本文档，示例代码以及本地测试server下载：  ::
 
     git clone http://github.com/SAEPython/saepythondevguide.git
