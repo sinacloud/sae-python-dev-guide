@@ -161,6 +161,7 @@ index.wsgi
    1. tornado worker还处在bleeding edge，use at your own risk。
    2. 在应用出现异常的情况下，SAE可能会返回502错误，请在日志中心中查看详细的错误信息。
    3. 目前仅测试过预安装的tornado-2.1.1，其它版本的tornado可能无法使用。
+   4. 对于tornado worker，如果需要使用非预装的tornado，请务必将tornado模块放在应用根目录下（index.wsgi所在的目录）。
 
 
 .. tip:: 
