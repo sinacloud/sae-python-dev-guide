@@ -179,6 +179,7 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     py-bcrypt                       0.2                 无
     greenlet                        0.4.0               0.4.0
     gevent                          1.0rc2              1.0rc2
+    markupsafe                      0.15                无
     bitarray                        0.8.0               无
     =============================== =================== ====================
 
