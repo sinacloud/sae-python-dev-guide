@@ -170,16 +170,16 @@ class TaskQueue:
 
             if payload:
                 payload = base64.b64decode(payload)
-            print url, payload
+            print 'add task:', url, payload
 
-            try:
-                # Try to make a sync call.
-                rep = urllib2.urlopen(url, payload, 5)
-                print rep.read()
-            except:
-                import traceback
-                print 'TASKQUEUE_ERROR:', t    
-                traceback.print_exc()
+            #try:
+            #    # Try to make a sync call.
+            #    rep = urllib2.urlopen(url, payload, 5)
+            #    print rep.read()
+            #except:
+            #    import traceback
+            #    print 'TASKQUEUE_ERROR:', t    
+            #    traceback.print_exc()
 
         return True
 

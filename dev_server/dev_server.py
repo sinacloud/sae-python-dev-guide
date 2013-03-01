@@ -11,33 +11,34 @@ import os.path
 import re
 import imp
 import yaml
-from werkzeug.serving import run_simple
 from optparse import OptionParser
 
-def setup_sae_environ(conf, options):
+app_root = os.getcwd()
+
+def setup_sae_environ(conf):
     # Add dummy pylibmc module
     import sae.memcache
     sys.modules['pylibmc'] = sae.memcache
 
     # Save kvdb data in this file else the data will lost
     # when the dev_server.py is down
-    if options.kvdb:
-        print 'KVDB: ', options.kvdb
-        os.environ['kvdb_file'] = options.kvdb
+    if conf.kvdb:
+        print 'KVDB: ', conf.kvdb
+        os.environ['kvdb_file'] = conf.kvdb
 
     # Add app_root to sys.path
     cwd = os.getcwd()
     if cwd not in sys.path:
         sys.path.insert(0, cwd)
 
-    appname = str(conf['name'])
-    appversion = str(conf['version'])
+    appname = str(conf.name)
+    appversion = str(conf.version)
 
-    if options.mysql:
+    if conf.mysql:
         import sae.const
 
         p = re.compile('^(.+):(.+)@(.+):(\d+)$')
-        m = p.match(options.mysql)
+        m = p.match(conf.mysql)
         if not m:
             raise Exception("Invalid mysql configuration")
 
@@ -49,76 +50,109 @@ def setup_sae_environ(conf, options):
         sae.const.MYSQL_PORT = port
         sae.const.MYSQL_HOST = host
 
-        print 'MySQL: %s.%s' % (options.mysql, dbname)
+        print 'MySQL: %s.%s' % (conf.mysql, dbname)
     else:
         print 'MySQL config not found'
 
-    if options.storage:
-        os.environ['STORAGE_PATH'] = os.path.abspath(options.storage)
+    if conf.storage:
+        os.environ['STORAGE_PATH'] = os.path.abspath(conf.storage)
         
     # Add custom environment variable
-    os.environ['HTTP_HOST'] = '%s:%d' % (options.host, options.port)
+    os.environ['HTTP_HOST'] = '%s:%d' % (conf.host, conf.port)
     os.environ['APP_NAME'] = appname
     os.environ['APP_VERSION'] = appversion
 
-def main(options):
-    app_root = os.getcwd()
+class Worker:
+    def __init__(self, conf, app):
+        self.conf = conf
+        self.application = app
+        self.collect_statifiles()
 
+    def collect_statifiles(self):
+        self.static_files = {}
+        if hasattr(self.conf, 'handlers'):
+            for h in self.conf.handlers:
+                url = h['url']
+                if h.has_key('static_dir'):
+                    self.static_files[url] = os.path.join(app_root, h['static_dir'])
+                elif h.has_key('static_path'):
+                    self.static_files[url] = os.path.join(app_root, h['static_path'])
+        if not len(self.static_files):
+            self.static_files.update({
+                '/static': os.path.join(app_root,  'static'),
+                '/media': os.path.join(app_root,  'media'),
+                '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
+            })
+
+        if self.conf.storage:
+            # stor dispatch: for test usage only
+            self.static_files['/stor-stub/'] = os.path.abspath(self.conf.storage)
+
+    def run(self):
+        raise NotImplementedError()
+
+class WsgiWorker(Worker):
+    def run(self):
+        # FIXME: All files under current directory
+        files = ['index.wsgi']
+
+        from werkzeug.serving import run_simple
+        run_simple(self.conf.host, self.conf.port, self.application,
+                   use_reloader = True,
+                   use_debugger = True,
+                   extra_files = files,
+                   static_files = self.static_files)
+
+class TornadoWorker(Worker):
+    def run(self):
+        import tornado.autoreload
+        tornado.autoreload.watch('index.wsgi')
+
+        import re
+        from tornado.web import URLSpec, StaticFileHandler
+        # The user should not use `tornado.web.Application.add_handlers`
+        # since here in SAE one application only has a single host, so here
+        # we can just use the first host_handers.
+        handlers = self.application.handlers[0][1]
+        for prefix, path in self.static_files.iteritems():
+            pattern = re.escape(prefix) + r"(.*)"
+            handlers.insert(0, URLSpec(pattern, StaticFileHandler, {"path": path}))
+
+        import tornado.ioloop
+        from tornado.httpserver import HTTPServer
+        server = HTTPServer(self.application, xheaders=True)
+        server.listen(self.conf.port, self.conf.host)
+        tornado.ioloop.IOLoop.instance().start()
+
+def main(options):
     conf_path = os.path.join(app_root, 'config.yaml')
     conf = yaml.load(open(conf_path, "r"))
+    options.__dict__.update(conf)
+    conf = options
 
     # if env `WERKZEUG_RUN_MAIN` is not defined, then we are in 
     # the reloader process.
-    if os.environ.get('WERKZEUG_RUN_MAIN', False):
-        setup_sae_environ(conf, options)
+    # if os.environ.get('WERKZEUG_RUN_MAIN', False):
 
-        try:
-            index = imp.load_source('index', 'index.wsgi')
-        except IOError:
-            print "Seems you don't have an index.wsgi"
-            return
-
-        if not hasattr(index, 'application'):
-            print "application not found in index.wsgi"
-            return
-
-        if not callable(index.application):
-            print "application is not a callable"
-            return
-
-        application = index.application
-    else:
-        application = 1
-
-    statics = {}
-    if conf.has_key('handlers'):
-        for h in conf['handlers']:
-            url = h['url']
-            if h.has_key('static_dir'):
-                statics[url] = os.path.join(app_root, h['static_dir'])
-            elif h.has_key('static_path'):
-                statics[url] = os.path.join(app_root, h['static_path'])
-
-    if not len(statics):
-        statics.update({
-            '/static': os.path.join(app_root,  'static'),
-            '/media': os.path.join(app_root,  'media'),
-            '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
-        })
-
-    if options.storage:
-        # stor dispatch: for test usage only
-        statics['/stor-stub'] = os.path.abspath(options.storage)
-
-    # FIXME: All files under current directory
-    files = ['index.wsgi']
+    setup_sae_environ(conf)
 
     try:
-        run_simple(options.host, options.port, application,
-                    use_reloader = True,
-                    use_debugger = True,
-                    extra_files = files,
-                    static_files = statics, threaded=True)
+        index = imp.load_source('index', 'index.wsgi')
+    except IOError:
+        print >>sys.stderr, "Seems you don't have an index.wsgi"
+        return
+    if not hasattr(index, 'application'):
+        print >>sys.stderr, "application not found in index.wsgi"
+        return
+    if not callable(index.application):
+        print >>sys.stderr, "application is not a callable"
+        return
+
+    application = index.application
+
+    cls_name = getattr(conf, 'worker', 'wsgi').capitalize() + 'Worker'
+    try:
+        globals().get(cls_name, WsgiWorker)(conf, application).run()
     except KeyboardInterrupt:
         pass
 
