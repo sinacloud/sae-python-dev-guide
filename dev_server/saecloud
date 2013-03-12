@@ -329,6 +329,8 @@ def install(args):
     magic = imp.get_magic()[:2]
     if magic != '\x03\xf3':
         argv.append('--install-option=--no-compile')
+    if args.requirement:
+        argv.extend(['-r', args.requirement[0]])
     argv.extend(args.package)
 
     # In virtualenv, the install command will remove the old installed
@@ -383,7 +385,9 @@ def main():
 
     p = subparsers.add_parser('install',
                               help='helper to install packages for SAE application')
-    p.add_argument('package', nargs='+', help='package name to install')
+    p.add_argument('package', nargs='*', help='package name to install')
+    p.add_argument('-r', '--requirement', nargs=1,
+                   help='install all the packages listed in the given requirements file')
     p.set_defaults(func=install)
 
     p = subparsers.add_parser('upload-data', parents=[credentials],
