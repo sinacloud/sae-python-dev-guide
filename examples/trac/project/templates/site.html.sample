@@ -1,0 +1,15 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+  <!--!
+    This file allows customizing the appearance of the Trac installation.
+    Add your customizations here and rename the file to site.html. Note that
+    it will take precedence over a global site.html placed in the directory
+    specified by [inherit] templates_dir.
+
+    More information about site appearance customization can be found here:
+
+      http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+  -->
+</html>

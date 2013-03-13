@@ -1,0 +1,221 @@
+# -*- coding: utf-8 -*-
+
+[attachment]
+max_size = 262144
+max_zip_size = 2097152
+render_unsafe_content = false
+
+[authz_policy]
+authz_file = 
+
+[browser]
+color_scale = True
+downloadable_paths = /trunk, /branches/*, /tags/*
+hide_properties = svk:merge
+intermediate_color = 
+intermediate_point = 
+newest_color = (255, 136, 136)
+oldest_color = (136, 136, 255)
+oneliner_properties = trac:summary
+render_unsafe_content = false
+wiki_properties = trac:description
+
+[changeset]
+max_diff_bytes = 10000000
+max_diff_files = 0
+wiki_format_messages = true
+
+[git]
+cached_repository = false
+git_bin = git
+git_fs_encoding = utf-8
+persistent_cache = false
+# projects_base = <inherited>
+# projects_list = <inherited>
+# projects_url = <inherited>
+shortrev_len = 7
+trac_user_rlookup = false
+use_committer_id = true
+use_committer_time = true
+wikishortrev_len = 40
+
+[header_logo]
+alt = (please configure the [header_logo] section in trac.ini)
+height = -1
+link = 
+src = site/your_project_logo.png
+width = -1
+
+[inherit]
+htdocs_dir = 
+plugins_dir = 
+templates_dir = 
+
+[logging]
+log_file = trac.log
+# log_format = <inherited>
+log_level = DEBUG
+log_type = none
+
+[milestone]
+stats_provider = DefaultTicketGroupStatsProvider
+
+[mimeviewer]
+enscript_modes = text/x-dylan:dylan:4
+enscript_path = enscript
+max_preview_size = 262144
+mime_map = text/x-dylan:dylan, text/x-idl:ice, text/x-ada:ads:adb
+mime_map_patterns = text/plain:README|INSTALL|COPYING.*
+php_path = php
+pygments_default_style = trac
+pygments_modes = 
+tab_width = 8
+treat_as_binary = application/octet-stream, application/pdf, application/postscript, application/msword,application/rtf,
+
+[notification]
+admit_domains = 
+always_notify_owner = false
+always_notify_reporter = false
+always_notify_updater = true
+ambiguous_char_width = single
+batch_subject_template = $prefix Batch modify: $tickets_descr
+email_sender = SmtpEmailSender
+ignore_domains = 
+mime_encoding = none
+sendmail_path = sendmail
+smtp_always_bcc = 
+smtp_always_cc = 
+smtp_default_domain = 
+smtp_enabled = false
+smtp_from = trac@localhost
+smtp_from_author = false
+smtp_from_name = 
+smtp_password = 
+smtp_port = 25
+smtp_replyto = trac@localhost
+smtp_server = localhost
+smtp_subject_prefix = __default__
+smtp_user = 
+ticket_subject_template = $prefix #$ticket.id: $summary
+use_public_cc = false
+use_short_addr = false
+use_tls = false
+
+[project]
+admin = 
+admin_trac_url = .
+descr = My example project
+footer = Visit the Trac open source project at<br /><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
+icon = common/trac.ico
+name = My Project
+url = 
+
+[query]
+default_anonymous_query = status!=closed&cc~=$USER
+default_query = status!=closed&owner=$USER
+items_per_page = 100
+ticketlink_query = ?status=!closed
+
+[report]
+items_per_page = 100
+items_per_page_rss = 0
+
+[revisionlog]
+default_log_limit = 100
+graph_colors = ['#cc0', '#0c0', '#0cc', '#00c', '#c0c', '#c00']
+
+[roadmap]
+stats_provider = DefaultTicketGroupStatsProvider
+
+[search]
+# default_disabled_filters = <inherited>
+min_query_length = 3
+
+[sqlite]
+# extensions = <inherited>
+
+[svn]
+branches = trunk, branches/*
+tags = tags/*
+
+[ticket]
+commit_ticket_update_check_perms = true
+commit_ticket_update_commands.close = close closed closes fix fixed fixes
+commit_ticket_update_commands.refs = addresses re references refs see
+commit_ticket_update_envelope = 
+commit_ticket_update_notify = true
+default_cc = 
+default_component = 
+default_description = 
+default_keywords = 
+default_milestone = 
+default_owner = < default >
+default_priority = major
+default_resolution = fixed
+default_severity = 
+default_summary = 
+default_type = defect
+default_version = 
+max_comment_size = 262144
+max_description_size = 262144
+preserve_newlines = default
+restrict_owner = false
+workflow = ConfigurableTicketWorkflow
+
+[timeline]
+abbreviated_messages = True
+changeset_collapse_events = false
+changeset_long_messages = false
+changeset_show_files = 0
+default_daysback = 30
+max_daysback = 90
+newticket_formatter = oneliner
+ticket_show_details = false
+
+[trac]
+auth_cookie_lifetime = 0
+auth_cookie_path = 
+authz_file = 
+authz_module_name = 
+auto_preview_timeout = 2.0
+auto_reload = False
+backup_dir = db
+base_url = 
+check_auth_ip = false
+database = sqlite:db/trac.db
+debug_sql = False
+default_charset = utf-8
+default_dateinfo_format = relative
+genshi_cache_size = 128
+htdocs_location = 
+ignore_auth_case = false
+jquery_location = 
+jquery_ui_location = 
+jquery_ui_theme_location = 
+mainnav = wiki, timeline, roadmap, browser, tickets, newticket, search
+metanav = login, logout, prefs, help, about
+mysqldump_path = mysqldump
+never_obfuscate_mailto = false
+permission_policies = DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_store = DefaultPermissionStore
+pg_dump_path = pg_dump
+repository_dir = 
+repository_sync_per_request = (default)
+repository_type = svn
+resizable_textareas = true
+secure_cookies = False
+show_email_addresses = false
+show_ip_addresses = false
+timeout = 20
+use_base_url_for_redirect = False
+
+[versioncontrol]
+allowed_repository_dir_prefixes = 
+
+[wiki]
+ignore_missing_pages = false
+max_size = 262144
+render_unsafe_content = false
+safe_schemes = cvs, file, ftp, git, irc, http, https, news, sftp, smb, ssh, svn, svn+ssh
+split_page_names = false
+
