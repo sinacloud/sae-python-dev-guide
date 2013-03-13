@@ -1,6 +1,8 @@
 
 from setuptools import setup
 
+VERSION = '1.0beta'
+
 scripts = ['dev_server.py', 'saecloud']
 
 import os
@@ -8,11 +10,11 @@ if os.name == 'nt':
     scripts.append('saecloud.bat')
 
 setup(
-    name = "sae-python-dev",
-    version = "1.0testing",
-    author = "Jaime Chen",
-    author_email = "chenzheng2@staff.sina.com.cn",
-    description = ("SAE Python development server"),
+    name = 'sae-python-dev',
+    version = VERSION,
+    author = 'SAE Python Team',
+    author_email = 'saemail@sina.cn',
+    description = ('SAE Python development server'),
     install_requires = [
         'Werkzeug',
         'pip',
@@ -20,8 +22,7 @@ setup(
         'argparse',
         ],
     platforms='any',
-    license = "",
-    url = "http://appstack.sinaapp.com",
+    url = "http://python.sinaapp.com",
     packages=['sae'],
     scripts = scripts
 )
