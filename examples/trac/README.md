@@ -17,6 +17,8 @@
 
         saecloud deploy
 
+4.  进入应用的MYSQL管理页面，导入 `setup.sql` 。
+
 4.  打开 http://$appname.sinaapp.com 即可看到示例trac的页面了。
 
 5.  删除 `project` 目录，使用 `trac-admin` 创建你自己的项目，根据需要修改 `index.wsgi`
