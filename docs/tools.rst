@@ -29,15 +29,19 @@ SVN限制：
 本地开发环境
 --------------
 
-目前支持的服务包括：mysql, taskqueue, memcache, storage, mail。
 本地开发环境仅为应用开发便利之用，对sae python环境的模拟并不完整。
 
 安装
 ~~~~~~~~~
 
+直接使用 `pip` 或者 `easy_install` 安装 `sae-python-dev` 包即可。
+
+或者可以选择从github下载源码安装。
+
 ::
 
-    $ git clone http://github.com/SAEPython/saepythondevguide.git
+    $ git clone http://github.com/saepython/saepythondevguide.git
+    $ cd saepythondevguide/dev_server
     $ python setup.py install
 
 基本使用
