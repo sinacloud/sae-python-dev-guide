@@ -1,7 +1,7 @@
 
 from setuptools import setup
 
-VERSION = '1.0beta'
+VERSION = '1.0.2'
 
 scripts = ['dev_server.py', 'saecloud']
 

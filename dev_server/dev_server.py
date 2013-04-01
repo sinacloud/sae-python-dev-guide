@@ -96,8 +96,23 @@ class WsgiWorker(Worker):
         # FIXME: All files under current directory
         files = ['index.wsgi']
 
+        # XXX:
+        # when django template renders `environ` in its 500 page, it will
+        # try to call `environ['werkzeug.server.shutdown'` and cause the
+        # server exit unexpectedly.
+        # See: https://docs.djangoproject.com/en/dev/ref/templates/api/#variables-and-lookups
+        def wrap(app):
+            def _(environ, start_response):
+                try:
+                    del environ['werkzeug.server.shutdown']
+                except KeyError:
+                    pass
+                return app(environ, start_response)
+            return _
+
         from werkzeug.serving import run_simple
-        run_simple(self.conf.host, self.conf.port, self.application,
+        run_simple(self.conf.host, self.conf.port,
+                   wrap(self.application),
                    use_reloader = True,
                    use_debugger = True,
                    extra_files = files,
