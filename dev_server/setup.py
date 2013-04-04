@@ -1,13 +1,17 @@
 
+import os.path
 from setuptools import setup
 
 VERSION = '1.0.2'
 
 scripts = ['dev_server.py', 'saecloud']
 
-import os
 if os.name == 'nt':
-    scripts.append('saecloud.bat')
+    # XXX: shebang does not work on windows
+    BAT = 'saecloud.bat'
+    f = os.path.join(os.path.dirname(__file__), BAT)
+    open(f, 'w').write('@python "%~dp0\saecloud" %*')
+    scripts.append(BAT)
 
 setup(
     name = 'sae-python-dev',
