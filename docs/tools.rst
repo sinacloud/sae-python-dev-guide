@@ -140,6 +140,11 @@ saecloud deploy命令接受一个可选参数: app代码所在路径，默认为
 
 第一个参数为应用名字，第二个参数为版本，可选，默认为版本1。 第一次使用时，请指定你的代码访问帐号信息：username 安全邮箱, password。之后的命令不用在输入此信息。
 
+.. note::
+
+   `deploy` 和 `export` 命令需要用到svn，请先安装svn命令行工具。
+   windows用户可以在这里下载：http://sourceforge.net/projects/win32svn/
+
 上传文件到storage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
