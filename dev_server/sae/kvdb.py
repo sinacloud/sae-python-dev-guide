@@ -538,27 +538,21 @@ if __name__ == "__main__":
         except Client.MemcachedKeyLengthError, msg:
             print "OK"
      
-db_file = os.environ.get('kvdb_file', None)
-
-import pickle
-
-def _save_cache():
-    if db_file is None: return
-
-    try:
-        pickle.dump(_cache, open(db_file, 'wb'))
-    except Exception, e:
-        print "save kvdb to '%s' failed: %s" % (db_file, str(e))
-
-def _restore_cache():
-    if db_file is None: return
-
-    try:
-        _cache.update(pickle.load(open(db_file, 'rb')))
-    except Exception, e:
-        print "load kvdb from '%s' failed: %s" % (db_file, str(e))
-    
-import atexit
-atexit.register(_save_cache)
-
-_restore_cache()
+db_file = os.environ.get('sae.kvdb.file')
+if db_file:
+    import pickle
+    def _save_cache():
+        # XXX: reloader should not do this
+        if not os.environ.get('sae.run_main'): return
+        try:
+            pickle.dump(_cache, open(db_file, 'wb'))
+        except Exception, e:
+            print "save kvdb to '%s' failed: %s" % (db_file, str(e))
+    def _restore_cache():
+        try:
+            _cache.update(pickle.load(open(db_file, 'rb')))
+        except Exception, e:
+            print "load kvdb from '%s' failed: %s" % (db_file, str(e))
+    import atexit
+    atexit.register(_save_cache)
+    _restore_cache()

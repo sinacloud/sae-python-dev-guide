@@ -24,7 +24,7 @@ def setup_sae_environ(conf):
     # when the dev_server.py is down
     if conf.kvdb:
         print 'KVDB: ', conf.kvdb
-        os.environ['kvdb_file'] = conf.kvdb
+        os.environ['sae.kvdb.file'] = conf.kvdb
 
     # Add app_root to sys.path
     cwd = os.getcwd()
@@ -110,6 +110,9 @@ class WsgiWorker(Worker):
                 return app(environ, start_response)
             return _
 
+        if 'WERKZEUG_RUN_MAIN' in os.environ:
+            os.environ['sae.run_main'] = '1'
+
         from werkzeug.serving import run_simple
         run_simple(self.conf.host, self.conf.port,
                    wrap(self.application),
@@ -132,6 +135,8 @@ class TornadoWorker(Worker):
         for prefix, path in self.static_files.iteritems():
             pattern = re.escape(prefix) + r"(.*)"
             handlers.insert(0, URLSpec(pattern, StaticFileHandler, {"path": path}))
+
+        os.environ['sae.run_main'] = '1'
 
         import tornado.ioloop
         from tornado.httpserver import HTTPServer
