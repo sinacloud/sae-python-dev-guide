@@ -30,9 +30,9 @@ def run(*args):
     # FIXME: Check the return code please
     if verbose:
         print '+', ' '.join(args)
-        return subprocess.call(args, close_fds=True)
+        return subprocess.call(args)
     else:
-        return subprocess.call(args, close_fds=True, stdout=open(os.devnull, 'w'))
+        return subprocess.call(args, stdout=open(os.devnull, 'w'))
 
 def _get_svn_opts(args):
     opts = []
