@@ -2,7 +2,7 @@
 import os.path
 from setuptools import setup
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 scripts = ['dev_server.py', 'saecloud']
 
