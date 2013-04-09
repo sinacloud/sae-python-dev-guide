@@ -31,8 +31,11 @@ def setup_sae_environ(conf):
     if cwd not in sys.path:
         sys.path.insert(0, cwd)
 
-    appname = str(conf.name)
-    appversion = str(conf.version)
+    try:
+        appname = str(conf.name)
+        appversion = str(conf.version)
+    except AttributeError:
+        raise AttributeError('`name` or `version` not found in `config.yaml`')
 
     if conf.mysql:
         import sae.const
