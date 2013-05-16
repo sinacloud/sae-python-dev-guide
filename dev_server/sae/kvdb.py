@@ -347,7 +347,8 @@ class Client(local):
                 retval[e] = val
         return retval
 
-    def get_by_prefix(self, prefix, max_count=100, start_key=None):
+    def get_by_prefix(self, prefix, limit=None, max_count=None,
+                      marker=None, start_key=None):
         '''
         >>> success = mc.set('k1', 1)
         >>> success = mc.set('k2', 2)
@@ -356,7 +357,8 @@ class Client(local):
         1
 
         '''
-        retval = []
+        start_key = marker or start_key
+        max_count = limit or max_count or 100
 
         ignore = False
         if start_key is not None:
@@ -371,13 +373,17 @@ class Client(local):
             if e.is_expired():
                 continue
 
+            if max_count <= 0: break
+
             if str(k).startswith(prefix):
-                retval.append((k, e.value))
+                max_count -= 1
+                yield k, e.value
 
-        return retval[:max_count]
-
-    def getkeys_by_prefix(self, prefix, max_count=100, start_key=None):
-        kv = self.get_by_prefix(prefix, max_count, start_key)
+    def getkeys_by_prefix(self, prefix, limit=None, max_count=None,
+                          marker=None, start_key=None):
+        max_count = limit or max_count
+        marker = marker or start_key
+        kv = self.get_by_prefix(prefix, max_count, marker=marker)
         return [e[0] for e in kv]
 
     def check_key(self, key, key_extra_len=0):

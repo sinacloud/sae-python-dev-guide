@@ -507,25 +507,25 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 
        key_prefix: 所有key的前缀。请求时会在所有的key前面加上该前缀，返回值里所有的key都会去掉该前缀。
 
-    .. py:method:: get_by_prefix(prefix, max_count=100, start_key=None)
+    .. py:method:: get_by_prefix(prefix, limit=100, marker=None)
 
-       从kvdb中查找指定前缀的 key/value pair。返回一个list，该list中每个item为一个(key, value)的tuple。
-
-       prefix: 需要查找的key的前缀。
-
-       max_count: 最多返回的item个数，默认为100。
-
-       start_key: 指定返回的第一个item的key，该key不包含在返回中。
-
-    .. py:method:: getkeys_by_prefix(prefix, max_count=100, start_key=None)
-
-       从kvdb中查找指定前缀的key。返回符合条件的key的list。
+       从kvdb中查找指定前缀的 key/value pair。返回一个generator，yield的item为一个(key, value)的tuple。
 
        prefix: 需要查找的key的前缀。
 
-       max_count: 最多返回的key的个数，默认为100。
+       limit: 最多返回的item个数，默认为100。
 
-       start_key: 指定返回的第一个key，该key不包含在返回中。
+       marker: 指定从哪一个key开始继续查找，只返回该key后面的结果（该key不含在内）。
+
+    .. py:method:: getkeys_by_prefix(prefix, limit=100, marker=None)
+
+       从kvdb中查找指定前缀的key。返回符合条件的key的generator。
+
+       prefix: 需要查找的key的前缀。
+
+       limit: 最多返回的key的个数，默认为100。
+
+       marker: 指定从哪一个key开始继续查找，只返回该key后面的结果（该key不含在内）。
 
     .. py:method:: get_info()
 
