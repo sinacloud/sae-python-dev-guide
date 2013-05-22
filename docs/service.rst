@@ -359,90 +359,290 @@ Storage
 
 Storage是SAE为开发者提供的分布式文件存储服务，用来存放用户的持久化存储的文件。
 
-用户需要先在在线管理平台创建Domain，每一个domain下面包含了你上传的数据。 
+用户需要先在storage的管理面板中创建保存数据的容器（bucket）。bucket中保存实际的数据（object）。
+
+.. note:: 这里的bucket就是管理面板中的domain。
+
+Tutorial
+~~~~~~~~~~~
+
+在SAE runtime中操作storage  ::
+
+    >>> # 创建一个bucket的instance
+    >>> from sae.storage import Bucket
+    >>> bucket = Bucket('t')
+
+    >>> # 创建该bucket
+    >>> bucket.put()
+
+    >>> # 修改该bucket的acl和缓存过期时间。
+    >>> bucket.post(acl='.r:.sinaapp.com,.r:sae.sina.com.cn', metadata={'expires': '1d'})
+
+    >>> # 获取该bucket的属性信息
+    >>> attrs = bucket.stat()
+    >>> print attrs
+    {'acl': '.r:.sinaapp.com,.r:sae.sina.com.cn',
+     'bytes': '0',
+     'metadata': {'expires': '1d'},
+     'objects': '0'}
+    >>> attrs.acl
+    '.r:.sinaapp.com,.r:sae.sina.com.cn'
+
+    >>> # 存取一个字符串到bucket中
+    >>> bucket.put_object('1.txt', 'hello, world')
+
+    >>> # 获取object的public url
+    >>> bucket.generate_url('1.txt')
+    'http://pylabs-t.stor.sinaapp.com/1.txt'
+
+    >>> # 存取一个文件到bucket中
+    >>> bucket.put_object('2.txt', open(__file__, 'rb'))
+    
+    >>> # 列出该bucket中的所有objects
+    >>> [i for i in bucket.list()]
+    [{u'bytes': 12,
+      u'content_type': u'text/plain',
+      u'hash': u'e4d7f1b4ed2e42d15898f4b27b019da4',
+      u'last_modified': u'2013-05-22T05:09:32.259140',
+      u'name': u'1.txt'},
+     {u'bytes': 14412,
+      u'content_type': u'rb',
+      u'hash': u'99079422784f6cbfc4114d9b261001e1',
+      u'last_modified': u'2013-05-22T05:12:13.337400',
+      u'name': u'2.txt'}]
+
+    >>> # 获取object的所有属性
+    >>> bucket.stat_object('1.txt')
+    {'bytes': '12',
+     'content_type': 'text/plain',
+     'hash': 'e4d7f1b4ed2e42d15898f4b27b019da4',
+     'last_modified': '2013-05-22T05:09:32.259140',
+     'metadata': {},
+     'timestamp': '1369199372.25914'}
+
+    >>> # 取object的内容
+    >>> bucket.get_object_contents('1.txt')
+    'hello, world'
+
+    >>> # 取文件的内容，返回generator
+    >>> chunks = bucket.get_object_contents('2.txt', chunk_size=10)
+    <generator object _body at 0x95ec20c>
+    >>> chunks.next()      # 显示第一个chunk
+    '\n# Copyrig'
+
+    >>> # 删除objects
+    >>> bucket.delete_object('1.txt')
+    >>> bucket.delete_object('2.txt')
+
+    >>> # 删除bucket
+    >>> bucket.delete()
+
+storage中不支持创建实际的目录，但是用户可以通过在object name中加入 `/` 来模拟目录结构。例如： ::
+
+    >>> bucket.put_object('a/1.txt', '')
+    >>> bucket.put_object('a/b/2.txt', '')
+
+    >>> # 列出根目录下的所有objects。
+    >>> [i for i in bucket.list(path='')]
+    [{u'bytes': None,
+      u'content_type': None,    # content_type为None表示这是一个子目录
+      u'hash': None,
+      u'last_modified': None,
+      u'name': 'a/'}]
+
+    >>> # 列出a目录下的objects
+    >>> [i for i in bucket.list(path='a/')]
+    [{u'bytes': 0,
+      u'content_type': u'text/plain',
+      u'hash': u'd41d8cd98f00b204e9800998ecf8427e',
+      u'last_modified': u'2013-05-23T03:01:59.051030',
+      u'name': u'a/1.txt'},
+     {u'bytes', None,
+      u'content_type': None,    # content_type为None表示这是一个子目录
+      u'hash': None,
+      u'last_modified': None,
+      u'name': u'a/b/'}]
+
+.. note:: 在list目录（除了根目录）时路径的末尾要带上 / 。
+
+如果是在外部，SAE storage支持swift协议，用户也可以直接使用 `python-swiftclient`_ 客户端来操作storage。 ::
+
+    $ pip install python-swiftclient
+    $ export ST_AUTH='https://auth.sinas3.com/v1.0'
+    $ export ST_USER='<your-accesskey>'
+    $ export ST_KEY='<your-secretkey>'
+    $ swift -h
+
+.. _python-swiftclient: https://pypi.python.org/pypi/python-swiftclient
+
+API Reference
+~~~~~~~~~~~~~~~~
 
 ..  module:: sae.storage
 
-..  py:class:: Object(data, **kwargs)
+..  py:class:: Connection(accesskey=ACCESS_KEY, secretkey=SECRET_KEY, account=APP_NAME, retries=3)
 
-    Object类
+    Connection类
 
-    data: Object的内容。
+    accesskey: 可选。storage归属的应用的accesskey，默认为当前应用。
 
-    expires: 设置Object在浏览器客户端的过期时间，格式同Apache的Expires格式：
-    http://httpd.apache.org/docs/2.0/mod/mod_expires.html
+    secretkey: 可选。storage归属的应用的secretkey，默认为当前应用。
 
-    content_type: 设置Object的Conent-Type Header。
+    account: 可选。storage归属的应用的应用名，默认为当前应用。
 
-    content_encoding: 设置Object的Cotent-Encoding Header。
+    retries: 请求失败时重试的次数。
 
-..  py:class:: Client(accesskey=ACCESS_KEY, secretkey=SECRET_KEY, prefix=APP_NAME)
+    .. py:method:: get_bucket(bucket)
 
-    Client类
+       获取一个bucket类的instance。
 
-    .. py:method:: put(domain, key_name, object)
+       bucket: bucket的名称。
 
-       将object存到某个domain中。返回object的public url。
+..  module:: sae.storage
 
-    .. py:method:: get(domain, key_name)
+..  py:class:: Bucket(bucket, conn=None)
 
-       返回domain中名为key_name的对象。
+    Bucket类，封装了大部分的storage操作。
 
-    .. py:method:: stat(domain, key_name)
+    bucket: bucket的名称。
 
-       返回domain中名为key_name的对象属性，返回值为一个dict。
+    conn: 可选。一个sae.storage.Connection的实例。
 
-    .. py:method:: delete(domain, key_name)
+    .. py:method:: put(acl=None, metadata=None)
 
-       删除domain中名为key_name的对象。
+       创建一个bucket。
 
-    .. py:method:: list(domain)
+       acl: bucket的 :ref:`about-acl` (Access Control List)。
 
-       返回domain中所有对象的列表。
+       metadata: 需要保存的元数据，metadata应该是一个dict，例如 `{'color': 'blue'}` 。
 
-    .. py:method:: list_domain():
+    .. py:method:: post(acl=None, metadata=None)
 
-       返回所有domain的列表。
+       修改bucket的acl和metadata。其中metadata的修改为增量修改。
 
-    .. py:method::  url(domain, key_name)
+    .. py:method:: list(prefix=None, delimiter=None, path=None, limit=10000, marker=None)
 
-       返回domain中key_name的对象的public url。
+       列出bucket中的object。
 
-Example ::
+       prefix: object名称的前缀。
 
-    import sae.storage
+       delimiter: 分割字符。折叠包含该分割字符的条目。
 
-    # 初始化一个Storage客户端。
-    s = sae.storage.Client()
+       path: 返回路径path下的全部objects。等价于prefix为path，delimiter为/。
 
-    # LIST所有的domain 
-    s.list_domain()
+       limit: 最大返回的objects条数。
 
-    # PUT object至某个domain下面，put操作返回object的public url。
-    ob = sae.storage.Object('pieces of data')
-    s.put('domain-name', 'object-name', ob)
+       marker: 返回object名为marker后面的结果（不包含marker）。
 
-    # 设置object的属性
-    ob = sae.storage.Object('pieces of data',   \
-      expires='A3600', content_type='text/html', content_encoding='gzip')
-    s.put('domain-name', 'object-name', ob)
+       返回符合条件的objects的属性的一个generator。
 
-    # GET某个domain下的object
-    ob = s.get('domain-name', 'object-name')
-    data = ob.data
+    .. py:method:: stat()
 
-    # 获取object的属性信息
-    ob = s.stat('domain-name', 'object-name')
+       返回当前bucket的属性信息。
 
-    # 获取object的public url 
-    url = s.url('domain-name', 'object-name')
+    .. py:method:: delete()
 
-    # DELETE一个object
-    s.delete('domain-name', 'object-name')
+       删除bucket。被删除的bucket必须已经清空（没有任何object）。
 
-    # LIST一个domain下所有的object 
-    s.list('domain-name')
+    .. py:method:: put_object(obj, contents, content_type=None, content_encoding=None, metadata=None)
 
+       创建或更新一个object。
+
+       obj: object的名称。
+
+       contents: object的内容，可以是字符串或file-like object。
+
+       content_type: object的mime类型。
+
+       content_encoding: object的encoding。
+
+       metadata: object的元数据。
+
+    .. py:method:: post_object(obj, content_type=None, content_encoding=None, metadata=None)
+
+       更新object的一些属性。
+
+       注意：object的metadata的更新是全量的，和container的增量修改不一样。
+
+    .. py:method:: get_object(obj, chunk_size=None)
+
+       获取object的内容和属性信息。
+
+       obj: object的名称。
+
+       chunk_size: 不返回object的全部内容，而是返回一个文件内容的generator，每次iterate返回chunk_size大小的数据。
+
+       返回一个tuple (obj的属性信息, object的内容)。
+
+    .. py:method:: get_object_contents(obj, chunk_size=None)
+
+       获取object的内容。
+
+       参数同get_object，只返回object的内容。
+
+    .. py:method:: stat_object(obj)
+
+       获取object的属性信息。
+
+    .. py:method:: delete_object(obj)
+
+       删除object。
+
+    .. py:method:: generate_url(obj)
+
+       返回object的public url。
+
+
+.. _about-acl:
+
+ACL
+~~~~~~~~~~
+
+ACL的格式是： `[item[,item...]]` 。 每一个item指定了一个referer的访问权限，item的格式为： `.r:[-]value` 。 
+
++ value可以为 `*` （任何referrer host都可以访问）
++ 如果value的开头包含 `.` 或者 `*` ，则其为一个域名通配。
+  比如： `.example.com` 或者 `*.example.com` 。表示以.example.com结尾的referer host可以访问。
++ 在value的前面加上 `-` 则表示禁止referer host为这一域名的访问。
++ acl为空时表示不允许任何referer host的访问，也就等于该bucket为私有bucket。
+
+例：  ::
+
+    .r:*
+    .r:-.thief.com
+    .r:.example.com,.r:-thief.example.com
+
+缓存过期
+~~~~~~~~~~~~~~
+
+如果用户没有设置bucket或者object的缓存过期时间，storage默认的时间是2小时。
+
+用户可以通过以下metadata设置object的缓存过期时间: ::
+
+    expires       该metadata可以加在bucket或者object上，用来设置object的缓存过期。
+                  其value的格式为：[modified] time_delta
+
+    expires-type  该metadata可以加在bucket上。对于该bucket中的object，按照其mime_type来设置对应的缓存过期时间。
+                  其value的格式为：mime_type [modified] time_delta
+                  如果有多条规则，规则和规则之间使用逗号（，）隔开。
+
+mime_type为object的mime类型，例如： text/html, text/plain, image/gif
+
+time_delta是一个表示时间的字符串，例如： `1y3M`, `48d`, `5s`, `-1` ::
+
+    s   seconds
+    m   minutes
+    h   hours
+    d   days
+    w   weeks
+    M   months, 30 days
+    y   years, 365 days
+
+modified关键字用于指定缓存过期的时间相对于object的最后修改时间。默认expire时间是相对于访问时间。
+
+如果time_delta为负， Cache-Control header会被设置为no-cache. 
+
+正的time_delta会设置Cache-Control为max-age = #，其中 # 是缓存过期的时间（单位为秒）。
 
 KVDB
 ----------

@@ -58,7 +58,7 @@ def setup_sae_environ(conf):
         print 'MySQL config not found'
 
     if conf.storage:
-        os.environ['STORAGE_PATH'] = os.path.abspath(conf.storage)
+        os.environ['sae.storage.path'] = os.path.abspath(conf.storage)
         
     # Add custom environment variable
     os.environ['HTTP_HOST'] = '%s:%d' % (conf.host, conf.port)

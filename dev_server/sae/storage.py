@@ -1,275 +1,238 @@
 #!/usr/bin/env python
 # -*-coding: utf8 -*-
 
-""" SAE Storage API
+""" Dummy SAE Storage API
 """
 
-import json
-import urllib
-import urllib2
-import random
-import string
-import errno
-from sae.const import (
-    ACCESS_KEY, SECRET_KEY, APP_NAME
-)
-
-# Check the settings
 import os
-_stor_path = os.environ.get('STORAGE_PATH', None)
-if not _stor_path:
+import errno
+import mimetypes
+from datetime import datetime
+from urllib import quote as _quote
+
+STORAGE_PATH = os.environ.get('sae.storage.path')
+if not STORAGE_PATH:
     raise RuntimeError("Please specify --storage-path in the command line")
-if not os.path.isdir(_stor_path):
-    raise RuntimeError("'%s' directory does not exists" % _stor_path)
+if not os.path.isdir(STORAGE_PATH):
+    raise RuntimeError("'%s' directory does not exists" % STORAGE_PATH)
 
-class Error(Exception):
-    """Base-class of errors in this module"""
+DEFAULT_API_URL = 'https://api.sinas3.com'
+ACCESS_KEY = SECRET_KEY = APP_NAME = 'x'
+DEFAULT_API_VERSION = 'v1'
+DEFAULT_RESELLER_PREFIX = 'SAE_'
 
-class InternalError(Error):
-    """Something unexpected happened, it should be temporary."""
+class Error(Exception): pass
 
-class PermissionDeniedError(Error):
-    """The requested operation is not allowed for this app"""
-
-class DomainNotExistsError(Error):
-    """The requested domain does not exists"""
-
-class ObjectNotExistsError(Error):
-    """The requested object does not exists"""
-
-_ERROR_MAPPING = {-3: PermissionDeniedError, 
-    -7: DomainNotExistsError, -18: ObjectNotExistsError
-}
-
-_STOR_BACKEND = 'http://stor.sae.sina.com.cn/storageApi.php'
-
-_META_MAPPING = {
-    'expires': 'expires',
-    'content_type': 'type',
-    'content_encoding': 'encoding',
-}
-
-class Object:
-    def __init__(self, data, **kwargs):
-        """
-        Args:
-          data: The content of the object.
-          expires: Set the expires time of the object. The same format as
-            apache's expires directive.
-          content_encoding: Set a Content-Encoding header on the object.
-          content_type: Set a Content-Type header on the object.
-        """
-        self.data = data
-        self.meta = {}
-        for k, v in kwargs.iteritems():
-            if k in _META_MAPPING:
-                self.meta[k] = v
-
-class PostDataHandler(urllib2.BaseHandler):
-    handler_order = urllib2.HTTPHandler.handler_order-10 
-
-    def http_request(self, request):
-        data = request.get_data()
-        if data is not None and type(data) != str:
-            objs = []
-            vars = []
-            try:
-                 for key, value in data.items():
-                     if isinstance(value, Object):
-                         objs.append((key, value))
-                     else:
-                         vars.append((key, value))
-            except TypeError:
-                raise TypeError("sequence or mapping object required")
-
-            if len(objs) == 0:
-                data = urllib.urlencode(vars, 1)
-            else:
-                boundary, data = self.encode(vars, objs)
-                content_type = 'multipart/form-data; boundary=%s' % boundary
-                request.add_unredirected_header('Content-Type', content_type)
-            request.add_data(data)
-        return request
-
-    def encode(self, vars, objs, boundary = None):
-        if boundary is None:
-            boundary = ''.join([
-                random.choice(string.letters) for i in range(20)
-            ])
-        buffer = ''
-
-        for key, value  in vars:
-            buffer += '--%s\r\n' % boundary \
-                + 'Content-Disposition: form-data; name="%s"\r\n' % key \
-                + '\r\n' + value + '\r\n'
-
-        for key, obj  in objs:
-            buffer += '--%s\r\n' % boundary \
-                + 'Content-Disposition: form-data; name="%s"; filename="x"\r\n' % key \
-                + 'Content-Type: application/octet-stream\r\n' \
-                + '\r\n' + obj.data + '\r\n'
-
-        buffer += '--%s--\r\n\r\n' % boundary
-
-        return boundary, buffer
-
-    https_request = http_request
-
-class Client:
-
-    def __init__(self, accesskey=ACCESS_KEY, \
-            secretkey=SECRET_KEY, prefix=APP_NAME):
-        pass
-
-    def put(self, domain, key_name, object):
-        """Put an object in the specified domain.
-
-        Args:
-          domain: The domain to put the object.
-          key_name: The name of the object.
-          object: The object will be putted.
-        Returns: The url of the object.
-        """
-        if not isinstance(object, Object):
-            raise TypeError("Only Object is allowed")
-
-        path = os.path.join(_stor_path, domain)
-        self._ensure_dir_exists(path)
-
-        fullpath = os.path.join(path, key_name)
-
+class AttrDict(dict):
+    def __getattr__(self, name):
         try:
-            open(fullpath, 'wb').write(object.data)
-        except OSError, e:
-            raise InternalError()
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
 
-        return self.url(domain, key_name)
+def q(value, safe='/'):
+    value = encode_utf8(value)
+    if isinstance(value, str):
+        return _quote(value, safe)
+    else:
+        return value
 
-    def get(self, domain, key_name):
-        """Get an object from the specified domain.
+def encode_utf8(value):
+    if isinstance(value, unicode):
+        value = value.encode('utf8')
+    return value
 
-        Args:
-          domain: The domain from which the obect will be getted.
-          key_name: The name of the object
-        """
-        fullpath = os.path.join(_stor_path, domain, key_name)
+class Bucket:
+    def __init__(self, bucket, conn=None):
+        self.conn = conn if conn else Connection()
+        self.bucket = bucket
 
-        try:
-            data = open(fullpath, 'rb').read()
-        except IOError, e:
-            if e.errno == errno.ENOENT:
-                raise ObjectNotExistsError()
-            else:
-                raise InternalError()
-            
-        return Object(data)
+    _s = """
+def %s(self, *args, **kws):
+    return self.conn.%s_bucket(self.bucket, *args, **kws)
+"""
+    for _m in ('put', 'post', 'stat', 'delete', 'list'):
+        exec _s % (_m, _m)
 
-    def stat(self, domain, key_name):
-        """Get an object's attributes
+    _s = """
+def %s(self, *args, **kws):
+    return self.conn.%s(self.bucket, *args, **kws)
+"""
+    for _m in ('get_object', 'get_object_contents', 'put_object',
+               'post_object', 'stat_object', 'delete_object',
+               'generate_url'):
+        exec _s % (_m, _m)
 
-        Args:
-          domain: The domain from which the obect will be getted.
-          key_name: The name of the object
-        """
-        fullpath = os.path.join(_stor_path, domain, key_name)
+    del _m, _s
 
-        try:
-            st = os.stat(fullpath)
-        except OSError, e:
-            if e.errno == errno.ENOENT:
-                raise ObjectNotExistsError()
-            else:
-                raise InternalError()
+class Connection(object):
+    def __init__(self, accesskey=ACCESS_KEY, secretkey=SECRET_KEY,
+                 account=APP_NAME, retries=3, backoff=0.5,
+                 api_url=DEFAULT_API_URL,
+                 api_version = DEFAULT_API_VERSION,
+                 reseller_prefix=DEFAULT_RESELLER_PREFIX,
+                 bucket_class=Bucket):
+        if accesskey is None or secretkey is None or account is None:
+            raise TypeError(
+                '`accesskey` or `secretkey` or `account` is missing')
+        self.bucket_class = bucket_class
 
-        d = {'name': key_name, 'length': st[6], 'datetime': st[8]}
-                
-        return d
+    def list_bucket(self, bucket, prefix=None, delimiter=None,
+                    path=None, limit=10000, marker=None):
+        if path:
+            prefix = path
+            delimiter = '/'
+        objs = []
+        pth = os.path.normpath(os.path.join(STORAGE_PATH, bucket))
+        for dpath, dnames, fnames in os.walk(pth):
+            rpath = dpath[len(pth)+1:]
+            objs.extend([os.path.join(rpath, f) for f in fnames])
+        last_subdir = None
+        startpos = len(prefix) if delimiter and prefix else 0
+        for obj in objs:
+            if prefix:
+                if not obj.startswith(prefix):
+                    continue
+            if delimiter:
+                endpos = obj.find(delimiter, startpos)
+                if endpos != -1:
+                    subdir = obj[:endpos+1]
+                    if subdir != last_subdir:
+                        item = AttrDict()
+                        item['bytes'] = None
+                        item['content_type'] = None
+                        item['hash'] = None
+                        item['last_modified'] = None
+                        item['name'] = subdir
+                        yield item
+                        last_subdir = subdir
+                    continue
+            item = AttrDict()
+            item['bytes'] = '12'
+            item['content_type'] = 'application/octet-stream'
+            item['hash'] = 'x' * 40
+            item['last_modified'] = '2013-05-23T03:01:59.051030'
+            item['name'] = obj
+            yield item
 
-    def delete(self, domain, key_name):
-        """Delete an object from the specified domain.
+    def stat_bucket(self, bucket):
+        attrs = AttrDict()
+        attrs['acl'] = '.r:*'
+        attrs['bytes'] = '10240'
+        attrs['objects'] = '10240'
+        attrs['metadata'] = {}
+        return attrs
 
-        Args:
-          domain: The domain where the object is in.
-          key_name: The name of the object.
-        """
-        fullpath = os.path.join(_stor_path, domain, key_name)
+    def get_bucket(self, bucket):
+        return self.bucket_class(bucket)
 
-        try:
-            os.unlink(fullpath)
-        except OSError, e:
-            if e.errno == errno.ENOENT:
-                raise ObjectNotExistsError()
-            else:
-                raise InternalError()
-
-    def list(self, domain):
-        """List the objects in a domain.
-
-        Args:
-          domain: Which domain to list.
-        Returns: A list of all the  objects' attributes.
-        """
-        path = os.path.join(_stor_path, domain)
-        self._ensure_dir_exists(path)
-
-        data = []
-        for f in os.listdir(path):
-            filepath = os.path.join(path, f)
-
-            try:
-                st = os.stat(filepath)
-            except OSError:
-                raise InternalError()
-
-            data.append({
-                'name': f,
-                'length': st[6],
-                'datetime': st[8],
-            })
-
-        return data
-
-    def create_domain(self, domain, **attrs):
-        """Create a domain.
-
-        Args:
-          domain: The name of the domain.
-        """
-        raise NotImplementedError()
-
-    def delete_domain(self, domain):
-        """Delete a domain.
-
-        Args:
-          domain: The name of the domain.
-        """
-        raise NotImplementedError()
-
-    def list_domain(self):
-        """List all the domains.
-
-        Returns: A list of all the domains.
-        """
-        domains = []
-        for f in os.listdir(_stor_path):
-            fullpath = os.path.join(_stor_path, f)
-            if os.path.isdir(fullpath):
-                domains.append(unicode(f))
-        return domains
-
-    def url(self, domain, key_name):
-        """Get an object's public url.
-        """
-        return 'http://%s/stor-stub/%s/%s' % \
-            (os.environ['HTTP_HOST'], domain, urllib.quote(key_name))
-
-    def _ensure_dir_exists(self, path):
+    def put_bucket(self, bucket, acl=None, metadata=None):
+        path = os.path.join(STORAGE_PATH, bucket)
         try:
             os.mkdir(path)
         except OSError, e:
-            if e.errno == errno.EPERM:
-                raise PermissionDeniedError()
-            elif e.errno != errno.EEXIST:
-                raise InternalError()
-            
+            if e.errno != errno.EEXIST:
+                raise Error(500, str(e))
 
+    def post_bucket(self, bucket, acl=None, metadata=None):
+        pass
+
+    def delete_bucket(self, bucket):
+        path = os.path.join(STORAGE_PATH, bucket)
+        try:
+            os.rmdir(path)
+        except OSError, e:
+            if e.errno == errno.ENOENT:
+                raise Error(404, 'Not Found')
+            elif e.errno == errno.ENOTEMPTY:
+                raise Error(409, 'Confict')
+            else:
+                raise Error(500, str(e))
+
+    def get_object(self, bucket, obj, chunk_size=None):
+        return self.stat_object(bucket, obj), \
+                self.get_object_contents(bucket, obj, chunk_size)
+
+    def get_object_contents(self, bucket, obj, chunk_size=None):
+        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        try:
+            resp = open(fname, 'rb')
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                raise Error(404, 'Not Found')
+            else:
+                raise Error(500, str(e))
+        if chunk_size:
+            def _body():
+                buf = resp.read(chunk_size)
+                while buf:
+                    yield buf
+                    buf = resp.read(chunk_size)
+            return _body()
+        else:
+            return resp.read()
+
+    def stat_object(self, bucket, obj):
+        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        try:
+            st = os.stat(fname)
+        except OSError, e:
+            if e.errno == errno.ENOENT:
+                raise Error(404, 'Not Found')
+            else:
+                raise Error(500, str(e))
+        attrs = AttrDict()
+        attrs['bytes'] = str(st.st_size)
+        attrs['hash'] = 'x'*40
+        attrs['last_modified'] = datetime.utcfromtimestamp(
+                float(st.st_mtime)).isoformat()
+        attrs['content_type'] = mimetypes.guess_type(obj)[0] or \
+                                'application/octet-stream'
+        attrs['content_encoding'] = None
+        attrs['timestamp'] = str(st.st_mtime)
+        attrs['metadata'] = {}
+        return attrs
+
+    def put_object(self, bucket, obj, contents,
+                   content_type=None, content_encoding=None,
+                   metadata=None):
+        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        if hasattr(contents, 'read'):
+            contents = contents.read()
+        try:
+            os.makedirs(os.path.dirname(fname))
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                raise Error(500, str(e))
+        try:
+            open(fname, 'wb').write(contents)
+        except IOError, e:
+            raise Error(500, str(e))
+
+    def post_object(self, bucket, obj,
+                    content_type=None, content_encoding=None,
+                    metadata=None):
+        pass
+
+    def generate_url(self, bucket, obj):
+        return 'http://%s/stor-stub/%s/%s' % \
+            (os.environ['HTTP_HOST'], bucket, q(obj))
+
+    def delete_object(self, bucket, obj):
+        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        try:
+            os.unlink(fname)
+        except OSError, e:
+            if e.errno == errno.ENOENT:
+                raise Error(404, 'Not Found')
+        bname = os.path.join(STORAGE_PATH, bucket)
+        fname = os.path.dirname(fname)
+        while fname and len(fname) > len(bname):
+            try:
+                os.rmdir(fname)
+            except OSError, e:
+                if e.errno == errno.ENOTEMPTY:
+                    break
+                else:
+                    raise Error(500, str(e))
+            fname = os.path.dirname(fname)
