@@ -98,7 +98,9 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
   .. warning:: gevent和tornado worker还处在bleeding edge, use at your own risk。
 
-* 使用第三方库 ::
+* 使用预装模块
+
+  部分预装的第三方模块不在python的默认模块搜索路径中，需要在config.yaml中配置后才可以使用。 ::
 
     libraries:
     - name: django
@@ -107,7 +109,7 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
     - name: numpy
       version: "1.6.1"
 
-  name为第三方模块的名称，version为需要使用的版本，这两个字段为必填字段。
+  name为第三方模块的名称，version为需要使用的版本，这两个字段为必填字段。 :ref:`pre-installed-package-list`
 
 * 静态文件处理 
 
@@ -152,6 +154,8 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
       的URL转发到应用目录下的static目录。
 
    3. 以上两条规则仅为兼容性考虑保留，不推荐使用，请在config.yaml明确配置。
+
+.. _pre-installed-package-list:
 
 预装模块列表
 ---------------------
