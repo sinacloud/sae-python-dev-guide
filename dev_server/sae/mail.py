@@ -85,7 +85,7 @@ MAX_EMAIL_SIZE = 1048576 # bytes (1M)
 class EmailMessage(object):
     """Main interface to SAE Mail Service
     """
-    _properties = ['to', 'subject', 'body', 'html', 'attachments', 'smtp']
+    _properties = ['to', 'subject', 'body', 'html', 'attachments', 'smtp', 'from_addr']
     _ext_to_disposition = {
         'bmp':  'I', 'css':  'A',
         'csv':  'A', 'gif':  'I',
@@ -186,7 +186,7 @@ class EmailMessage(object):
         """Convert mail mesage to protocol message"""
         self.check_initialized()
 
-        args = {'from':          self.smtp[2],
+        args = {'from':          getattr(self, 'from_addr', self.smtp[2]),
                 'to':            self.to,
                 'subject':       self.subject,
                 'smtp_host':     self.smtp[0],
@@ -228,45 +228,10 @@ class EmailMessage(object):
     def _remote_call(self, message):
         args = json.loads(message['saemail'])
 
-        import smtplib
-        from email import encoders
-        from email.Header import Header
-        from email.mime.text import MIMEText
-        from email.MIMEBase import MIMEBase
-        from email.MIMEMultipart import MIMEMultipart
-
-        if args['tls']:
-            s = smtplib.SMTP_SSL()
-        else:
-            s = smtplib.SMTP()
-
-        s.connect(args['smtp_host'], args['smtp_port'])
-        s.login(args['smtp_username'], args['smtp_password'])
-
-        msg = MIMEMultipart()
-        msg['From'] = args['from']
-        msg['To'] = args['to']
-        msg['Subject'] = Header(args['subject'], 'utf-8').encode()
-
-        if args['content_type'] == 'plain':
-            msg.attach(MIMEText(args['content'].encode('utf-8'), _charset="utf-8"))
-        else:
-            msg.attach(MIMEText(args['content'].encode('utf-8'), 'html', _charset="utf-8"))
-
-        for k, v in args.iteritems():
-            if not k.startswith('attach'):
-                continue
-
-            ap = k.split(':')
-            part = MIMEBase('application', "octet-stream")
-            part.set_payload(base64.decodestring(v))
-            encoders.encode_base64(part)
-            part.add_header('Content-Disposition', 'attachment', filename=ap[1])
-            msg.attach(part)
-
-        s.sendmail(args['from'], args['to'].split(','), msg.as_string())
-
-        s.quit()
+        # just print the message on console
+        print '[SAE:MAIL] Sending new mail'
+        import pprint
+        pprint.pprint(args)
 
     def _get_headers(self):
         access_key = core.get_access_key()
