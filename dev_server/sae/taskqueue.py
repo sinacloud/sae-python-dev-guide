@@ -170,7 +170,7 @@ class TaskQueue:
 
             if payload:
                 payload = base64.b64decode(payload)
-            print 'add task:', url, payload
+            print '[SAE:TASKQUEUE] Add task:', url, payload
 
             #try:
             #    # Try to make a sync call.
