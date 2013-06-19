@@ -60,14 +60,14 @@ def deploy(args):
         source = search_file_bottom_up('config.yaml')
         if source is None:
             print >>sys.stderr,     \
-                'Error: Not an app directory(or any of the parent directories)'
+                'error: Not an app directory(or any of the parent directories)'
             return
 
     conf_file = os.path.join(source, 'config.yaml')
     try:
         conf =  yaml.load(open(conf_file))
     except:
-        print >>sys.stderr, 'Error: Failed to load config.yaml'
+        print >>sys.stderr, 'error: Failed to load config.yaml'
         return
 
     name =  conf['name']
@@ -369,6 +369,77 @@ def install(args):
             zf.close()
             os.unlink(pth)
 
+HISTORY_PATH = os.path.join(LOCAL_CACHE_DIR, 'shell.hist')
+
+def shell(args):
+    app_name = args.app
+    if app_name is None:
+        app_root = search_file_bottom_up('config.yaml')
+        try:
+            path = os.path.join(app_root, 'config.yaml')
+            app_name = yaml.load(open(path))['name']
+        except Exception:
+            pass
+    if app_name is None:
+        print >>sys.stderr, 'error: No app is specified'
+        return
+
+    api_url = 'http://%s.sinaapp.com/_sae/shell/rpc' % app_name
+
+    import time
+    session = None
+    password = args.password and args.password[0]
+
+    def _rpc(op, **kwargs):
+        req = json.dumps({'op': op,
+                          'session': session,
+                          'password': password,
+                          'kwargs': kwargs})
+        body = urllib2.urlopen(api_url, req).read()
+        return body
+
+    import code
+
+    try:
+        import readline, atexit
+        readline.parse_and_bind('tab: complete')
+        atexit.register(lambda: readline.write_history_file(HISTORY_PATH))
+        if os.path.exists(HISTORY_PATH):
+            readline.read_history_file(HISTORY_PATH)
+    except ImportError:
+        pass
+
+    try:
+        session, python_version = _rpc('open').split(' ', 1)
+    except Exception:
+        print >>sys.stderr, \
+            'error: connect with %s\'s ShellMiddleware' % app_name
+        return
+
+    banner = '''Python %s
+Type "help", "copyright", "credits" or "license" for more information.
+''' % python_version
+
+    class _InteractiveConsole(code.InteractiveConsole):
+        def runsource(self, source, filename="<input>", symbol="single"):
+            try:
+                if self.compile(source, filename, symbol) is None:
+                    # Imcomplete code
+                    return True
+            except (OverflowError, SyntaxError, ValueError):
+                # Syntax error
+                self.showsyntaxerror(filename)
+                return False
+
+            try:
+                self.write(_rpc('run',
+                                source=source, filename=filename, mode=symbol))
+            except Exception:
+                self.write('error: execute code on server\n')
+            return False
+
+    _InteractiveConsole().interact(banner)
+
 def main():
 
     parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]))
@@ -411,6 +482,12 @@ def main():
 
     p = subparsers.add_parser('version', help='show version info')
     p.set_defaults(func=version)
+
+    p = subparsers.add_parser('shell', help='remote python shell runs on SAE')
+    p.add_argument('app', nargs='?', default=None, help='which app\'s shell to run')
+    p.add_argument('-p', '--password', nargs=1,
+                   help='password you set in the ShellMiddleware')
+    p.set_defaults(func=shell)
 
     args = parser.parse_args()
     global verbose
