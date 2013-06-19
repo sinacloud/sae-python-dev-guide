@@ -13,7 +13,14 @@ import imp
 import yaml
 from optparse import OptionParser
 
-app_root = os.getcwd()
+from sae.util import search_file_bottom_up
+
+app_root = search_file_bottom_up('config.yaml')
+if app_root is None:
+    print >> sys.stderr, \
+        'Error: Not an app directory(or any of the parent directories)'
+    sys.exit(1)
+if app_root != os.getcwd(): os.chdir(app_root)
 
 def setup_sae_environ(conf):
     # Add dummy pylibmc module

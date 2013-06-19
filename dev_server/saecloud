@@ -15,6 +15,8 @@ import hashlib
 import urllib
 import urllib2
 
+from sae.util import search_file_bottom_up
+
 UPLOAD_SERVER = 'http://upload.sae.sina.com.cn'
 DEPLOY_SERVER = 'http://deploy.sae.sina.com.cn'
 SVN_SERVER = 'https://svn.sinaapp.com/'
@@ -53,6 +55,13 @@ def deploy(args):
     source = args.dir 
     opts = _get_svn_opts(args)
     cache = LOCAL_CACHE_DIR
+
+    if source is None:
+        source = search_file_bottom_up('config.yaml')
+        if source is None:
+            print >>sys.stderr,     \
+                'Error: Not an app directory(or any of the parent directories)'
+            return
 
     conf_file = os.path.join(source, 'config.yaml')
     try:
@@ -313,7 +322,10 @@ def upload_data(args):
         uploadfile2(f, (appname, accesskey, secretkey), domain)
 
 def install(args):
-    dest = os.path.join(os.getcwd(), 'site-packages')
+    # If we are in an app directory, try to install the package in the
+    # standard directory.
+    parent_dir = search_file_bottom_up('config.yaml') or os.getcwd()
+    dest = os.path.join(parent_dir, 'site-packages')
 
     if not os.path.exists(dest):
         os.mkdir(dest)
@@ -379,7 +391,7 @@ def main():
 
     p = subparsers.add_parser('deploy', parents=[credentials], 
                               help='deploy source directory to SAE')
-    p.add_argument('dir', nargs='?', default='.', 
+    p.add_argument('dir', nargs='?', default=None,
                    help='the source code directory to deploy, default to current dir')
     p.set_defaults(func=deploy)
 

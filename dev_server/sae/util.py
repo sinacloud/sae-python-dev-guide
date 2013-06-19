@@ -13,3 +13,18 @@ def protect_secret(d):
     for k, v in d.items():
         if 'KEY' in k:
             half_secret(d, k)
+
+import os.path
+
+def search_file_bottom_up(name):
+    curdir = os.getcwd()
+
+    while True:
+        path = os.path.join(curdir, name)
+        if os.path.isfile(path):
+            return curdir
+        _curdir = os.path.dirname(curdir)
+        if _curdir == curdir:
+            return None
+        curdir = _curdir
+
