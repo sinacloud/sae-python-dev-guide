@@ -81,6 +81,7 @@ def deploy(args):
         url = SVN_SERVER + name
         run('svn', 'checkout', url, path, *opts)
     else:
+        run('svn', 'cleanup', path)
         run('svn', 'update', path, '-q')
 
     print 'Finding changes'
@@ -137,9 +138,8 @@ def deploy(args):
         modified = True
 
     if not modified:
-        print 'No changes found',
-        return 
-    print 'Pushing to server... ',
+        print 'No changes found'
+    print 'Deploying to server... ',
     sys.stdout.flush()
     run('svn', 'commit', path, '-mx')
     print 'done'
