@@ -1,10 +1,10 @@
 
 import os.path
-from setuptools import setup
+from setuptools import setup, find_packages
 
 VERSION = '1.1.0'
 
-scripts = ['dev_server.py', 'saecloud']
+scripts = ['dev_server.py', 'saecloud', 'cloudsql.py']
 
 if os.name == 'nt':
     # XXX: shebang does not work on windows
@@ -24,9 +24,14 @@ setup(
         'pip',
         'PyYAML',
         'argparse',
+        # XXX: The latest grizzled-python package is broken
+        'grizzled-python==1.0.1',
+        'sqlcmd',
+        'prettytable',
         ],
     platforms='any',
     url = "http://python.sinaapp.com",
-    packages=['sae'],
-    scripts = scripts
+    packages=find_packages(),
+    scripts = scripts,
+    zip_safe = False,
 )
