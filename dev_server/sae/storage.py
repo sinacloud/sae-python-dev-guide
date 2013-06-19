@@ -10,12 +10,6 @@ import mimetypes
 from datetime import datetime
 from urllib import quote as _quote
 
-STORAGE_PATH = os.environ.get('sae.storage.path')
-if not STORAGE_PATH:
-    raise RuntimeError("Please specify --storage-path in the command line")
-if not os.path.isdir(STORAGE_PATH):
-    raise RuntimeError("'%s' directory does not exists" % STORAGE_PATH)
-
 DEFAULT_API_URL = 'https://api.sinas3.com'
 ACCESS_KEY = SECRET_KEY = APP_NAME = 'x'
 DEFAULT_API_VERSION = 'v1'
@@ -83,7 +77,7 @@ class Connection(object):
             prefix = path
             delimiter = '/'
         objs = []
-        pth = os.path.normpath(os.path.join(STORAGE_PATH, bucket))
+        pth = os.path.normpath(self._get_storage_path(bucket))
         for dpath, dnames, fnames in os.walk(pth):
             rpath = dpath[len(pth)+1:]
             objs.extend([os.path.join(rpath, f) for f in fnames])
@@ -127,7 +121,7 @@ class Connection(object):
         return self.bucket_class(bucket)
 
     def put_bucket(self, bucket, acl=None, metadata=None):
-        path = os.path.join(STORAGE_PATH, bucket)
+        path = self._get_storage_path(bucket)
         try:
             os.mkdir(path)
         except OSError, e:
@@ -138,7 +132,7 @@ class Connection(object):
         pass
 
     def delete_bucket(self, bucket):
-        path = os.path.join(STORAGE_PATH, bucket)
+        path = self._get_storage_path(bucket)
         try:
             os.rmdir(path)
         except OSError, e:
@@ -154,7 +148,7 @@ class Connection(object):
                 self.get_object_contents(bucket, obj, chunk_size)
 
     def get_object_contents(self, bucket, obj, chunk_size=None):
-        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        fname = self._get_storage_path(bucket, obj)
         try:
             resp = open(fname, 'rb')
         except IOError, e:
@@ -173,7 +167,7 @@ class Connection(object):
             return resp.read()
 
     def stat_object(self, bucket, obj):
-        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        fname = self._get_storage_path(bucket, obj)
         try:
             st = os.stat(fname)
         except OSError, e:
@@ -196,7 +190,7 @@ class Connection(object):
     def put_object(self, bucket, obj, contents,
                    content_type=None, content_encoding=None,
                    metadata=None):
-        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        fname = self._get_storage_path(bucket, obj)
         if hasattr(contents, 'read'):
             contents = contents.read()
         try:
@@ -219,13 +213,13 @@ class Connection(object):
             (os.environ['HTTP_HOST'], bucket, q(obj))
 
     def delete_object(self, bucket, obj):
-        fname = os.path.join(STORAGE_PATH, bucket, obj)
+        fname = self._get_storage_path(bucket, obj)
         try:
             os.unlink(fname)
         except OSError, e:
             if e.errno == errno.ENOENT:
                 raise Error(404, 'Not Found')
-        bname = os.path.join(STORAGE_PATH, bucket)
+        bname = self._get_storage_path(bucket)
         fname = os.path.dirname(fname)
         while fname and len(fname) > len(bname):
             try:
@@ -236,3 +230,13 @@ class Connection(object):
                 else:
                     raise Error(500, str(e))
             fname = os.path.dirname(fname)
+
+    _STORAGE_PATH = os.environ.get('sae.storage.path')
+    def _get_storage_path(self, *args):
+        if not self._STORAGE_PATH:
+            raise RuntimeError(
+                "Please specify --storage-path in the command line")
+        if not os.path.isdir(self._STORAGE_PATH):
+            raise RuntimeError(
+                "'%s' directory does not exists" % self._STORAGE_PATH)
+        return os.path.join(self._STORAGE_PATH, *args)
