@@ -222,12 +222,12 @@ Cron 完整示例
 
 Flask URL 处理程序::
 
-    import pylibmc
     import datetime
+    import pylibmc as memcache
 
     from appstack import app
 
-    mc = pylibmc.Client(['localhost'])
+    mc = memcache.Client(['localhost'])
 
     @app.route('/backend/cron/update', methods=['GET', 'POST'])
     def update():
@@ -339,9 +339,9 @@ SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
 
 示例代码::
 
-    import pylibmc
+    import pylibmc as memcache
 
-    mc = pylibmc.Client()
+    mc = memcache.Client()
  
     mc.set("foo", "bar")
     value = mc.get("foo")
@@ -351,6 +351,12 @@ SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
     mc.incr("key")
 
 pylibmc接口和 `python-memcached`_ 基本兼容，可以直接替换使用。 `python-memcache文档 <_static/memcache.html>`_ 。
+
+对于现有使用python-memcache的代码，可以直接在index.wsgi中（任何import memcache语句执行之前）加入如下代码，即可不修改代码使用pylibmc了。 ::
+
+    import pylibmc
+    import sys
+    sys.modules['memcache'] = pylibmc
 
 .. _python-memcached: http://www.tummy.com/Community/software/python-memcached/
 
