@@ -111,6 +111,16 @@ MySQL连接超时时间为30s，不是mysql默认的8小时，所以你需要在
 对于使用sqlalchemy的用户，需要在请求处理结束时调用 `db.session.close()` ，关闭当前session，
 将mysql连接还给连接池，并且将连接池的连接recyle时间设的小一点（推荐为10s）。
 
+MySQL InterfaceError: (-1, 'error totally whack(xxx)')
+---------------------------------------------------------
+
+这个错误表示mysql返回的错误码是sae自定义的错误码，其中totally whack后面括号中的数字是具体的错误码。
+
+你可以在 `自定义错误码`_ 查询到相关错误码具体代表的信息。
+
+.. _自定义错误码:  http://sae.sina.com.cn/?m=devcenter&catId=203#anchor_ba2cfd662e37730bc2bf2fb0fea566c7
+
+
 如何区分本地开发环境和线上环境
 -------------------------------------
 ::
