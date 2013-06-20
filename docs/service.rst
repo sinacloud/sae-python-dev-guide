@@ -480,6 +480,12 @@ API Reference
 
 ..  module:: sae.storage
 
+..  py:class:: Error()
+
+    Storage异常类。
+
+..  module:: sae.storage
+
 ..  py:class:: Connection(accesskey=ACCESS_KEY, secretkey=SECRET_KEY, account=APP_NAME, retries=3)
 
     Connection类
