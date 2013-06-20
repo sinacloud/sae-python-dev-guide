@@ -91,6 +91,11 @@ class CloudSqlCmd(sqlcmd.SQLCmd):
     def do_load(self, args):
         self.do_run(args)
 
+    def preloop(self, *args, **kwargs):
+        sqlcmd.SQLCmd.preloop(self, *args, **kwargs)
+        # Just exit if the connect failed
+        if self._SQLCmd__db is None: sys.exit(1)
+
     def __init__(self, *args, **kwargs):
         sqlcmd.SQLCmd.__init__(self, *args, **kwargs)
         self.prompt = sqlcmd.SQLCmd.MAIN_PROMPT
