@@ -111,6 +111,125 @@ Django
 
 .. _django-1.2.7示例: https://github.com/SAEPython/saepythondevguide/tree/master/examples/django/1.2.7
 
+
+处理用户上传文件
+``````````````````
+
+在setttings.py中添加以下配置。 ::
+
+    # 修改上传时文件在内存中可以存放的最大size为10m
+    FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+    # sae的本地文件系统是只读的，修改django的file storage backend为Storage
+    DEFAULT_FILE_STORAGE = 'sae.ext.django.storage.backend.Storage'
+    # 使用media这个bucket
+    STORAGE_BUCKET_NAME = 'media'
+    # ref: https://docs.djangoproject.com/en/dev/topics/files/
+
+发送邮件
+``````````
+
+在settings.py中添加以下配置，即可使用sae的mail服务来处理django的邮件发送了。 ::
+
+    ADMINS = (
+        ('administrator', 'administrator@gmail.com'),
+    )
+
+    # ref: https://docs.djangoproject.com/en/dev/ref/settings/#email
+    EMAIL_BACKEND = 'sae.ext.django.mail.backend.EmailBackend'
+    EMAIL_HOST = 'smtp.example.com'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'sender@gmail.com'
+    EMAIL_HOST_PASSWORD = 'password'
+    EMAIL_USE_TLS = True
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+数据库的主从读写
+``````````````````
+
+参见Django官方文档 `Multiple databases`_
+
+.. _Multiple databases: https://docs.djangoproject.com/en/1.2/topics/db/multi-db/#multiple-databases
+
+如何syncdb到线上数据库
+````````````````````````
+
+如下配置数据库，即可执行 `python manage.py syncdb` 直接syncdb到线上数据库。 ::
+
+    # 线上数据库的配置
+    MYSQL_HOST = 'w.rdc.sae.sina.com.cn'
+    MYSQL_PORT = '3307'
+    MYSQL_USER = 'ACCESSKEY'
+    MYSQL_PASS = 'SECRETKEY'
+    MYSQL_DB   = 'app_APP_NAME'
+
+    from sae._restful_mysql import monkey
+    monkey.patch()
+
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.mysql',
+            'NAME':     MYSQL_DB,
+            'USER':     MYSQL_USER,
+            'PASSWORD': MYSQL_PASS,
+            'HOST':     MYSQL_HOST,
+            'PORT':     MYSQL_PORT,
+        }
+    }
+
+.. warning:: 本feature还在开发中，目前还很buggy。
+
+如何serve admin app的静态文件
+``````````````````````````````
+
+方法一：
+
+修改 `settings.py` 中的 `STATIC_ROOT` 为 `static/` 。
+
+运行 `python manage.py collectstatic` 将静态文件收集到应用的 `static` 子目录下。
+
+修改 `config.yaml` ，添加对static文件夹下的静态文件的handlers。 ::
+
+    handlers:
+    - url: /static
+      static_dir: path/to/mysite/static
+
+方法二：
+
+在开发调试（settings.py中debug=True）过程中，可以将 `staticfiles_urlpatterns`_ 加到你的URLConf，让django来处理admin app的静态文件： ::
+
+    urls.py
+    --------
+    from django.contrib import admin
+    admin.autodiscover()
+
+    urlpatterns = patterns('',
+        ...
+
+        # Uncomment the next line to enable the admin:
+        url(r'^admin/', include(admin.site.urls)),
+    )
+
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
+
+由于sae默认static为静态文件目录，需要修改config.yaml，添加任意一条规则覆盖默认行为。 ::
+
+    config.yaml
+    -----------
+    ...
+
+    handlers:
+    - url: /foo
+      static_dir: foo
+
+ref:
+
+https://docs.djangoproject.com/en/1.4/ref/contrib/staticfiles/
+https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/#serving-the-admin-files
+
+.. _staticfiles_urlpatterns: https://docs.djangoproject.com/en/dev/howto/static-files/#staticfiles-development
+
 Flask
 ~~~~~~~~~~
 
