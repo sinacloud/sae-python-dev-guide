@@ -658,6 +658,18 @@ modified关键字用于指定缓存过期的时间相对于object的最后修改
 
 正的time_delta会设置Cache-Control为max-age = #，其中 # 是缓存过期的时间（单位为秒）。
 
+模拟storage为文件系统
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    from sae.ext.storage import monkey
+    monkey.patch_all()
+
+以上代码会将storage ‘挂载’到 `/s/` 目录下，每个bucket为这个目录下的一个子目录。用户可以使用 `/s/<bucket-name>/<object-name>` 这样形式的路径通过文件系统接口来访问storage的中的object。
+
+目前支持（patch）的文件系统接口函数为： `open, os.listdir, os.mkdir, os.path.exists, os.path.isdir, os.open, os.fdopen, os.close, os.chmod, os.stat, os.unlink, os.rmdir`
+
 KVDB
 ----------
 
