@@ -45,6 +45,8 @@ MySQL
 数据库管理
 ~~~~~~~~~~~~~~
 
+你可以使用 `sae-python-dev` 包里的 `cloudsql.py` 这个mysql命令行客户端来管理数据库。详细见 :ref:`cloudsql.py`
+
 SAE支持使用PHPMyAdmin来管理Mysql，点击管理面板 `服务管理 > MySQL > 管理MySQL` 即可进入。
 
 开发时可使用本地mysql数据库，在发布时再将其导入到SAE线上数据库中。

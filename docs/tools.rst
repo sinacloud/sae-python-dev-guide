@@ -24,12 +24,15 @@ SVN限制：
 - 每个应用代码总大小不超过100M
 - 单个版本代码总大小不超过50M
 
-.. warning:: 不要使用svn cp，mv，目前还不支持这两个操作。
+.. warning::
+   
+   1. 不要使用svn cp，mv，目前还不支持这两个操作。
+   2. 建议使用命令行工具中的saecloud deploy命令来部署代码。
 
 本地开发环境
 --------------
 
-本地开发环境仅为应用开发便利之用，对sae python环境的模拟并不完整。
+本地开发环境仅为应用开发便利之用，对sae python环境的模拟并不完全。
 
 安装
 ~~~~~~~~~
@@ -106,10 +109,8 @@ kvdb默认数据存在内存中，dev_server.py进程结束时，数据会全部
 
 .. _howto-use-sae-python-with-virtualenv:
 
-saecloud
-----------------------
-
-saecloud是一个简单的命令行部署工具。它分离了代码部署和代码托管，使你可以选择习惯使用的vcs工具，同时还能够快速部署本地app目录到SAE服务器上。
+命令行工具saecloud
+--------------------
 
 部署代码
 ~~~~~~~~~~
@@ -145,21 +146,23 @@ saecloud deploy命令接受一个可选参数: app代码所在路径，默认为
    `deploy` 和 `export` 命令需要用到svn，请先安装svn命令行工具。
    windows用户可以在这里下载：http://sourceforge.net/projects/win32svn/
 
-上传文件到storage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-对于无法在storage管理页面上传的大文件，可以使用saecloud提供的命令行工具来上传。 ::
-
-    saecloud upload-data app-name domain file [file ...]
-
-处理依赖关系
+安装依赖的第三方包
 ~~~~~~~~~~~~~~~~~~
 
-在应用目录中执行下面的命令安装依赖的包。 ::
+在应用目录中执行下面的命令安装依赖的第三方包。 ::
 
     saecloud install package [package ... ]
 
-该命令会安装依赖包到该目录下名为 `site-packages` 的目录里。如果文件比较多的话，推荐压缩该目录。 ::
+如果应用的依赖关系比较多，也可以这些依赖关系写到依赖文件中，例如： ::
+
+    Framework==0.9.4
+    Library>=0.2
+
+假设上面的依赖文件的文件名为requirements.txt，你可以执行下面的命令安装所有的依赖包。 ::
+
+    saecloud install -r requirements.txt
+
+该命令会安装依赖包到应用目录下名为 `site-packages` 的目录里。如果文件比较多的话，推荐压缩site-packages目录。 ::
 
     cd site-packages/
     zip -r ../site-packages.zip .
@@ -182,6 +185,30 @@ saecloud deploy命令接受一个可选参数: app代码所在路径，默认为
 
    安装指定版本的package：saecloud install package==version
 
+.. _cloudsql.py:
+
+cloudsql.py
+-------------
+
+cloudsql.py是SAE MySQL服务的一个命令行客户端，用户可以使用cloudsql.py来直接操作应用的线上数据库。 ::
+
+    alan@sina:~/python$ cloudsql.py -u ACCESSKEY -p SECRETKEY APP_NAME
+    SAE MySQL Client
+
+    Type "help" or "?" for help.
+
+    Connecting to Cloud SQL database "app_shellpy" on host w.rdc.sae.sina.com.cn.
+    Using readline for history management.
+    Loading history file "/home/alan/.saecloud/app_shellpy.hist"
+    mysql>
+
+如果想要在代码中直接操作线上的数据库，在 `import MySQLdb`  （并不一定要安装MySQLdb包）之前执行以下的代码即可： ::
+
+    # 只在本地开发环境中执行
+    import os
+    if 'SERVER_SOFTWARE' not in os.environ:
+        from sae._restful_mysql import monkey
+        monkey.patch()
 
 可用插件
 --------------
@@ -221,6 +248,15 @@ SAE Python Shell是一个wsgi中间件，提供了一个在线的interactive she
     application = sae.create_wsgi_app(ShellMiddleware(app))
 
 - 访问地址 https://<your-app-name>.sinaapp.com/_sae/shell ，根据提示输入你设置的口令
+
+- 或者你也可以在命令行下面使用 `saecloud shell <your-app-name> [-p PASSWORD]` 来访问在线shell。 ::
+
+    alan@sina:~/shellpy$ saecloud shell pylabs -proot
+    Python 2.7.3 (default, Mar 27 2013, 18:11:21) 
+    [GCC 4.4.6 20120305 (Red Hat 4.4.6-4)]
+    Type "help", "copyright", "credits" or "license" for more information.
+
+    >>> 
 
 ..  warning::
 
