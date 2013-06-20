@@ -1,4 +1,5 @@
 import sys
+from StringIO import StringIO
 
 from django.conf import settings
 from django.core.files.base import File
@@ -15,7 +16,7 @@ STORAGE_ACCESSKEY = getattr(settings, 'STORAGE_ACCESSKEY', ACCESS_KEY)
 STORAGE_SECRETKEY = getattr(settings, 'STORAGE_SECRETKEY', SECRET_KEY)
 STORAGE_GZIP = getattr(settings, 'STORAGE_GZIP', False)
 
-class SaeStorage(Storage):
+class Storage(Storage):
     def __init__(self, bucket_name=STORAGE_BUCKET_NAME,
                  accesskey=STORAGE_ACCESSKEY, secretkey=STORAGE_SECRETKEY,
                  account=STORAGE_ACCOUNT):
@@ -23,9 +24,11 @@ class SaeStorage(Storage):
         self.bucket = conn.get_bucket(bucket_name)
 
     def _open(self, name, mode='rb'):
-        return SaeStorageFile(name, mode, self)
+        name = self._normalize_name(name)
+        return StorageFile(name, mode, self)
 
     def _save(self, name, content):
+        name = self._normalize_name(name)
         try:
             self.bucket.put_object(name, content)
         except Error, e:
@@ -33,12 +36,14 @@ class SaeStorage(Storage):
         return name
 
     def delete(self, name):
+        name = self._normalize_name(name)
         try:
-            self.delete_object(name)
+            self.bucket.delete_object(name)
         except Error, e:
             raise IOError('Storage Error: %s' % e.args)
 
     def exists(self, name):
+        name = self._normalize_name(name)
         try:
             self.bucket.stat_object(name)
         except Error, e:
@@ -47,14 +52,16 @@ class SaeStorage(Storage):
             raise
         return True
 
-    def listdir(self, path):
-        try:
-            result = self.bucket.list(path=path)
-            return [i.name for i in result]
-        except Error, e:
-            raise IOError('Storage Error: %s' % e.args)
+    #def listdir(self, path):
+    #    path = self._normalize_name(path)
+    #    try:
+    #        result = self.bucket.list(path=path)
+    #        return [i.name for i in result]
+    #    except Error, e:
+    #        raise IOError('Storage Error: %s' % e.args)
 
     def size(self, name):
+        name = self._normalize_name(name)
         try:
             attrs = self.bucket.stat_object(name)
             return attrs.bytes
@@ -62,13 +69,15 @@ class SaeStorage(Storage):
             raise IOError('Storage Error: %s' % e.args)
 
     def url(self, name):
-        self.bucket.generate_url(name)
+        name = self._normalize_name(name)
+        return self.bucket.generate_url(name)
 
     def _open_read(self, name):
+        name = self._normalize_name(name)
         class _:
             def __init__(self, chunks):
                 self.buf = ''
-            def read(num_bytes=None):
+            def read(self, num_bytes=None):
                 if num_bytes is None:
                     num_bytes = sys.maxint
                 try:
@@ -81,10 +90,13 @@ class SaeStorage(Storage):
                 retval = self.buf[:num_bytes]
                 self.buf = self.buf[num_bytes:]
                 return retval
-        chunks = self.bucket.get_object_contents(self.name, chunk_size=8192)
+        chunks = self.bucket.get_object_contents(name, chunk_size=8192)
         return _(chunks)
 
-class SaeStorageFile(File):
+    def _normalize_name(self, name):
+        return name.lstrip('/')
+
+class StorageFile(File):
     def __init__(self, name, mode, storage):
         self.name = name
         self.mode = mode
@@ -99,8 +111,8 @@ class SaeStorageFile(File):
         return self._size
 
     def read(self, num_bytes=None):
-        if not hasattr(self, _obj):
-            self._obj = self._storage._open_read(self, self.name)
+        if not hasattr(self, '_obj'):
+            self._obj = self._storage._open_read(self.name)
         return self._obj.read(num_bytes)
 
     def write(self, content):
