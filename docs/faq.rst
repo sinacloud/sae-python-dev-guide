@@ -45,7 +45,7 @@ python server会直接在浏览器中打印出异常。
 没有我要使用的包怎么办
 ------------------------
 
-对于纯python的package，See :ref:`howto-use-sae-python-with-virtualenv`
+对于纯python的package，参考 :ref:`howto-use-saecloud-install`
 
 对于含有c extension的package，目前SAE还无法直接支持，如果需要这些package，可以申请预装。
 

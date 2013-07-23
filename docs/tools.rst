@@ -107,8 +107,6 @@ kvdb默认数据存在内存中，dev_server.py进程结束时，数据会全部
     $ dev_server.py --kvdb-file=/path/to/kvdb/local/file
 
 
-.. _howto-use-sae-python-with-virtualenv:
-
 命令行工具saecloud
 --------------------
 
@@ -145,6 +143,8 @@ saecloud deploy命令接受一个可选参数: app代码所在路径，默认为
 
    `deploy` 和 `export` 命令需要用到svn，请先安装svn命令行工具。
    windows用户可以在这里下载：http://sourceforge.net/projects/win32svn/
+
+.. _howto-use-saecloud-install:
 
 安装依赖的第三方包
 ~~~~~~~~~~~~~~~~~~
