@@ -697,14 +697,11 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 ..  py:class:: KVClient(debug=0)
     :module: sae.kvdb
 
-    KVDB客户端基于python-memcached，大多数method使用方法相同。
-    如果不能成功创建KVClient，则抛出 sae.kvdb.Error 异常。
-
     debug 是否输出详细调试、错误信息到日志，默认关闭
 
     .. py:method:: set(key, val, min_compress_len=0)
 
-       设置key的值为val，成功则返回True
+       设置key的值为val
 
        min_compress_len 启用zlib.compress压缩val的最小长度，如果val的长度大于此值
        则启用压缩，0表示不压缩。
@@ -719,11 +716,11 @@ kvdb服务使用前需要在 `管理面板`_ 中启用，不再使用时可以�
 
     .. py:method:: delete(key)
 
-       删除key，成功返回1，失败返回0。
+       删除key。
 
     .. py:method:: get(key)
 
-       从kvdb中获取一个key的值。成功返回key的值，失败则返回None
+       从kvdb中获取一个key的值，存在返回key的值，不存在则返回None
 
     .. py:method:: get_multi(keys, key_prefix='')
 
