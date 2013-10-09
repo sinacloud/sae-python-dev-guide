@@ -185,3 +185,33 @@ virtualenv.bundle.zip添加到module的搜索路径中，示例代码如下： :
    2. 有些包是not-zip-safe的，可能不工作，有待验证。 含有c扩展的package
       不能工作。
 
+Matplotlib使用常见问题
+-----------------------
+
+SAE环境不支持matplotlib的interative模式，所以无法使用 `pyplot.show()` 直接来显示图像，只能使用
+`pyplot.savefig()` 将图像保存到一个输出流中（比如一个cStringIO.StringIO的实例中）。
+
+如果想要在matplotlib中显示中文，可以使用以下任一方法。
+
+    方法一： ::
+
+        import os.path
+        from matplotlib.font_manager import FontProperties
+        zh_font = FontProperties(fname=os.path.abspath('wqy-microhei.ttf'))
+        import matplotlib.pyplot as plt
+        plt.title(u'中文', fontproperties=zh_font)
+
+    方法二： ::
+
+        import os
+        # 设置自定义字体文件所在目录路径，多条路径之间使用分号（:）隔开
+        os.environ['TTFPATH'] = os.getcwd()
+        import matplotlib
+        # 设置默认字体名
+        matplotlib.rcParams['font.family'] = 'WenQuanYi Micro Hei'
+        import matplotlib.pyplot as plt
+        plt.title(u'中文')
+
+其中方法一适用于ttf和ttc字体，方法二适用于只适用于ttf字体
+
+如果有 `matplotlibrc` 配置文件，请将该文件与index.wsgi放在同一个目录下（默认的当前路径）。
