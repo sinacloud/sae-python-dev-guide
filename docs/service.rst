@@ -337,7 +337,7 @@ Memcache
     :synopsis: memcache模块
 
 SAE Python使用 http://sendapatch.se/projects/pylibmc/ 作为mc客户端。
-不同之处在于，创建Client时不用指定servers。 
+不同之处在于，创建Client时不用指定servers参数（如果指定了会被忽略）。
 
 示例代码::
 
