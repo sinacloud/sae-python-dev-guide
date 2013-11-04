@@ -215,3 +215,28 @@ SAE环境不支持matplotlib的interative模式，所以无法使用 `pyplot.sho
 其中方法一适用于ttf和ttc字体，方法二适用于只适用于ttf字体
 
 如果有 `matplotlibrc` 配置文件，请将该文件与index.wsgi放在同一个目录下（默认的当前路径）。
+
+
+.. _wsgi_middleware:
+
+设置基于主机的访问控制
+----------------------------
+
+python runtime目前无法通过config.yaml来配置基于主机的访问控制，用户如果需要这个设置，可以通过wsgi middleware来完成。 ::
+
+    def filter_middleware(app):
+        def _(environ, start_response):
+            remote_addr = environ.get('REMOTE_ADDR')
+
+            # 判断remote_addr是否在允许访问范围内
+            # ...
+
+            if ok:
+                return app(environ, start_response)
+
+            start_response('401 Unauthorized', [])
+            return ["<b>401 Unauthorized</b>",]
+        return _
+
+    # 给application加上访问控制的中间件
+    application = filter_middleware(application)

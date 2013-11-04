@@ -155,6 +155,8 @@ SAE Python会对应用导入的模块（包括index.wsgi）进行缓存，从而
 
    3. 以上两条规则仅为兼容性考虑保留，不推荐使用，请在config.yaml明确配置。
 
+   4. 对于php runtime支持但是python runtime不支持的appconfig，请考虑使用wsgi middleware来完成，参见 :ref:`wsgi_middleware` 
+
 .. _pre-installed-package-list:
 
 预装模块列表
