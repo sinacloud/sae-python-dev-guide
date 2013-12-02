@@ -8,7 +8,7 @@ SAE Python 开发者手册
 
 本文档，示例代码以及本地测试server下载：  ::
 
-    git clone http://github.com/saepython/saepythondevguide.git
+    git clone https://github.com/sinacloud/sae-python-dev-guide.git
 
 Contents:
     

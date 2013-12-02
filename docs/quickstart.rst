@@ -105,11 +105,11 @@ Django
 `完整示例`_ （ `django tutorial`_ 中的poll、choice程序）
 
 .. _django tutorial: https://docs.djangoproject.com/en/1.4/intro/tutorial01/
-.. _完整示例: https://github.com/SAEPython/saepythondevguide/tree/master/examples/django/1.4
+.. _完整示例: https://github.com/sinacloud/sae-python-dev-guide/tree/master/examples/django/1.4
 
 `django-1.2.7示例`_
 
-.. _django-1.2.7示例: https://github.com/SAEPython/saepythondevguide/tree/master/examples/django/1.2.7
+.. _django-1.2.7示例: https://github.com/sinacloud/sae-python-dev-guide/tree/master/examples/django/1.2.7
 
 
 处理用户上传文件
@@ -286,5 +286,5 @@ index.wsgi
 .. tip:: 
    
    以上所有的示例代码的完整版本都可以在我们的github repo中获得。
-   https://github.com/SAEPython/saepythondevguide/tree/master/examples/
+   https://github.com/sinacloud/sae-python-dev-guide/tree/master/examples/
 

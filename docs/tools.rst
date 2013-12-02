@@ -43,8 +43,8 @@ SVN限制：
 
 ::
 
-    $ git clone http://github.com/saepython/saepythondevguide.git
-    $ cd saepythondevguide/dev_server
+    $ git clone https://github.com/sinacloud/sae-python-dev-guide.git
+    $ cd sae-python-dev-guide/dev_server
     $ python setup.py install
 
 基本使用

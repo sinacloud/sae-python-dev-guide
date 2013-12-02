@@ -51,7 +51,7 @@ python server会直接在浏览器中打印出异常。
 
 `预装申请`_
 
-.. _预装申请: https://github.com/SAEPython/saepythondevguide/issues/new
+.. _预装申请: https://github.com/sinacloud/sae-python-dev-guide/issues/new
 
 .. note::
 
@@ -71,7 +71,7 @@ python server会直接在浏览器中打印出异常。
     新浪微博API OAuth 2 Python客户端
 
 .. _weibopy: http://code.google.com/p/sinatpy/
-.. _examples/weibo: https://github.com/SAEPython/saepythondevguide/tree/master/examples/weibo/1
+.. _examples/weibo: https://github.com/sinacloud/sae-python-dev-guide/tree/master/examples/weibo/1
 .. _sinaweibopy: http://open.weibo.com/wiki/SDK#Python_SDK
 
 
