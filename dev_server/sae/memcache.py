@@ -68,7 +68,7 @@ class _CacheEntry(object):
 
     def _set_expiration(self, expiration):
         if expiration > (86400 * 30):
-            self.expiration_time = expiration
+            self.expiration = expiration
         else:
             self.expiration = self.created_time + expiration
 
