@@ -2,7 +2,7 @@
 import os.path
 from setuptools import setup, find_packages
 
-VERSION = '1.2.1'
+VERSION = '1.3.1'
 
 scripts = ['dev_server.py', 'saecloud', 'cloudsql.py']
 
@@ -32,6 +32,7 @@ setup(
     platforms='any',
     url = "http://python.sinaapp.com",
     packages=find_packages(),
+    package_data={'sae': ['channel.js']},
     scripts = scripts,
     zip_safe = False,
 )

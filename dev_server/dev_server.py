@@ -15,6 +15,8 @@ from optparse import OptionParser
 
 from sae.util import search_file_bottom_up
 
+from sae.channel import _channel_wrapper
+
 app_root = search_file_bottom_up('config.yaml')
 if app_root is None:
     print >> sys.stderr, \
@@ -93,6 +95,8 @@ class Worker:
                 '/media': os.path.join(app_root,  'media'),
                 '/favicon.ico': os.path.join(app_root,  'favicon.ico'),
             })
+        import sae
+        self.static_files['/_sae/channel/api.js'] = os.path.join(os.path.dirname(sae.__file__), 'channel.js')
 
         if self.conf.storage:
             # stor dispatch: for test usage only
@@ -123,6 +127,7 @@ class WsgiWorker(Worker):
         if 'WERKZEUG_RUN_MAIN' in os.environ:
             os.environ['sae.run_main'] = '1'
 
+        self.application = _channel_wrapper(self.application)
         from werkzeug.serving import run_simple
         run_simple(self.conf.host, self.conf.port,
                    wrap(self.application),
