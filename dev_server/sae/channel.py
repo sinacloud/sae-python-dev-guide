@@ -113,7 +113,10 @@ def _channel_wrapper(app):
             environ['HTTP_CONTENT_TYPE'] = 'application/x-www-form-urlencoded'
             environ['HTTP_CONTENT_LENGTH'] = len(qs)
             environ['wsgi.input'] = cStringIO.StringIO(qs)
-            print '[CHANNEL]', [i for i in app(environ, lambda x, y: None)]
+            try:
+                print '[CHANNEL]', [i for i in app(environ, lambda x, y: None)]
+            except Exception:
+                pass
             return []
 
     return _ 
