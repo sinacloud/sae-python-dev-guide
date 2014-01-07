@@ -865,9 +865,7 @@ Javascript客户端API：
 
 在html页面中使用以下代码引用channel服务的js库。 ::
 
-    <script type="text/javascript" src="http://channel.sinaapp.com/api.js"></script>
-
-.. Note:: 在本地开发环境中js库的地址请使用 `/_sae/channel/api.js` 。
+    <script type="text/javascript" src="/_sae/channel/api.js"></script>
 
 .. js:class:: sae.Channel(url)
 
@@ -911,7 +909,7 @@ Javascript客户端API：
 
     <head>
     ...
-    <script src="http://channel.sinaapp.com/api.js"></script>
+    <script src="/_sae/channel/api.js"></script>
     </head>
     <body>
       <script>
