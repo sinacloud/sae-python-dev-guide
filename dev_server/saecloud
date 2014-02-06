@@ -20,7 +20,7 @@ from sae.util import search_file_bottom_up
 UPLOAD_SERVER = 'http://upload.sae.sina.com.cn'
 DEPLOY_SERVER = 'http://deploy.sae.sina.com.cn'
 SVN_SERVER = 'https://svn.sinaapp.com/'
-LOCAL_CACHE_DIR = os.path.expanduser('~/.saecloud')
+LOCAL_CACHE_DIR = os.path.join(os.path.expanduser('~'),'.saecloud')
 
 VERSION = '0.0.1'
 verbose = False
