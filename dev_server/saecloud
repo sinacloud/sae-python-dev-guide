@@ -168,7 +168,7 @@ def install(args):
 
     import tempfile
     tmpdir = tempfile.gettempdir()
-    argv = ['install', '-I',
+    argv = ['install', '-I', '--allow-all-external',
             '--install-option=--install-lib=%s' % dest,
             '--install-option=--install-data=%s' % dest,
             '--install-option=--install-scripts=%s' % tmpdir]
