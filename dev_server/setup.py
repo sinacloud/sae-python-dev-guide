@@ -2,7 +2,7 @@
 import os.path
 from setuptools import setup, find_packages
 
-VERSION = '1.3.2'
+VERSION = '1.3.3'
 
 scripts = ['dev_server.py', 'saecloud', 'cloudsql.py']
 
