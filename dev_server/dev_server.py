@@ -61,6 +61,7 @@ def setup_sae_environ(conf):
         sae.const.MYSQL_PASS = password
         sae.const.MYSQL_PORT = port
         sae.const.MYSQL_HOST = host
+        sae.const.MYSQL_HOST_S = host
 
         print 'MySQL: %s.%s' % (conf.mysql, dbname)
     else:
