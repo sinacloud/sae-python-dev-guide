@@ -17,13 +17,6 @@ from sae.util import search_file_bottom_up
 
 from sae.channel import _channel_wrapper
 
-app_root = search_file_bottom_up('config.yaml')
-if app_root is None:
-    print >> sys.stderr, \
-        'Error: Not an app directory(or any of the parent directories)'
-    sys.exit(1)
-if app_root != os.getcwd(): os.chdir(app_root)
-
 def setup_sae_environ(conf):
     # Add dummy pylibmc module
     import sae.memcache
@@ -202,5 +195,12 @@ if __name__ == '__main__':
     parser.add_option("--storage-path", dest="storage", help="Directory used as local stoarge")
     parser.add_option("--kvdb-file", dest="kvdb", help="File to save kvdb data")
     (options, args) = parser.parse_args()
+
+    app_root = search_file_bottom_up('config.yaml')
+    if app_root is None:
+        print >> sys.stderr, \
+            'Error: Not an app directory(or any of the parent directories)'
+        sys.exit(1)
+    if app_root != os.getcwd(): os.chdir(app_root)
 
     main(options)
