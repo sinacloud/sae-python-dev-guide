@@ -61,7 +61,7 @@ def create_channel(name, duration=None):
     _cache[name] = []
     return 'http://%s/_sae/channel/%s' % (os.environ['HTTP_HOST'], name)
 
-def send_message(name, message):
+def send_message(name, message, async=False):
     client_id = name
 
     if isinstance(message, unicode):
